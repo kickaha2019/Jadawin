@@ -1,0 +1,27 @@
+{% if image_index %}
+  <DIV CLASS="image_indexes t0">
+    {% for item in image_index.entries %}
+      {% if item.off_page %}
+        <A TARGET=“_blank” CLASS=
+      {% else %}
+        <A CLASS=
+      {% endif %}
+      "index t0 size1 size2 size3" HREF="{{ item.path }}">
+        {% if item.blurb %}
+          <SPAN CLASS="tooltiptext">{{ item.blurb }}</SPAN>
+        {% endif %}
+        <DIV>{% include 'image',
+                         id:false,
+                         specs:false,
+                         title:false,
+                         details:item.details,
+                         clazz:'image_index',
+                         overlay:false %}</DIV>
+        <DIV>{{ item.title }}</DIV>
+      </A>
+    {% endfor %}
+    {% for i in (1..8) %}
+      <DIV CLASS="index dummy size1 size2 size3"></DIV>
+    {% endfor %}
+  </DIV>
+{% endif %}

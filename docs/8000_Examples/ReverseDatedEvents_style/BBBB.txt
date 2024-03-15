@@ -1,0 +1,4 @@
+@date 1 Sep 1898
+@icon ../../lemon.jpg
+@text
+Example page

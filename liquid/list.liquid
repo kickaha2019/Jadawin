@@ -1,0 +1,5 @@
+<UL>
+  {% for row in content.rows %}
+    <LI>{% include 'content' with row.data %}</LI>
+  {% endfor %}
+</UL>

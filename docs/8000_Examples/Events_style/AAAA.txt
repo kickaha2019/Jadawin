@@ -1,0 +1,4 @@
+@date 21 Nov 1900
+@icon ../../guava.jpg
+@text
+Example page

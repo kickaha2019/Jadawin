@@ -1,0 +1,77 @@
+@text
+The *@text* directive declares what follows up to the
+next directive is text to be rendered onto the page.
+Blank lines result in new paragraphs.
+
+Surrounding text with &ast;s causes the text to be 
+emphasized so
+
+@expect
+Blank lines should result in new paragraphs
+Blank lines result in new paragraphs.\s*</P><P>
+
+@code
+*asterisk*
+
+@expect
+* delimited text should be emphasized
+<EM>asterisk</EM>
+
+@text
+gives *asterisk*. Surrounding text with &grave;s causes the 
+text to be displayed as code so
+
+@code
+`grave`
+
+@expect
+` delimited text should be code style
+<SPAN CLASS="code">grave</SPAN>
+
+@text
+is displayed as `grave`. Links can be embedded into the
+text by using `[link text](link URL)` or
+just `[link text]` if a link URL has already been
+(uniquely) defined for the link text. So
+
+@code
+[This page](2000_Directives/Text)
+
+@expect
+Insite links should give <A> expressions
+<A HREF="Text.html">This page</A>
+
+@text
+gives [This page](2000_Directives/Text). If the link is
+offsite then it will be forced to open in a new
+tab or window in the browser, for example
+[Apple](https://apple.com/) will open in a new tab
+in *Safari*. If the link URL contains a *)* 
+it will need currently to be replaced by a *&rpar;*
+HTML entity code.
+
+@expect
+Offsite links should give <A> expressions opening in a new tabe
+<A HREF="https://apple.com/" target="_blank" rel="nofollow">Apple</A>
+
+@text
+< and > in normal text will be replaced by HTML entity codes but not &amp;. 
+*< and > escaped by &ast;s will be replaced by HTML entity codes but not &amp;.*
+[&amp; will not be replaced by HTML entity codes &lt; and &gt; are not allowed](2000_Directives/Text).
+`< > and & escaped by grave characters will be replaced by HTML entity codes.`
+
+@expect
+< > should be escaped in normal text
+&lt; and &gt; in normal text will be replaced by HTML entity codes but not &amp;.
+@expect
+< > should be escaped in emphasized text
+<EM>&lt; and &gt; escaped by &ast;s will be replaced by HTML entity codes but not &amp;.</EM>
+@expect
+< > & should be escaped in code text
+<SPAN CLASS="code">&lt; &gt; and &amp; escaped by grave characters will be replaced by HTML entity codes.</SPAN>
+
+@text
+Spell checking will be done for normal text,
+for *emphasized text*, and for
+[link text](2000_Directives/Text), but not for
+`grave escaped text`. 

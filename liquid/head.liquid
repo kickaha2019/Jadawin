@@ -1,0 +1,6 @@
+{% case head.type %}
+  {% when "array" %}
+    {% include 'head' with head.data %}
+  {% endif %}
+{% endcase %}
+

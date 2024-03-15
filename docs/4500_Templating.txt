@@ -1,0 +1,31 @@
+@title Liquid templates
+@text
+For each of the *.md* source files a Ruby data structure is
+produced which is then combined width
+[Liquid](https://shopify.github.io/liquid/) templates to generate the HTML pages for the website.
+Partly I used *Liquid* to gain experience with it, and partly
+to improve the bespoke code I have for generating my website.
+
+To get *Liquid* to work for me I had to discover how to tell *Liquid*
+where the template files were. This I achieved (after reading what the
+source code did) by setting a filesystem for *Liquid* by code like:
+
+@code
+Liquid::Template.file_system = Liquid::LocalFileSystem.new( @source + '/_liquid',
+                                                            pattern = "%s.liquid")
+
+@text
+Had some problems when I had a template named the same as one of the
+keys in the hash passed to the *render* method on the top-level
+Liquid template I was using. Resolved this by ensuring the names were
+different. This doesn't seem to be a problem with using the *include*
+tag inside a *Liquid* template.
+
+*Liquid* seemed if one passed an array to a template to invoke that
+template for every element of the array but I didn't investigate
+that very much.
+
+I was impressed by how well *Liquid* worked for me, and the power
+and neatness of the syntax. In passing
+[controlling whitespace](https://shopify.github.io/liquid/basics/whitespace/) inside *Liquid* can save quite a few bytes
+in the generated HTML files.

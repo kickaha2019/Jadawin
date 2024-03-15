@@ -1,0 +1,5 @@
+@image ../../banana.png
+@error
+Icon must be first image in article
+Icon must be first image in article
+@icon ../../banana.png

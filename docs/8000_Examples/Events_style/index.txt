@@ -1,0 +1,7 @@
+@style  Events
+@title  Example of Events style page
+@text
+Example of Events style page
+@expect
+Events indexes should be in date order
+BBBB.*9999.*ZZZZ.*7777.*AAAA

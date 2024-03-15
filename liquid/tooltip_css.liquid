@@ -1,0 +1,27 @@
+a:hover > span.tooltiptext {visibility: visible; animation-name: tooltip; animation-duration: 3s;}
+
+@keyframes tooltip {
+  0% {opacity: 0.0}
+  99% {opacity: 0.0}
+  100% {opacity: 1.0}
+}
+
+.tooltip {
+  position: relative;
+ }
+
+.tooltiptext {
+  visibility: hidden;
+  width: 160px;
+  background-color: {{ body_colour }};
+  border: 1px solid {{ here_colour }};
+  color: {{ here_colour }};
+  text-align: center;
+  padding: 5px 0px;
+  border-radius: 6px;
+  position: absolute;
+  z-index: 1;
+  margin-left: -80px;
+  left: 50%;
+  top: 10%;
+}

@@ -1,0 +1,17 @@
+@style  Menu
+@title  Example pages
+@expect
+Blurb should appear when hovering over menu for page
+<SPAN ID="r0" CLASS="over">Example<BR>of Year<BR>style page</SPAN>
+@expect
+Future dated webpages should not appear
+! Future
+@expect
+Overriden title should appear in breadcrumbs on page
+&raquo; <SPAN>Example pages</SPAN>
+@expect
+Overriden title should appear in META description on page
+<meta name="description" content="Example pages">
+@expect
+Overriden title should appear in TITLE element
+<TITLE>Example pages</TITLE>

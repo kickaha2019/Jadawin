@@ -1,0 +1,8 @@
+@style  NoIndex
+@title  Example of NoIndex page
+@text
+Explicit link to [child](NoIndex_style/child) page.
+@expect
+NoIndex style should suppress explicit indexes
+! &raquo;&nbsp;
+

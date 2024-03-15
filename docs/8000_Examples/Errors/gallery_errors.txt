@@ -1,0 +1,11 @@
+@error
+Missing label for gallery image
+No label for ../../apple.jpg
+@gallery
+../../apple.jpg
+
+@error
+Gallery unknown file
+Path not found for xxx.jpg
+@gallery
+xxx.jpg Unknown file

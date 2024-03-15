@@ -1,0 +1,25 @@
+@text
+The *@table* directive generates a table based
+on data following the directive. For instance the
+code:
+
+@code
+  @table
+  Fruit|Colour
+  Apple|Red
+  Banana|Yellow
+
+@text
+gives
+
+@table
+Fruit|Colour
+Apple|Red
+Banana|Yellow
+
+@expect
+Table column titles should be boldened text
+<TR>\s*<TD STYLE="font-weight: bold; text-align: center">\s*Fruit\s*</TD>
+@expect
+Table column values should be normal text
+<TR>\s*<TD STYLE="text-align: left">\s*Apple

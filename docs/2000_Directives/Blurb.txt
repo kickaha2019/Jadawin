@@ -1,0 +1,65 @@
+@blurb @blurb documentation
+@text
+The *@blurb* directive overrides the text displayed in an
+index rectangle when hovering over any rectangular link 
+to that page. It also overrides the text in the
+&lt;TITLE&gt; HEAD element in the HTML head section, and the
+META description element there as well.
+
+So for example
+the is page's source file has at the bottom:
+
+@code
+  @blurb	@blurb documentation
+
+@expect
+Blurb should appear as META element
+<meta name="description" content="@blurb documentation">
+@expect 
+Blurb should appear as TITLE element
+<TITLE>@blurb documentation</TITLE>
+@text
+Blurbs should not contain the " < > &grave; or *asterisk*
+characters and are limited in length to 50 characters.
+@error
+Duplicate Blurb definition
+Duplicate Blurb definition
+@error
+" in blurb
+Bad characters in blurb
+@blurb "
+@error
+< in blurb
+Bad characters in blurb
+@error
+Duplicate Blurb definition
+Duplicate Blurb definition
+@blurb <
+@error
+> in blurb
+Bad characters in blurb
+@error
+Duplicate Blurb definition
+Duplicate Blurb definition
+@blurb >
+@error
+` in blurb
+Bad characters in blurb
+@error
+Duplicate Blurb definition
+Duplicate Blurb definition
+@blurb `
+@error
+* in blurb
+Bad characters in blurb
+@error
+Duplicate Blurb definition
+Duplicate Blurb definition
+@blurb *
+@error
+Duplicate Blurb definition
+Duplicate Blurb definition
+@error
+Blurb too long
+Blurb too long
+@blurb  Too long a blurb by some way much too long definitely too long very very long

@@ -1,0 +1,7 @@
+@title  Example of Base style page
+@text
+Example of Base (default) style page
+
+@expect
+Base style should sort pages numerically then alphabetically
+HREF="7777.*HREF="9999.*HREF="AAAA.*HREF="BBBB.*HREF="ZZZZ

@@ -1,0 +1,25 @@
+{% if specs %}
+{% for image in specs %}
+  <IMG CLASS="{{ image.sizes }} {{ clazz }}"
+       SRC="{{ image.path }}"
+       WIDTH="{{ image.width }}"
+       HEIGHT="{{ image.height }}"
+       {% if title %}
+         TITLE="{{ title }}"
+       {% endif %}
+       ALT="{{ image.tag }}"
+    {% if overlay %}
+      onclick="javascript: showOverlay( '{{ overlay }}');"
+    {% endif %}
+  >
+{% endfor %}
+{% endif %}
+{% if details %}
+<IMG {% include 'id' with id %} {% include 'clazz' with clazz %} SRC="{{ details.path }}"
+  {% if title %} TITLE="{{ title }}"{% endif %}
+   ALT="{{ details.tag }}"
+{% if overlay %}
+  onclick="javascript: showOverlay( '{{ overlay }}');"
+{% endif %}
+>
+{% endif %}

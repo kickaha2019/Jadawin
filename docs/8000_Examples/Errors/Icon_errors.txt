@@ -1,0 +1,12 @@
+@icon ../../banana.png
+@error
+Multiple icons
+Multiple icons
+@icon ../../banana.png
+@error
+Multiline icon
+Icon takes only one line
+@icon
+../../banana.png
+Waffle
+@text

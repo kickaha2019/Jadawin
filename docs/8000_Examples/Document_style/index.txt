@@ -1,0 +1,8 @@
+@style  Document
+@title  Example of Document style page
+@text
+Example of Document style page
+
+@expect
+Document style should sort pages numerically then alphabetically
+HREF="7777.*HREF="9999.*HREF="AAAA.*HREF="BBBB.*HREF="ZZZZ

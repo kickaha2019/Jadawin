@@ -1,0 +1,8 @@
+@title Optimisation: browser caching
+@text
+One can ask browsers to cache images which
+rarely change to speed up page accesses.
+
+See *Browser caching* in 
+[Dreamhost knowledge base](https://help.dreamhost.com/hc/en-us/articles/216363157-Cache-a-website-with-an-htaccess-file). Editing the *.htaccess* file 
+badly will break a website.

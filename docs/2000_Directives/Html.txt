@@ -1,0 +1,18 @@
+@text
+The *@html* directive declares what follows is HTML code
+to be embedded as is into the generated page.
+
+So the code:
+@code
+  @html
+  <H1 STYLE="color: lime">Embedded HTML heading</H1>
+
+@text 
+should give
+
+@html
+<H1 STYLE="color: lime">Embedded HTML heading</H1>
+
+@expect
+HTML should be embedded into page
+<H1 STYLE="color: lime">Embedded HTML heading</H1>

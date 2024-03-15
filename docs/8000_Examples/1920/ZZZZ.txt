@@ -1,0 +1,4 @@
+@date 1 Mar 1920
+@icon ../../orange.jpg
+@text
+Example page

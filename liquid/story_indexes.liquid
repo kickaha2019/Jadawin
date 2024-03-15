@@ -1,0 +1,7 @@
+{% if story_index %}
+    <DIV CLASS="story_index">
+    {% for item in story_index %}
+        <A HREF="{{ item.path }}">{{ item.title }}</A>
+    {% endfor %}
+    </DIV>
+{% endif %}

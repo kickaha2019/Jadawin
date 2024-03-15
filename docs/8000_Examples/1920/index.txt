@@ -1,0 +1,7 @@
+@style  Year
+@blurb  Example of Year style page
+@text
+Example of Year style page
+@expect
+Year indexes should be in date order
+BBBB.*9999.*ZZZZ.*7777.*AAAA

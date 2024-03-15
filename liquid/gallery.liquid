@@ -1,0 +1,21 @@
+<DIV CLASS="gallery t1">
+  {% for item in content.images %}
+    <DIV>
+      <DIV>
+        {% include 'image',
+                   id:false,
+                   specs:false,
+                   title:false,
+                   details:item.details,
+                   clazz:item.clazz,
+                   overlay:item.overlay %}
+      </DIV>
+      <DIV>
+        <P>{% include 'content' with item.tag %}</P>
+      </DIV>
+    </DIV>
+  {% endfor %}
+  {% for i in (1..8) %}
+    <DIV CLASS="dummy size1 size2 size3"></DIV>
+  {% endfor %}
+</DIV>

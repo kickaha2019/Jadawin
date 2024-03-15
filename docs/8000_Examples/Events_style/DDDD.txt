@@ -1,0 +1,6 @@
+@icon ../../lemon.jpg
+@text
+Missing date
+@error
+Missing date on child page for Events style
+Expected date

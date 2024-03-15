@@ -1,0 +1,11 @@
+@error
+Unknown resource
+Unknown resource: xxx.jpg
+@resource xxx.jpg
+@error
+Multiline resource
+Resource takes only one line
+@resource
+../../banana.png
+Waffle
+@text

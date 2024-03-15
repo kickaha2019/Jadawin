@@ -1,0 +1,18 @@
+@text
+Tests for errors parsing articles
+
+@error
+Unknown directive
+Unknown directive: xxx
+@xxx
+Text
+
+@error
+Unknown directive
+Unknown directive: yyy
+@yyy text
+
+@error
+Expected directive
+Expected directive: zzz
+zzz

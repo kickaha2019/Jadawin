@@ -1,0 +1,20 @@
+@text
+The *@gallery* directive generates a thumbnail gallery on a page
+where the thumbnails can be clicked on to show a larger version of the
+image.
+
+So for example
+the [gallery example](8000_Examples/Gallery) source file has:
+
+@code
+  @gallery
+  ../../apple.jpg This is an apple
+  ../../avocado.jpg Do you like avocados?
+  ../../guava.jpg It's a guava
+  ../../lemon.jpg I like lemonade
+  ../../orange.jpg  Naranja in Spanish
+
+@text
+The images to display in the gallery are listed one per line after
+the *@gallery* directive, with a description of the image following
+the image filename.

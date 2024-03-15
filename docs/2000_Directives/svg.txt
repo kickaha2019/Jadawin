@@ -1,0 +1,5 @@
+@text
+The *@svg* directive embeds a SVG image into the
+current page. The SVG image can contain links
+to other pages.
+

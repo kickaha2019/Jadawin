@@ -1,0 +1,7 @@
+@error
+Multiline title
+Title takes only one line
+@title
+Title errors
+Waffle
+@text

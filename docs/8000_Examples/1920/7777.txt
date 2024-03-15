@@ -1,0 +1,4 @@
+@date 1 Jun 1920
+@icon ../../apple.jpg
+@text
+Example page

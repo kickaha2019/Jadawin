@@ -1,0 +1,18 @@
+@css
+.to, .t1, h1 {color: lime}
+
+@text
+The *@css* directive declares what follows is CSS code
+to be embedded as is into the header of the generated page.
+
+So the code:
+@code
+  @css
+  .to, .t1, h1 {color: lime}
+  
+@text
+causes the text on this page to appear in lime not yellow.
+
+@expect
+The @css directive should embed CSS code into page header
+.to, .t1, h1 {color: lime}.*</style>\s*</HEAD>

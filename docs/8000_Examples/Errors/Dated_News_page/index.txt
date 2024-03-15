@@ -1,0 +1,9 @@
+@style  News
+@date   1900 Jan 1
+@error
+News style article must not be dated
+News style article must not be dated
+@error
+Duplicate Style definition
+Duplicate Style definition
+@style  News

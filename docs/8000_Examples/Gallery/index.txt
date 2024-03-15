@@ -1,0 +1,26 @@
+@title  Example of Gallery page
+@text
+Example of Gallery page
+
+@gallery
+../../apple.jpg This is an apple
+../../avocado.jpg;bottom Do you like avocados?
+../../guava.jpg;left It's a guava
+../../lemon.jpg;right I like lemonade
+../../orange.jpg;top  Naranja in Spanish
+
+@expect
+Gallery div and img should have expected classes
+<DIV CLASS="gallery t1">\s*<DIV>\s*<DIV>\s*<IMG\s*CLASS="G1"
+@expect
+Image descriptions should appear in galleries
+<P>\s*This is an apple\s*</P>
+@expect
+Alt text for gallery images should be prettified filename
+ALT="Apple"
+@expect
+Source for gallery image should be webp file
+SRC="../../apple-\d+-\d+-\d+-centre\.webp"
+@expect
+Gallery images should display larger size images when clicked on
+onclick="javascript: showOverlay\( '../../apple-\d+-\d+-\d+\.webp'\);"

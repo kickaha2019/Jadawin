@@ -1,0 +1,15 @@
+<TABLE CLASS="table">
+  {% for row in content.rows %}
+    <TR>
+      {% for cell in row %}
+        {% if cell.bold %}
+          <TD STYLE="font-weight: bold; text-align: {{ cell.align }}">
+        {% else %}
+          <TD STYLE="text-align: {{ cell.align }}">
+        {% endif %}
+        {% include 'content' with cell.data %}
+        </TD>
+      {% endfor %}
+    </TR>
+  {% endfor %}
+</TABLE>

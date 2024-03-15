@@ -1,0 +1,52 @@
+@title Image handling
+@text
+The source directory contains full size images which
+need to be scaled and cropped as part of the website
+generation. For speed the dimensions of the full size
+images are cached together with the timestamp of the
+image.
+
+The [ruby-vips](https://github.com/libvips/ruby-vips) 
+Ruby gem is used for image manipulation.
+
+`.webp` image files are generated from the source
+`.jpeg` and `.png` images. This format is significantly
+more compact (websites can be 25% less bytes in size).
+
+In galleries and index pages using thumbnails it is
+visually better that the thumbnails are all the same
+dimensions. Sometimes the default centre cropping is
+not best so it is possible to annotate the image
+references in the source `.md` files to change this.
+An example annotation which will force the apple
+image to be cropped to the top:
+
+@code
+  @gallery
+  apple.jpg;top Apple image cropped to top in gallery thumbnail
+  
+@text
+Available annotations
+
+@table
+Annotation|Direction
+None|Centre (default)
+`;bottom`|Bottom
+`;left`|Left
+`;right`|Right
+`;top`|Top
+
+@text
+Some of the pictures on this website are taken on a mobile phone. If the
+phone was held in portrait mode the images were coming out on the website
+rotated wrongly. Looking at the images on the computer didn't show the
+problem because the programs handled the rotation behind the scenes.
+
+The image handling code has to allow for this, for
+*JPEG* images this involves checking the 
+`exif-ifd0-Orientation` value in the `EXIF` metadata.
+
+In addition the *ImageMagick* option `auto-orient` (see 
+[auto orient](https://legacy.imagemagick.org/script/command-line-options.php?#auto-orient))
+is used so when the images are resized for use on the website the
+rotation is allowed for.

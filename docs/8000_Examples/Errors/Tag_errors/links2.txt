@@ -1,0 +1,9 @@
+@style  Menu
+@links  YYY
+@error
+Multiline links
+Links takes only one line
+@links
+ZZZ
+Waffle
+@links ZZZ

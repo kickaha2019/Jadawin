@@ -1,0 +1,6 @@
+@error
+Unexpected characters in table header
+Unexpected characters in < Column1 >
+@table
+< Column1 >
+Value 1

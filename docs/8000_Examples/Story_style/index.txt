@@ -1,0 +1,8 @@
+@style  Story
+@title  Example of Story style page
+@expect
+Story indexes should be in date order
+BBBB.*9999.*ZZZZ.*7777.*AAAA
+@expect
+Icon image should be used in image indexes
+<IMG\s*CLASS="image_index"\s*SRC="../../apple-\d+-\d+-\d+-centre.webp"\s*ALT="Apple"\s*>\s*</DIV>\s*<DIV>7777</DIV>

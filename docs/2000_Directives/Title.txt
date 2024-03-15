@@ -1,0 +1,65 @@
+@title  Title
+@text
+The title for a page is used in a number of places.
+It is used the page is in the index of another page,
+it is used on the page itself in the breadcrumbs and
+also in the *<TITLE>* element in the HTML.
+
+By default the title is derived from
+the filename for the page. This can be overriden 
+using the *@title* directive. So the code:
+
+@code
+  @title A longer title
+
+@text
+would change the title of the page to 
+*A longer title*. 
+
+@expect
+Title should appear in breadcrumbs on page
+&raquo; <SPAN>Title</SPAN>
+@expect
+Title should appear in META description on page
+<meta name="description" content="Title">
+@expect
+Title should appear in TITLE element
+<TITLE>Title</TITLE>
+@text
+Titles should not contain the " < > &grave; or *asterisk*
+characters.
+@error
+Duplicate Title definition
+Duplicate Title definition
+@error
+" in title
+Bad characters in title
+@title "
+@error
+< in title
+Bad characters in title
+@error
+Duplicate Title definition
+Duplicate Title definition
+@title <
+@error
+> in title
+Bad characters in title
+@error
+Duplicate Title definition
+Duplicate Title definition
+@title >
+@error
+` in title
+Bad characters in title
+@error
+Duplicate Title definition
+Duplicate Title definition
+@title `
+@error
+* in title
+Bad characters in title
+@error
+Duplicate Title definition
+Duplicate Title definition
+@title *

@@ -1,0 +1,32 @@
+@error
+Unsupported image annotation
+Unsupported image annotation: north
+@image ../../banana.png;north
+@image ../../banana.png;top
+@error
+Inconsistent advice for image
+Inconsistent advice for image: ../../banana.png
+@image ../../banana.png;bottom
+@error
+Case mismatch?
+Case mismatch for ../../Banana.png
+@image ../../Banana.png
+@error
+Image file not found
+Path not found for xxx.jpeg
+@image xxx.jpeg
+@error
+File not an image
+Not an image file: Image_errors.md
+@image Image_errors.md
+@error
+Corrupt image file
+Badly formatted image file: Image_errors.jpg
+@image Image_errors.jpg
+@error
+Multiline image
+Image takes only one line
+@image
+../../banana.png
+Waffle
+@text

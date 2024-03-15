@@ -1,0 +1,11 @@
+@error
+Unimplemented style
+Unimplemented style: XXX
+@style XXX
+@error
+Multiline style
+Style takes only one line
+@style
+Menu
+Waffle
+@text

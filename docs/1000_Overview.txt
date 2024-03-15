@@ -1,0 +1,34 @@
+@text
+These pages document a static website generator
+which generates HTML pages from source files in
+a directory structure. The structure of the
+generated website reflects that directory structure.
+Website content is defined in text files with
+file extension `.txt`. The
+directory structure also contains image files
+for images to display.
+
+The text files contain [directives](2000_Directives)
+which define the page appearance, the text for the
+page is defined using a simplified 
+[markdown](https://www.markdownguide.org/) syntax.
+
+Contents of the source directory structure:
+
+@table
+File / directory|Usage
+`_config.yaml`|Parameters for website generation
+`404.txt`|Page to display for 404 errors - this requires statements in `.htaccess` file or equivalent
+`**/*.txt`|Source for HTML pages
+`**/*.png`|Image files
+`**/*.jpg`|Image files
+`**/*.jpeg`|Image files
+
+@text
+Apart from the `_config.yaml` file other files and
+directories starting with the `_` character are ignored.
+
+Style sheets for the generated HTML files are
+included inline rather than being in separate CSS files.
+See [browser caching](4700_browser_caching) for
+more details on this.

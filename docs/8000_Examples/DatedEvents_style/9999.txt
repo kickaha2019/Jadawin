@@ -1,0 +1,4 @@
+@date 1 Sep 1899
+@icon ../../avocado.jpg
+@text
+Example page

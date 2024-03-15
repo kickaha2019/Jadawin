@@ -1,0 +1,25 @@
+@text
+See the [links](2000_Directives/Links) page.
+
+Tags should not contain the " < > &grave; or *asterisk*
+characters.
+@error
+" in tag
+Bad characters in tag
+@tag "
+@error
+< in tag
+Bad characters in tag
+@tag <
+@error
+> in tag
+Bad characters in tag
+@tag >
+@error
+` in tag
+Bad characters in tag
+@tag `
+@error
+* in tag
+Bad characters in tag
+@tag *

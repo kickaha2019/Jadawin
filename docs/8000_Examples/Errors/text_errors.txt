@@ -1,0 +1,62 @@
+@error
+Undefined target
+Undefined target: zzz1
+@text
+[zzz1]
+@error
+Ambiguous target
+Ambiguous target: yyy1
+@text
+[yyy1](list_errors)
+[yyy1](table_errors)
+[yyy1]
+@error
+Failed insite page reference
+Path not found for /xxx
+@text
+[No such page](/xxx)
+@error
+Empty inline code segment
+Empty inline code segment
+@text
+``
+@error
+No end to code segment
+Bad `` subtext
+@text
+`
+@error
+Empty emphasized segment
+Empty emphasized segment
+@text
+**
+@error
+No end to emphasized segment
+Bad ** subtext
+@text
+*
+@error
+Missing link text
+Empty link text
+@text
+[](list_errors)
+@error
+Missing ] for link
+Bad [] subtext
+@text
+[
+@error
+Missing ) for link
+Bad [] subtext
+@text
+[xxx](
+@error
+Bad character in link text
+Unexpected characters in *error*
+@text
+[*error*](list_errors)
+@error
+Bad character in link text 2
+Unexpected characters in *error*
+@text
+[*error*]

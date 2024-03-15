@@ -1,0 +1,4 @@
+@style  Year
+@error
+Title of year style page must be a year
+Expected year as title

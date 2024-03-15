@@ -1,0 +1,16 @@
+@text
+The *@error* directive adds a test that following
+directives on a source file raise an expected error.
+The first line following the `@error`
+describes the expected error, the second line gives 
+the expected error text.
+
+So an expected error is that hidden pages should be
+in the root directory of the source files.
+In [Hidden style](8000_Examples/Hidden_style/hidden)
+there is an @error test:
+
+@code
+  @error
+  Hidden page must be at root of website
+  Hidden page must be at root of website

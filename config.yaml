@@ -1,0 +1,10 @@
+---
+dimensions:
+  icon:      [[96, 72],[96, 72],[192, 144],[240, 180]]
+  image:     [[360, 270],[360, 270],[748,561],[1024,768]]
+  overlay:   [[350, 240],[600,450],[800,600],[1024,768]]
+liquid: /Users/peter/Jadawin/liquid
+root_url: https://alofmethbin.com/Jadawin/
+image_info_cache: /Users/peter/Caches/Website
+menu_items_per_line: [3,3,5,5]
+num_menu_styles: 7

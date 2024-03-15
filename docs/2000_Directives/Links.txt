@@ -1,0 +1,25 @@
+@text
+The *@links* directive generates a list of 
+references to pages containing a *@tag*
+directive for the specified name.
+
+So putting the code:
+
+@code
+  @tag A_TAG_NAME
+  
+@text
+in a page will cause that page to appear as a child
+of another page which has:
+
+@code
+  @links A_TAG_NAME
+  
+@text 
+in it. For any given tag name there can only be one
+occurrence of a `@links` statement.
+
+@error
+Unknown tag for links
+Unknown tag: zzz2
+@links  zzz2

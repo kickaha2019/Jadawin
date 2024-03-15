@@ -1,0 +1,31 @@
+@text
+The *@image* directive specifies an image to be displayed
+centered in large format on a page.
+So the code:
+
+@code
+  @image		../apple.jpg
+
+@image		../apple.jpg
+@text
+displays a picture of an apple on this page.
+
+The image filenames in the *@icon*, *@image*, *@inset*, and *@gallery*
+directives are relative to the page filename they're in, unless they
+start with a */* in which case they're relative to the root of the
+website.
+
+An enhancement is allowing options to be specified 
+by appending ";..." to the end of the image filename. So
+appending ";top" to a filename will cause thumbnails to
+be taken from the top of the image rather than the middle.
+
+@expect
+Images specified by @image should be displayed on page
+<IMG.*SRC="../apple-\d+-\d+-\d+\.webp".*<P>displays a picture
+
+@error
+No filename given for image
+Image missing image name
+@image
+@text

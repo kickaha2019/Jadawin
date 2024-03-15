@@ -1,0 +1,55 @@
+@text
+The *@list* directive can generate two kinds of list.
+If the rows which follow the directive have two fields
+separated by a '|' character a 2-column table 
+is generated where the headings
+are in the first column. As an example:
+
+@code
+  @list
+  Fruit|Apple
+  Colour|Green
+  Taste|Tangy
+  Size|Small
+  Shape|Round
+  
+@text
+will give:
+
+@list
+Fruit|Apple
+Colour|Green
+Taste|Tangy
+Size|Small
+Shape|Round
+
+@expect
+Keyword / value list expected from @list declaration
+<TABLE CLASS="table">\s*<TR>\s*<TD STYLE="font-weight: bold; text-align: left">\s*Fruit\s*</TD>\s*<TD STYLE="text-align: left">\s*Apple\s*</TD>
+
+@text
+If there is only one field on each line following the 
+directive then @list generates a bullet point list,
+for example
+
+@code
+  @list
+  Fruit
+  Colour
+  Taste
+  Size
+  Shape
+
+@text
+will give:
+
+@list
+Fruit
+Colour
+Taste
+Size
+Shape
+
+@expect
+Bullet point list expected from @list declaration
+<UL>\s*<LI>\s*Fruit\s*</LI>

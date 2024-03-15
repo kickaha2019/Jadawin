@@ -1,0 +1,4 @@
+@error
+Unexpected characters in heading
+Unexpected characters in *Heading*
+@heading *Heading*

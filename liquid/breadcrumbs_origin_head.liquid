@@ -1,0 +1,23 @@
+{% if origins %}
+<STYLE>
+{% for origin in origins %}
+.o_{{ origin[0] }} {display: none}
+{% endfor %}
+</STYLE>
+<STYLE ID="origin">
+</STYLE>
+<SCRIPT>
+const re = /(?:\?|,)origin=([^#&]*)/;
+const m = re.exec( window.location);
+if ( m ) {
+  var found = false;
+  {% for origin in origins %}
+    if (m[1] == "{{ origin[0] }}") {found = true;}
+  {% endfor %}
+  if ( found ) {
+    document.getElementById("origin").innerHTML = '.o_default {display: none} .o_' + m[1] +
+                                                  ' {display: block}';
+  }
+}
+</SCRIPT>
+{% endif %}

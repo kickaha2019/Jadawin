@@ -1,0 +1,7 @@
+@style  ReverseDatedEvents
+@title  Example of Reverse Dated Events style page
+@text
+Example of Reverse Dated Events style page
+@expect
+ReverseDatedEvents indexes should be in reverse date order
+AAAA.*7777.*ZZZZ.*9999.*BBBB

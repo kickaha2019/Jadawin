@@ -1,0 +1,20 @@
+@error
+Location XXX not rendered
+Location XXX not rendered
+@tag  XXX
+@error
+Location YYY multiply rendered
+Location YYY multiply rendered
+@tag  YYY
+@error
+Tag name default not allowed
+Tag name default not allowed
+@tag  default
+@tag ZZZ
+@error
+Multiline tag
+Tag takes only one line
+@tag
+ZZZ
+Waffle
+@text

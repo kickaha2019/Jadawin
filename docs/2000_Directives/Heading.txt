@@ -1,0 +1,23 @@
+@text
+The *@heading* directive defines a heading in the 
+generated page. So the code:
+
+@code
+  @heading This is a heading
+
+@text
+results in:
+
+@heading This is a heading
+
+@expect
+Heading text should be in heading DIV
+<DIV CLASS="heading">This is a heading</DIV>
+
+@error
+Multiline heading
+Heading takes only one line
+@heading
+Chit chat
+Waffle
+@text

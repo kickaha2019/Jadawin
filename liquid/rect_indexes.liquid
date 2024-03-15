@@ -1,0 +1,15 @@
+{% if rect_index %}
+  <DIV CLASS="rect_indexes t0">
+    {% for entry in rect_index.entries %}
+        <A HREF="{{ entry.path }}">
+          <DIV class="rect menu_item_style_{{ entry.style }}">
+            <SPAN CLASS="off">{{ entry.title }}</SPAN>
+            <SPAN ID="r{{ entry.index }}" CLASS="over">{{ entry.blurb }}</SPAN>
+          </DIV>
+        </A>
+    {% endfor %}
+  {% for i in (1..8) %}
+    <DIV CLASS="dummy size1 size2 size3"></DIV>
+  {% endfor %}
+  </DIV>
+{% endif %}

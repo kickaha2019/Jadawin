@@ -1,0 +1,22 @@
+@style  Menu
+@title  Example of Menu style page
+@expect
+Text index expected for Menu style 
+<DIV CLASS="index_text t0">&raquo;&nbsp;<A HREF="ZZZZ.html">ZZZZ</A>
+@expect
+Rectangular index expected for Menu style 
+<SPAN CLASS="off">ZZZZ</SPAN>
+@expect
+Blurb should appear at hover over menu rectangle
+<SPAN ID="r2" CLASS="over">To sleep<BR>perchance<BR>to dream</SPAN>
+@error
+Menus should not have content
+Menu has content
+@text
+Menus should not have content
+@expect
+No missing dimensions
+! \spx
+@expect
+Missing CSS value?
+! :\s*(}|;)

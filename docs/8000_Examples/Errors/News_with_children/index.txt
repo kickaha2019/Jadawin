@@ -1,0 +1,4 @@
+@style  News
+@error
+News style article must not have children
+News style article must not have children

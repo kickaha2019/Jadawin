@@ -1,0 +1,58 @@
+{% assign border_radius = "10, 10, 10, 30" | split: ',' %}
+{% assign margin        = "15, 15, 15, 22" | split: ',' %}
+{% assign width         = "200, 200, 200, 300" | split: ',' %}
+{% assign height        = "120, 120, 150, 225" | split: ',' %}
+{% assign limit         = "30, 30, 30, 45" | split: ',' %}
+
+{% if rect_index %}
+
+  {% if size == 0 %}
+    .menu_item_style_0 {background: #FFFF00}
+    .menu_item_style_1 {background: #00FFFF}
+    .menu_item_style_2 {background: #FF46FF}
+    .menu_item_style_3 {background: #61FF00}
+    .menu_item_style_4 {background: #FF9817}
+    .menu_item_style_5 {background: #6666FF}
+    .menu_item_style_6 {background: #FF1111}
+
+    .rect_indexes {width: 100%; padding: 5px;
+                   display: none; flex-flow: row wrap; align-items: flex-start;
+                   justify-content: space-between}
+
+    .rect_indexes a {text-decoration: none}
+    .rect {display: flex; justify-content: center;
+           align-items: center}
+    .rect span {color: black; text-align: center;
+                font-family: Arial, Helvetica, sans-serif;
+                text-decoration: none}
+    .rect span.over {display: none}
+    .rect:hover {background: {{ here_colour }}}
+    .rect:hover span.off {display: none}
+    .rect:hover span.over {display: inline}
+  {% endif %}
+
+  {% if size == 1 %}
+    .rect_indexes {display: flex}
+  {% endif %}
+
+  {% if size > 0 %}
+    .rect_indexes div {border-radius: {{ border_radius[size] }}px;
+                       margin: {{ margin[size] }}px;
+                       width: {{ width[size] }}px;
+                       height: {{ height[size] }}px;}
+    .rect span.off {font-size: {{ width[size] |
+                                  times: 1.5 |
+                                  divided_by: rect_index.title_width |
+                                  at_most: limit[size] |
+                                  floor }}px}
+
+    {% for entry in rect_index.entries %}
+       #r{{ entry.index }} {font-size: {{ width[size] |
+                                          times: 1.5 |
+                                          divided_by: entry.blurb_width |
+                                          at_most: limit[size] |
+                                          floor }}px}
+    {% endfor %}
+  {% endif %}
+
+{% endif %}

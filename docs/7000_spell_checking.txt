@@ -1,0 +1,23 @@
+@title Spell checking
+@text
+If the key `spell_checking` is specified 
+in the [configuration](1500_Configuration)
+it is taken as a directory containing 
+`*.txt` files of words. Generation of the
+HTML webpages will include spell checking
+in this case.
+
+There is one word per line. If the word is all
+lowercase the matching is case insensitive.
+If the word contains uppercase characters then
+the matching is case sensitive.
+
+Any words not in the `*.txt` files will be
+listed to the file given by the
+key `misspelt_words` in the
+[configuration](1500_Configuration).
+
+The spell checking code makes an effort to
+replace some HTML entity codes with
+ASCII letters for instance `Andr&eacute;` will
+be spell checked as `Andre`.

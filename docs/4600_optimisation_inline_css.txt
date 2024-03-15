@@ -1,0 +1,21 @@
+@title Optimisation: inlining CSS
+@text
+There is an [AMP](https://amp.dev/) HTML framework originally
+from [Google](https://google.com/) concerned with
+website usability particularly on mobiles. To push people towards
+this framework *Google* include 
+[Lighthouse](https://developer.chrome.com/docs/lighthouse/overview/) as a dev tool inside
+their *Chrome* browser.
+
+To blindly follow what such tools recommend is not 
+sensible. Everything depends on the website and who
+uses it. But one *Lighthouse* change I have made is to inline the CSS
+for my personal website. This should improve the speed
+accessing uncached pages for the website, and the cost
+of adding a few thousand bytes of CSS should not be 
+major. This isn't so true if a webpage contains
+100KBs of inline CSS, that is just penalising anyone
+looking at more than a single page. But that isn't my situation.
+
+The *Liquid* templating code strives to only 
+inline CSS required for each page.

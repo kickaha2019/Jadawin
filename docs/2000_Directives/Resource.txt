@@ -1,0 +1,8 @@
+@text
+The *@resource* directive declares a file to be copied
+from the source directory to the generated website.
+
+@error
+Unknown resource
+Unknown resource: xxx.png
+@resource xxx.png

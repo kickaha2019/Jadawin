@@ -1,0 +1,19 @@
+{% if image_index %}
+
+{% if size == 0 %}
+.image_indexes {display: flex;
+               flex-flow: row wrap;
+               justify-content: space-between;
+               align-items: flex-start;
+               align-content: flex-start;
+               max-width: 100%;}
+{% include 'tooltip_css' %}
+
+.image_index  {width: {{ image_index.dims[0][0]}}px; height: {{ image_index.dims[0][1]}}px}
+
+{% else %}
+.image_index {width: {{ image_index.dims[size][0]}}px; height: {{ image_index.dims[size][1]}}px}
+{% endif %}
+
+{% endif %}
+

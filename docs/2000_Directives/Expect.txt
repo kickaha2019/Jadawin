@@ -1,0 +1,31 @@
+@text
+The *@expect* directive adds a test for the HTML
+is generated. The first line following the `@expect`
+describes the test, the second line gives a regular
+expression which should find a match in the
+generated HTML. So an example test that no spaces should appear
+in Apple*Banana*`Cherry`[Date](2000_Directives/Text)Elderberry.
+
+@code
+  @expect
+  Superfluous spaces should not be added
+  Apple<EM>Banana</EM><SPAN CLASS="code">Cherry</SPAN><A HREF="Text.html">Date</A>Elderberry
+
+@expect
+Superfluous spaces should not be added
+Apple<EM>Banana</EM><SPAN CLASS="code">Cherry</SPAN><A HREF="Text.html">Date</A>Elderberry
+
+@text
+The test can be made negative by prefixing the 
+regular expression with `! `. So to test
+that Gremlins don't appear on this page when generated
+the following would work:
+
+@code
+  @expect
+  Gremlins should not appear on this page
+  ! Gremlins
+
+@expect
+Goblins should not appear on this page
+! Goblins

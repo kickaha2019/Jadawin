@@ -1,0 +1,5 @@
+@style  Document
+@blurb  The available directives
+@text
+A list of the available directives for this
+static website generator.

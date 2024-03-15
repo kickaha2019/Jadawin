@@ -1,0 +1,12 @@
+@title		Responsive layout
+@text
+Pure CSS is used to vary the look of the generated webpages
+according to the screen acreage available. What is varied is
+the size of text and certain divs, the size of images used, and
+the logo used at the top of the webpage.
+
+*Jadawin* supports four different page sizes. These page sizes
+are defined in the [configuration file](1500_Configuration),
+as an array of width and heights for the `dimensions/browser`
+key. The `CSS` code uses media queries to change the
+look and feel based on the actual page width.

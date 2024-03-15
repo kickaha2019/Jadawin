@@ -1,0 +1,24 @@
+@text
+By default the image displayed for a page in a link to that
+page is the first image that can be found on that page, or on
+a child page.
+
+The *@icon* directive can be used to override the link image used,
+or have a link image where there is no image on the page itself.
+
+So for example
+the [Events style child page](Events_style/AAAA) source file has:
+
+@code
+  @icon ../../apple.jpg
+
+@text
+in it. The apple image appears on the 
+[Events style](Events_style) page
+but not the child page itself.
+
+@error
+No filename given for icon
+Icon missing image name
+@icon
+@text

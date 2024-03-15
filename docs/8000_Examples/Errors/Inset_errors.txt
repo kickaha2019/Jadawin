@@ -1,0 +1,22 @@
+@error
+Inset not followed by Text
+Inset not followed by Text
+@inset ../../apple.jpg
+@inset ../../apple.jpg
+@text
+An *@inset* directive must have a *@text* directive
+afterwards for the specified image to be inset into.
+
+@error
+Inset unknown file
+Path not found for xxx.jpg
+@inset xxx.jpg
+@text
+Test for inset given unknown file.
+@error
+Multiline inset
+Inset takes only one line
+@inset
+../../banana.png
+Waffle
+@text

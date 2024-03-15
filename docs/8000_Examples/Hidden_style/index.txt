@@ -1,0 +1,6 @@
+@style  Menu
+@title  Example of hidden page
+@expect
+Hidden style should omit pages from indexes
+! <SPAN CLASS="off">Hidden</SPAN>
+

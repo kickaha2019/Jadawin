@@ -1,0 +1,4 @@
+@date 1 Dec 1899
+@icon ../../orange.jpg
+@text
+Example page

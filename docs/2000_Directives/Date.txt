@@ -1,0 +1,40 @@
+@text
+The *@date* directive assigns a date to a page. If a date is specified it will
+appear at the top of the webpage (if there is any content on the page).
+
+So for example the code:
+@code
+  @date		Sunday, 24 June 1901
+
+@text
+causes this page to have `Sunday, 24 June 1901` appear at the
+top. Assigning dates to pages is important for
+the order of indexes on pages with certain styles. 
+
+If the date is in the future the page will not 
+appear in the generated website.
+
+The date parsing is simplistic: a number above 1800 is taken as
+a year, a number in the range 1 to 31 is taken as a day,
+and a text string starting with a 3-letter month name
+(case insensitive) is taken as a month.
+
+@expect 
+Dates given by the @date directive should appear at the top of the page
+24th June 1901</SPAN></DIV>
+@date     1901 June 24
+@error
+Bad date
+Bad date [xxx]
+@date     xxx
+@error
+Multiline date
+Date takes only one line
+@date
+2001 June 24
+Waffle
+@text
+@expect
+Multiple @date statements give headings
+<DIV CLASS="heading">Tuesday, 25th June 1901
+@date 25th June 1901

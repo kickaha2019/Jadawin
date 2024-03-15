@@ -1,0 +1,4 @@
+@date 1 Feb 1920
+@icon ../../avocado.jpg
+@text
+Example page

@@ -1,0 +1,5 @@
+@text
+Child page for News test without icon
+@error
+No icon defined
+No icon defined

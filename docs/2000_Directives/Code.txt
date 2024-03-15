@@ -1,0 +1,37 @@
+@text
+The *@code* directive gives a block of preformatted text
+to be displayed on a webpage. So for example the code:
+
+@code
+    @code
+    This is an example of using @code.
+  
+@text
+gives
+
+@code
+This is an example of using @code.
+
+@text
+Special characters are replaced by HTML entity codes in
+code sections.
+
+@code
+< > and & are the special characters
+
+@text
+If the lines in a *@code* section seem to be 
+similarly indented that indentation is removed.
+This is a fudge so a *@code* section can 
+list page source examples yet not have unnecessary
+spaces in the generated page.
+
+@expect
+Common indentation should be removed in @code sections
+<PRE CLASS="code">@code
+@expect
+The @code directive should display preformatted text
+<PRE CLASS="code">This is an example of using @code\.\s*</PRE>
+@expect
+Special characters should be replaced in @code sections
+<PRE CLASS="code">&lt; &gt; and &amp; are the special characters\s*</PRE>

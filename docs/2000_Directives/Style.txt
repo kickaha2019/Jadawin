@@ -1,0 +1,19 @@
+@text
+The *@style* directive sets how an article is rendered,
+particularly how any indexes to other articles appear.
+
+The available styles are:
+
+@table
+|Style|Description|Example|NoIndex
+|`Base`|Default style index sorted alphabetically (or numerically if filenames start with numbers). Images and titles displayed for each index entry|[Example](Base_style)|
+|`DatedEvents`|Like `Events` but year prepended to index titles|Not used currently|
+|`Document`|Text only indexes|[Example](Document_style)|
+|`Events`|Like `Base` but index sorted by date|[Example](Events_style)|
+|`Hidden`|Page hidden from site menu structure|[Example](hidden)|
+|`Menu`|Like `Base` but index displayed as a grid of rectangles|[Example](Menu_style)|
+|`News`|Like `Base` but most recent N dated articles beneath page parent displayed in descending date|[Example](News_style)
+|`NoIndex`|Suppress index appearing on page|[Example](NoIndex_style)
+|`ReverseDatedEvents`|Like `DatedEvents` but in reverse date order|[Example](ReverseDatedEvents_style)|
+|`Story`|A series of articles with navigation arrows, used implicitly where an article has content and children but no grandchildren|[Example](Story_style)|
+|`Year`|Like `Events` but the page title is expected to be a year and a check is made that the child pages are dated in that year|[Example](8000_Examples/1920)|

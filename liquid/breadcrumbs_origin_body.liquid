@@ -1,0 +1,17 @@
+{% if origins %}
+{% include 'breadcrumbs_body', breadcrumbs:breadcrumbs,
+                               origin:"default",
+                               previous_page:previous_page,
+                               next_page:next_page %}
+{% for origin in origins %}
+  {% include 'breadcrumbs_body', breadcrumbs:origin[1],
+                                 origin:origin[0],
+                                 previous_page:previous_page,
+                                 next_page:next_page %}
+{% endfor %}
+{% else %}
+{% include 'breadcrumbs_body', breadcrumbs:breadcrumbs,
+                               origin:false,
+                               previous_page:previous_page,
+                               next_page:next_page %}
+{% endif %}

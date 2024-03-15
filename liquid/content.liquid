@@ -1,0 +1,35 @@
+{% case content.type %}
+  {% when "array" %}
+    {% include 'content' with content.data %}
+  {% when "code" %}
+    <PRE CLASS="code">{{ content.text }}</PRE>
+  {% when "css" %}
+  {% when "gallery" %}
+    {% include 'gallery' %}
+  {% when "heading" %}
+    <DIV CLASS="heading">{{ content.text }}</DIV>
+  {% when "image" %}
+    {% include 'image',  specs:content.specs,
+                         details:content.details,
+                         id:content.id,
+                         title:false,
+                         clazz:content.clazz,
+                         overlay:content.overlay %}
+  {% when "list" %}
+    {% include 'list' %}
+  {% when "none" %}
+  {% when "paragraph" %}
+    <P{% if content.id %} ID="{{ content.id }}"{% endif %}>{% include 'content' with content.data %}</P>
+  {% when "raw" %}
+    {{ content.text }}
+  {% when "svg" %}
+    {% include 'text_indexes', text_index:content.text_index, text_index_size:'size0' %}
+    {% include 'svg', source:content.source,
+                       background:content.background,
+                       width:content.width %}
+  {% when "table" %}
+    {% include 'table' %}
+  {% else %}
+    <B>Liquid error: Content type {{ content.type }}</B>
+{% endcase %}
+
