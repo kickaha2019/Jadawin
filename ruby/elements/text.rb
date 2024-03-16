@@ -46,7 +46,7 @@ module Elements
             ref, err = compiler.lookup( @url, @url)
             if err
               article.error( err)
-              @url = ''
+              @url = nil
             else
               @url = article.relative_path( article.filename, ref.is_a?( String) ? ref : ref.filename)
             end
