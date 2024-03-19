@@ -17,7 +17,6 @@ Contents of the source directory structure:
 
 @table
 File / directory|Usage
-`_config.yaml`|Parameters for website generation
 `404.txt`|Page to display for 404 errors - this requires statements in `.htaccess` file or equivalent
 `**/*.txt`|Source for HTML pages
 `**/*.png`|Image files
@@ -25,7 +24,7 @@ File / directory|Usage
 `**/*.jpeg`|Image files
 
 @text
-Apart from the `_config.yaml` file other files and
+Files and
 directories starting with the `_` character are ignored.
 
 Style sheets for the generated HTML files are

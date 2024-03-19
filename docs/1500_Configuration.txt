@@ -7,11 +7,8 @@ Contents:
 
 @table
 Key|Value
-`colours`|Map of names to HTML colours
 `dimensions`|Map of names to array of dimensions to use at different page sizes
-`image_info_cache`|Directory to cache image size information
 `liquid`|Path to Liquid template files
-`logo`|Logo images to use  at different page size
 `misspelt_words`|Where to write list of words that failed spell checking
 `root_url`|Web address to generated website
 `spell_checking`|Directory containing word lists
@@ -27,31 +24,10 @@ dimensions:
   icon:      [[96, 72],[96, 72],[192, 144],[240, 180]]
   image:     [[360, 270],[360, 270],[748,561],[1024,768]]
   logo:      [[350, 50],[748, 100],[1250, 150],[1880, 200]]
-  symbol:    [[48, 24],[48, 24],[48, 24],[48, 24]]
   overlay:   [[350, 240],[600,450],[800,600],[1024,768]]
-  content:   [[350,72],[748,450],[1250,600],[1880,768]]
-  browser:   [[360,640],[768,640],[1280,768],[1920,1080]]
-logo:
-  - resources/logo_tiny.jpg
-  - resources/logo_small.jpg
-  - resources/logo_medium.jpg
-  - resources/logo_large.jpg
 liquid: /Users/peter/Website/liquid
-colours:
-  anchor:     "#00CCCC"
-  body:       "#101010"
-  code:       "#FFA500"
-  emphasized: magenta
-  here:       white
-  hover:      "#AAFFFF"
-  index:      "#303030"
-  page:       "#303030"
-  quoted:     cyan
-  strong:     "#66FF66"
-  text:       "#DDDD00"
 root_url: https://alofmethbin.com/Articles/
 spell_checking: /Users/peter/Website/words
 misspelt_words: /tmp/misspelt.txt
-image_info_cache: /Users/peter/Caches/Website
 menu_items_per_line: [3,3,5,5]
 num_menu_colours: 7

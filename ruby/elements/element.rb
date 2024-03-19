@@ -18,10 +18,11 @@ module Elements
     end
 
     def check_label( article, text)
-      if /[\*\[\]<>`]/ =~ text
+      text1 = text.gsub( /[\*\[\]<>`]/, '')
+      if text != text1
         article.error( 'Unexpected characters in ' + text)
       end
-      text
+      text1
     end
 
     def discard?

@@ -143,6 +143,48 @@ module Elements
       @width.nil?
     end
 
+    def self.find_images( source)
+      cache_path    = source + '/_images.yaml'
+      @@image_cache = Hash.new {|h,k| h[k] = {'path' => k, 'timestamp' => -1}}
+
+      if File.exist?( cache_path)
+        YAML.load( IO.read( cache_path)).each do |cached|
+          cached['found'] = false
+          @@image_cache[ cached['path']] = cached
+        end
+      end
+
+      find_images1( source, '')
+
+      File.open( cache_path, 'w') do |io|
+        io.puts @@image_cache.values.select {|e| e['found']}.to_yaml
+      end
+    end
+
+    def self.find_images1( source, dir)
+      Dir.entries( source + dir).each do |f|
+        next if /^[\._]/ =~ f
+        path = ((dir == '/') ? '' : dir) + '/' + f
+        if File.directory?( source + path)
+          find_images1( source, path)
+        elsif /\.(jpg|jpeg|png|gif|svg|webp)$/i =~ f
+          cached    = @@image_cache[path]
+          timestamp = File.mtime( source + path).to_i
+          if timestamp != cached['timestamp']
+            begin
+              w,h = * get_image_dims( source + path)
+            rescue
+              w = h = -1
+            end
+            cached['timestamp'] = timestamp
+            cached['height']    = h
+            cached['width']     = w
+            cached['found']     = true
+          end
+        end
+      end
+    end
+
     def get_image_dims( filename)
       begin
         return * Image.get_image_dims( filename)

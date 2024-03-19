@@ -5,7 +5,6 @@
 =end
 
 require 'digest/sha1'
-require 'pry'
 require_relative 'utils'
 require_relative 'elements/heading'
 require_relative 'elements/icon'

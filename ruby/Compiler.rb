@@ -74,7 +74,8 @@ class Compiler
   def compile
     puts "... Initialised #{Time.now.strftime( '%Y-%m-%d %H:%M:%S')}"
 
-    # Find image paths
+    # Scan for images
+    Elements::Image.find_images( @source)
     find_image_paths( "")
 
     # Parse all the articles recursively

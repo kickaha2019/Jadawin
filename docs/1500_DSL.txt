@@ -1,0 +1,24 @@
+@text
+The HTML pages are defined in `.txt` source files using
+a simple DSL (domain specific language). The DSL
+consists of directives with data. Each directive
+is of the form `@_verb_` at the start of lines.
+Data for the directive can either be following on
+the same line or on subsequent lines until the
+next directive.
+
+So a title for the page can be defined as:
+
+@code
+  @title Title for page
+  
+@text
+or as:
+
+@code
+  @title
+  Title for page
+  
+A special directive `@style` controls how the
+HTML page looks, particularly for how index
+pages are rendered.
