@@ -1,4 +1,4 @@
-@title Liquid templates
+@title Liquid templating
 @text
 For each of the *.md* source files a Ruby data structure is
 produced which is then combined width
@@ -27,5 +27,6 @@ that very much.
 
 I was impressed by how well *Liquid* worked for me, and the power
 and neatness of the syntax. In passing
-[controlling whitespace](https://shopify.github.io/liquid/basics/whitespace/) inside *Liquid* can save quite a few bytes
+[controlling whitespace](https://shopify.github.io/liquid/basics/whitespace/)
+inside *Liquid* can save quite a few bytes
 in the generated HTML files.

@@ -16,7 +16,6 @@ module Elements
 
       if source.nil?
         article.error( type_name + ' missing image name')
-        @discard = true
         return
       elsif /;/ =~ source
         source, advice = * source.split(';')
@@ -36,14 +35,12 @@ module Elements
       @tag = prettify( source.split('/')[-1].split('.')[0])
 
       source1 = (/^\// =~ source) ? source : abs_filename( article.filename, source)
-      source1, err = compiler.lookup( source1, source)
-      if err
-        article.error( err)
-        return
-      end
-
-      unless compiler.image_path?( source1)
-        article.error( 'Case mismatch for ' + source)
+      unless @@image_cache[source1]
+        if File.exist?( compiler.source_filename( source1))
+          article.error( 'Case mismatch for ' + source)
+        else
+          article.error( 'File not found: ' + source)
+        end
         return
       end
 
@@ -57,28 +54,13 @@ module Elements
         end
       end
 
-      fileinfo = compiler.fileinfo( source1)
-      info = nil
-      ts = File.mtime( @source).to_i
-
-      if File.exist?( fileinfo)
-        info = IO.readlines( fileinfo).collect {|line| line.chomp.to_i}
-        info = nil unless info[0] == ts
+      info = @@image_cache[source1]
+      if info['width'] < 1
+        article.error( 'Badly formatted image file: ' + source)
+        return
       end
 
-      unless info
-        width, height = * get_image_dims( @source)
-        if width.nil?
-          article.error( 'Badly formatted image file: ' + source)
-          @source = @sink = nil
-          return
-        end
-        info = [ts, width, height]
-
-        File.open( fileinfo, 'w') do |io|
-          io.puts info.collect {|i| i.to_s}.join("\n")
-        end
-
+      if info['changed']
         to_delete = []
         sink_dir  = File.dirname( compiler.sink_filename( @source))
 
@@ -93,9 +75,9 @@ module Elements
         end
       end
 
-      @width     = info[1]
-      @height    = info[2]
-      @timestamp = info[0]
+      @width     = info['width']
+      @height    = info['height']
+      @timestamp = info['timestamp']
     end
 
     def anchor
@@ -145,11 +127,12 @@ module Elements
 
     def self.find_images( source)
       cache_path    = source + '/_images.yaml'
-      @@image_cache = Hash.new {|h,k| h[k] = {'path' => k, 'timestamp' => -1}}
+      @@image_cache = {}
 
       if File.exist?( cache_path)
         YAML.load( IO.read( cache_path)).each do |cached|
-          cached['found'] = false
+          cached['found']   = false
+          cached['changed'] = false
           @@image_cache[ cached['path']] = cached
         end
       end
@@ -169,6 +152,10 @@ module Elements
           find_images1( source, path)
         elsif /\.(jpg|jpeg|png|gif|svg|webp)$/i =~ f
           cached    = @@image_cache[path]
+          if cached.nil?
+            @@image_cache[path] = cached = {'path' => path, 'timestamp' => -1}
+          end
+
           timestamp = File.mtime( source + path).to_i
           if timestamp != cached['timestamp']
             begin
@@ -179,17 +166,11 @@ module Elements
             cached['timestamp'] = timestamp
             cached['height']    = h
             cached['width']     = w
-            cached['found']     = true
+            cached['changed']   = false
           end
-        end
-      end
-    end
 
-    def get_image_dims( filename)
-      begin
-        return * Image.get_image_dims( filename)
-      rescue
-        return nil, nil
+          cached['found']     = true
+        end
       end
     end
 

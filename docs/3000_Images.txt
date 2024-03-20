@@ -6,9 +6,6 @@ generation. For speed the dimensions of the full size
 images are cached together with the timestamp of the
 image.
 
-The [ruby-vips](https://github.com/libvips/ruby-vips) 
-Ruby gem is used for image manipulation.
-
 `.webp` image files are generated from the source
 `.jpeg` and `.png` images. This format is significantly
 more compact (websites can be 25% less bytes in size).
@@ -45,8 +42,3 @@ problem because the programs handled the rotation behind the scenes.
 The image handling code has to allow for this, for
 *JPEG* images this involves checking the 
 `exif-ifd0-Orientation` value in the `EXIF` metadata.
-
-In addition the *ImageMagick* option `auto-orient` (see 
-[auto orient](https://legacy.imagemagick.org/script/command-line-options.php?#auto-orient))
-is used so when the images are resized for use on the website the
-rotation is allowed for.

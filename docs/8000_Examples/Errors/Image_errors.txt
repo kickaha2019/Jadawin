@@ -13,7 +13,7 @@ Case mismatch for ../../Banana.png
 @image ../../Banana.png
 @error
 Image file not found
-Path not found for xxx.jpeg
+File not found: xxx.jpeg
 @image xxx.jpeg
 @error
 File not an image

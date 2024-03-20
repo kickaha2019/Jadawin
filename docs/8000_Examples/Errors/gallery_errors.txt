@@ -6,6 +6,6 @@ No label for ../../apple.jpg
 
 @error
 Gallery unknown file
-Path not found for xxx.jpg
+File not found: xxx.jpg
 @gallery
 xxx.jpg Unknown file

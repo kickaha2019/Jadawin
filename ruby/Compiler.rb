@@ -28,7 +28,6 @@ class Compiler
     @debug_pages   = debug_pages.nil? ? nil : Regexp.new( debug_pages)
     @special_chars = {}
     @config        = YAML.load( File.open( config))
-    @cache         = @config['image_info_cache']
     @words, @names = load_words
     @new_words     = []
     @generated     = {}
@@ -76,7 +75,6 @@ class Compiler
 
     # Scan for images
     Elements::Image.find_images( @source)
-    find_image_paths( "")
 
     # Parse all the articles recursively
     @articles = parse( nil, "")
@@ -128,22 +126,6 @@ class Compiler
     if @debug_pages && (@debug_pages =~ article.filename)
       puts "!!! #{article.filename} : #{msg}"
     end
-  end
-
-  def find_image_paths( dir)
-    Dir.entries( @source + dir).each do |f|
-      next if /^[\._]/ =~ f
-      path = ((dir == '/') ? '' : dir) + '/' + f
-      if File.directory?( @source + path)
-        find_image_paths( path)
-      elsif /\.(jpg|jpeg|png|gif|svg|webp)$/i =~ f
-        @image_paths[path] = true
-      end
-    end
-  end
-
-  def image_path?( path)
-    @image_paths[path]
   end
 
   # Parse the articles
@@ -228,10 +210,6 @@ class Compiler
 
   def errors?
     @errors > 0
-  end
-
-  def fileinfo( filename)
-    @cache + '/fileinfo/' + filename.gsub('/','_')
   end
 
   def get_config( key)

@@ -1,0 +1,32 @@
+@title Ruby implementation
+@text
+Currently Ruby code is used to generate the HTML files from
+the source text files. The [ruby-vips](https://rubygems.org/gems/ruby-vips)
+Ruby gem is used for image manipulation, and the
+[Liquid](https://rubygems.org/gems/liquid/)
+Ruby gem is used for the HTML templates.
+
+The top-level Ruby script is *Compiler.rb*, it needs three
+arguments:
+
+@list
+Source file directory
+Configuration file (see [configuration](/2750_Configuration))
+HTML target directory (must exist)
+
+@text
+(There is a potential fourth argument for debugging purposes).
+
+The Ruby code maintains a special file `_images.yaml` in the
+source file directory which
+caches information about the image files there. This file will
+be regenerated if deleted.
+
+The following Bash script will build the Jadawin documentation
+into HTML files in a `html` folder:
+
+@code
+gem install bundler ruby-vips liquid
+BUNDLE_GEMFILE=ruby/Gemfile;export BUNDLE_GEMFILE
+mkdir html
+bundle exec ruby ruby/Compiler.rb docs config.yaml html

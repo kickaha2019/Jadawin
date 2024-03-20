@@ -1,7 +1,7 @@
 @date 1 Sep 1900
 @error
 Icon unknown file
-Path not found for xxx.jpg
+File not found: xxx.jpg
 @icon xxx.jpg
 @image ../../apple.jpg
 @text

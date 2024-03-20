@@ -9,7 +9,7 @@ afterwards for the specified image to be inset into.
 
 @error
 Inset unknown file
-Path not found for xxx.jpg
+File not found: xxx.jpg
 @inset xxx.jpg
 @text
 Test for inset given unknown file.
