@@ -60,21 +60,6 @@ module Elements
         return
       end
 
-      if info['changed']
-        to_delete = []
-        sink_dir  = File.dirname( compiler.sink_filename( @source))
-
-        if File.directory?( sink_dir)
-          Dir.entries( sink_dir).each do |f|
-            if m = /^(.*)_\d+_\d+(\..*)$/.match( f)
-              to_delete << f if @source.split('/')[-1] == (m[1] + m[2])
-            end
-          end
-
-          to_delete.each {|f| File.delete( sink_dir + '/' + f)}
-        end
-      end
-
       @width     = info['width']
       @height    = info['height']
       @timestamp = info['timestamp']
@@ -132,7 +117,6 @@ module Elements
       if File.exist?( cache_path)
         YAML.load( IO.read( cache_path)).each do |cached|
           cached['found']   = false
-          cached['changed'] = false
           @@image_cache[ cached['path']] = cached
         end
       end
@@ -159,14 +143,15 @@ module Elements
           timestamp = File.mtime( source + path).to_i
           if timestamp != cached['timestamp']
             begin
-              w,h = * get_image_dims( source + path)
+              w,h,o = * get_image_dims( source + path)
             rescue
               w = h = -1
+              o = ''
             end
             cached['timestamp'] = timestamp
             cached['height']    = h
             cached['width']     = w
-            cached['changed']   = false
+            cached['orient']    = o
           end
 
           cached['found']     = true
@@ -178,14 +163,15 @@ module Elements
       im     = Vips::Image.new_from_file filename, access: :sequential
       width  = im.get('width')
       height = im.get('height')
+      orient = ''
 
       if im.get_fields.include?( 'exif-ifd0-Orientation')
-        if /^[4567]/ =~ im.get( 'exif-ifd0-Orientation')
+        if /^[4567]/ =~ (orient = im.get( 'exif-ifd0-Orientation')[0..0])
           width, height = height, width
         end
       end
 
-      return width, height
+      return width, height, orient
     end
 
     def image
