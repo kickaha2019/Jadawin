@@ -127,13 +127,6 @@ class Article
     false
   end
 
-  def has_gallery?
-    @content.each do |item|
-      return true if item.is_a?( Elements::Gallery)
-    end
-    false
-  end
-
   def icon
     return @specials['Icon'] if @specials['Icon']
 
@@ -202,10 +195,6 @@ class Article
 
   def report_errors( compiler)
     @errors.each {|err| compiler.error( @filename.gsub('html','txt'), err)}
-  end
-
-  def set_filename( fn)
-    @filename = fn
   end
 
   def override_style( style)

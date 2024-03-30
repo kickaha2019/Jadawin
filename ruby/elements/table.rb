@@ -17,8 +17,7 @@ module Elements
         line
       end
 
-      @columns = lines[0].split( '|')
-      @columns.each do |column|
+      @columns = lines[0].split( '|').collect do |column|
         check_label( article, column)
       end
 

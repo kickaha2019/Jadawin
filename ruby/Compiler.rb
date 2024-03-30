@@ -18,7 +18,6 @@ require_relative 'utils'
 
 class Compiler
   include Utils
-  @@default_date = Time.gm( 1970, "Jan", 1)
 
   # Initialisation
   def initialize( source, config, sink, debug_pages=nil)
@@ -26,13 +25,11 @@ class Compiler
     @source        = source
     @sink          = sink
     @debug_pages   = debug_pages.nil? ? nil : Regexp.new( debug_pages)
-    @special_chars = {}
     @config        = YAML.load( File.open( config))
     @words, @names = load_words
     @new_words     = []
     @generated     = {}
     @key2paths     = Hash.new {|h,k| h[k] = []}
-    @image_paths   = {}
     Liquid::Template.file_system = Liquid::LocalFileSystem.new( @config['liquid'],
                                                                 pattern = "%s.liquid")
     @page_template = Liquid::Template.parse("{% include 'page' %}")
@@ -79,10 +76,6 @@ class Compiler
     # Parse all the articles recursively
     @articles = parse( nil, "")
     puts "... Parsed      #{Time.now.strftime( '%Y-%m-%d %H:%M:%S')}"
-
-    # Copy the logo and favicon images
-    @config['logo'].each {|f| copy_resource( f)} if @config['logo']
-    copy_resource( @config['favicon'])           if @config['favicon']
 
     # Prepare the articles now all articles parsed
     prepare( [], @articles)
@@ -229,7 +222,7 @@ class Compiler
             word = line.strip
             next if word == ''
 
-            if word.downcase
+            if word.downcase == word
               words[word.downcase] = true
             else
               names[word] = true
