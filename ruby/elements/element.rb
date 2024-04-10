@@ -10,13 +10,6 @@ module Elements
       @discard = false
     end
 
-    def backstop( * args)
-      args.each do|arg|
-        return arg if arg
-      end
-      nil
-    end
-
     def check_label( article, text)
       text1 = text.gsub( /[\*\[\]<>`]/, '')
       if text != text1
@@ -35,9 +28,6 @@ module Elements
 
     def image
       nil
-    end
-
-    def impact( article, other)
     end
 
     def line_count
@@ -65,10 +55,6 @@ module Elements
 
     def post_process_html( article, html)
       html
-    end
-
-    def replace( assign)
-      nil
     end
 
     def special?

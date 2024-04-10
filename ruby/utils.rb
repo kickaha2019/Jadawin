@@ -18,12 +18,6 @@ module Utils
     end
   end
 
-  def browser_get( url)
-    @driver = Selenium::WebDriver.for :chrome unless defined?( @driver)
-    @driver.navigate.to url
-    @driver.execute_script('return document.documentElement.outerHTML;')
-  end
-
   def column_align( value)
     return 'right' if /^\d+$/ =~ value
     'left'
@@ -63,7 +57,6 @@ module Utils
     aspect = a if a > aspect
 
     dims.collect do |dim|
-      a =
       if dim[0] * aspect > dim[1]
         [(dim[1] / aspect).to_i, dim[1]]
       else

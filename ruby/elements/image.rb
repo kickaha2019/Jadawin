@@ -146,7 +146,7 @@ module Elements
               w,h,o = * get_image_dims( source + path)
             rescue
               w = h = -1
-              o = ''
+              o = 0
             end
             cached['timestamp'] = timestamp
             cached['height']    = h
@@ -163,7 +163,7 @@ module Elements
       im     = Vips::Image.new_from_file filename, access: :sequential
       width  = im.get('width')
       height = im.get('height')
-      orient = ''
+      orient = 0
 
       if im.get_fields.include?( 'exif-ifd0-Orientation')
         if /^[4567]/ =~ (orient = im.get( 'exif-ifd0-Orientation')[0..0])
@@ -171,7 +171,7 @@ module Elements
         end
       end
 
-      return width, height, orient
+      return width, height, orient.to_i
     end
 
     def image
@@ -273,10 +273,6 @@ module Elements
       return dim[1] unless @height && @width
       sh = (dim[0] * @height + @width - 1) / @width
       (sh > dim[1]) ? sh : dim[1]
-    end
-
-    def set_tag( tag)
-      @tag = tag
     end
 
     def shave_thumbnail( width, height, width0, height0)

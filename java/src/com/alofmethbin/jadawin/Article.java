@@ -8,24 +8,24 @@ import com.alofmethbin.jadawin.elements.Tag;
 import com.alofmethbin.jadawin.elements.Title;
 import com.alofmethbin.jadawin.styles.BaseStyle;
 import com.alofmethbin.jadawin.styles.Story;
-import com.alofmethbin.jadawin.styles.Style;
 import java.io.File;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import com.alofmethbin.jadawin.styles.StyleInterface;
 
 public final class Article implements Page {
     private List<Page> children = new ArrayList<>();
     private List<Element> content = new ArrayList<>();
     private Map<String,Element> specials = new HashMap<>();
-    private Style style;
+    private StyleInterface style;
     private boolean childrenSorted = true;
     private final Article parent;
-    private final File file;
+    private final String path;
     private Compiler compiler;
-    private static Style baseStyle = new BaseStyle();
+    private static StyleInterface baseStyle = new BaseStyle();
     
     class Origin {
         Origin( String n, Article a) {
@@ -37,10 +37,10 @@ public final class Article implements Page {
     }
     private List<Origin> origins = new ArrayList<>();
     
-    public Article( Compiler compiler, Article parent, File file) {
+    public Article( Compiler compiler, Article parent, String path) {
         this.compiler = compiler;
         this.parent   = parent;
-        this.file     = file;
+        this.path     = path;
     }
     
     public Page addChild( Page child) {
@@ -72,9 +72,12 @@ public final class Article implements Page {
     public List<Reference> breadcrumbs() {
         List<Reference> refs = new ArrayList<>();
         Article page = this;
+        File file    = getSinkFile();
+        
         while (page != null) {
-            refs.add( 0, new Reference( relativePath( file, page.getFile()), 
-                                        prettify( page.getTitle())));
+            
+            refs.add( 0, new Reference( Utils.relativePath( file, page.getSinkFile()), 
+                                        Utils.prettify( page.getTitle())));
         }
         return refs;
     }
@@ -88,23 +91,23 @@ public final class Article implements Page {
     }
     
     public void discardFutureChildren() {
-        List old = children;
-        children = new ArrayList<>();
-        LocalDate now = LocalDate.now();
+        List<Page> old = children;
+        children       = new ArrayList<>();
         
-        for (Page child: children) {
+        for (Page child: old) {
             LocalDate d = child.getDate();
-            if ((d == null) || (! d.isAfter( now))) {
+            if ((d == null) || (! d.isAfter( now()))) {
                 children.add( child);
             }
         }
     }
     
+    @Override
     public void error( String msg) {
         for (Element e: content) {
             if ( e.ignoreError( msg) ) {return;}
         }
-        compiler.error( compiler.toPath( this.file).replace( ".html", ".txt"), msg);
+        compiler.error( path, msg);
     }
     
     public String getBlurb() {
@@ -115,16 +118,16 @@ public final class Article implements Page {
         return null;
     }
 
+    @Override
     public java.time.LocalDate getDate() {
         Date date;
         if ((date = (Date) specials.get( "Date")) != null) {
-            return date.date();
+            return date.getDate();
         }
         return null;
     }
-
-    public File getFile() {return file;}
     
+    @Override
     public Image getIcon() {
         Image icon;
         if ((icon = (Image) specials.get( "Icon")) != null) {
@@ -147,6 +150,7 @@ public final class Article implements Page {
     }
     
     public String getName() {
+        File file = getSinkFile();
         if ( file.getName().equals( "index.html") ) {
             return file.getParentFile().getName();
         } else {
@@ -156,17 +160,25 @@ public final class Article implements Page {
     
     public String getPageTitle() {
         if (parent != null) {
-            return prettify( getTitle());
+            return Utils.prettify( getTitle());
         } else {
             return null;
         }
     }
+
+    public String getRootURL() {
+        return compiler.getRootURL();
+    }
+
+    public File getSinkFile() {
+        return compiler.toSinkFile( path.replace( ".txt", ".html"));
+    }
     
-    public Style getStyle() {
+    public StyleInterface getStyle() {
         if (style != null) {
             return style;
         } else if ( isStyled() ) {
-            return (Style) specials.get( "Style");
+            return (StyleInterface) specials.get( "Style");
         } else {
             return baseStyle;
         }
@@ -191,6 +203,7 @@ public final class Article implements Page {
         return getName();
     }
     
+    @Override
     public boolean hasChildren() {
         return ! children.isEmpty();
     }
@@ -213,6 +226,7 @@ public final class Article implements Page {
         return getStyle().isLeaf( this);
     }
     
+    @Override
     public boolean isOffPage() {
         return false;
     }
@@ -221,8 +235,8 @@ public final class Article implements Page {
         return hasContent() && (getDate() != null) && (! hasGrandChildren());
     }
 
-    private boolean isStyled() {
-        return specials.get( "Style") != null;
+    public boolean isStyled() {
+        return (specials.get( "Style") != null);
     }
     
     public boolean isWide() {
@@ -232,37 +246,79 @@ public final class Article implements Page {
         return false;
     }
 
-    private void overrideStyle( Style style) {
+    public Page lookupPage( String url) {
+        return compiler.lookupPage( this, url, url);
+    }
+
+    public LocalDate now() {
+        return compiler.now();
+    }
+
+    private void overrideStyle( StyleInterface style) {
         this.style          = style;
         this.childrenSorted = false;
     }
     
+    @Override
     public void prepare() {
-        if ((! isStyled()) && isStory()) {
-            overrideStyle( new Story());
+        try {
+            if ((! isStyled()) && isStory()) {
+                overrideStyle( new Story());
+            }
+            getStyle().prepare( this);
+
+            for (int i = 0; i < content.size(); i++) {
+                content.get(i).prepare();
+                if ( content.get(i).isInset() ) {
+                    if (i < content.size() - 1) {
+                        content.get(i+1).allowForInset();
+                    } else {
+                        error( "Inset cannot be final directive");
+                    }
+                }
+            }
+        } catch (Exception bang) {
+            error( bang.getMessage());
         }
-        getStyle().prepare( this);
-        
-        for (int i = 0; i < content.size(); i++) {
-            content.get(i).prepare( this, content.subList( (i+1), content.size()));
+        for (Page child: children) {
+            if (child instanceof Article) {
+                child.prepare();
+            }
         }
+    }
+
+    public Article parent() {
+        return parent;
     }
     
     public String postProcessHTML( String html) {
-        html = getStyle().postProcessHTML( html);
+        html = getStyle().postProcessHTML( this, html);
         for (Element e: content) {
             html = e.postProcessHTML( html);
         }
         return html;
     }
-    
-    public String prettify( String text) {
-        return compiler.prettify( text);
+
+    public void record( File sink) {
+        compiler.record( sink);
     }
-    
-    public String relativePath( File from, File to) {
-        return compiler.relativePath( from, to);
+
+    @Override
+    public void setStyle( StyleInterface style) {
+        this.style = style;
     }
-    
-    
+
+    public void spellCheck(String text) {
+        compiler.spellCheck( this, text);
+    }
+
+    public File toSinkFile( String relpath) {
+        File file = getSinkFile();
+        return new File( file.getParentFile(), relpath);
+    }
+
+    public File toSourceFile( String relpath) {
+        File file = compiler.toSourceFile( path);
+        return new File( file.getParentFile(), relpath);
+    }
 }

@@ -1,9 +1,38 @@
 package com.alofmethbin.jadawin.elements;
 
-public class Blurb extends Element {
+import com.alofmethbin.jadawin.Article;
+import java.util.List;
 
-    public String text() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+public class Blurb extends Element {
+    private String text;
+    
+    public Blurb( Article article, List<String> lines) {
+        super( article);
+        
+        StringBuilder b = new StringBuilder();
+        for (String line: lines) {
+            if (b.length() > 0) {b.append( " ");}
+            b.append( line);
+        }
+        
+        text = checkSpecialChars( b.toString());
+        
+        if (text.length() > 50) {
+            error( "Blurb too long");
+        }
     }
 
+    @Override
+    public boolean isContent() {
+        return false;
+    }
+
+    @Override
+    public boolean isSpecial() {
+        return true;
+    }
+    
+    public String text() {
+        return text;
+    }
 }

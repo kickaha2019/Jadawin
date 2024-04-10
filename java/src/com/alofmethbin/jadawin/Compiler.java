@@ -5,15 +5,18 @@ import com.alofmethbin.jadawin.elements.Error;
 import com.alofmethbin.jadawin.elements.Expect;
 import com.alofmethbin.jadawin.elements.Image;
 import com.alofmethbin.jadawin.elements.Tag;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.BufferedReader;
-import org.yaml.snakeyaml.Yaml;
+import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.FileReader;
+import java.io.FileWriter;
 import java.lang.reflect.Constructor;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -21,31 +24,41 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public final class Compiler {
+    class Config {
+        Map<String,int [][]> dimensions;
+        String liquid, thymeleaf, root_url, spell_checking, misspelt_words;
+        int [] menu_items_per_line;
+        int num_menu_styles;
+    }
+    
     private List<String> errors = new ArrayList<>();
     private File source, sink;
-    private Map<String, Object> config;
+    private Config config;
     private Set<String> words, names, newWords;
     private Set<String> generated;
-    private Map<String, List<String>> key2Paths = new HashMap<>();
+    private Map<String, List<Page>> key2Pages = new HashMap<>();
     private byte[] fromBuffer = new byte[1000000];
     private byte[] toBuffer = new byte[1000000];
+    private LocalDate now   = LocalDate.now();
     private static Pattern assetFilename = Pattern.compile( "\\.(JPG|JPEG|jpg|jpeg|png|zip|gif|svg|webp)$");
     private static Pattern directiveLine = Pattern.compile( "^@(\\S*)(.*)$");
+    private static Pattern htmlEntities  = Pattern.compile( "&(.)(acute|caron|cedil|grave|circ|slash|uml|ring);");
+    private static Pattern quoteStart    = Pattern.compile( "^(['\"]*)(.*)$");
+    private static Pattern quoteEnd      = Pattern.compile( "^(.*)(['\"]*)$");
+    private static Pattern prefixStart   = Pattern.compile( "^(pre|quasi|ex|half|mini|multi|non)-(.*)$");
 
-    public Compiler(String source, String config, String sink) throws Exception {
+    public Compiler(String source, String configPath, String sink) throws Exception {
         this.source = new File(source);
         this.sink = new File(sink);
-        Yaml yaml = new Yaml();
-        this.config = yaml.load(new FileInputStream(config));
+        ObjectMapper mapper = new ObjectMapper( new YAMLFactory());
+        this.config = mapper.readValue( new File( configPath), Config.class);
         loadWords();
     }
 
     private void addContent(String verb, Article article, List<String> info, String ref) {
-        String verbC = verb.substring(0, 1).toUpperCase() + verb.substring(1);
-
         Class clazz;
         try {
-            clazz = Class.forName("com.alofmethbin.jadawin.elements." + verbC);
+            clazz = Class.forName("com.alofmethbin.jadawin.elements." + Utils.capitalise( verb));
         } catch (ClassNotFoundException cnfe) {
             article.error("Unknown directive: " + verb);
             return;
@@ -71,13 +84,13 @@ public final class Compiler {
             article.addContent(element, info.size() > 1);
         }
     }
-
+    
     public void compile() {
         out("... Initialised");
         Image.findImages(this.source);
         Article homePage = parseDirectory(null, "");
         out("... Parsed");
-        prepare(homePage);
+        homePage.prepare();
         out("... Prepared");
         regenerate(homePage);
         out("... Generated");
@@ -128,15 +141,29 @@ public final class Compiler {
     }
 
     public int [][] dimensions( String key) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return config.dimensions.get(key);
     }
     
     public synchronized void error( String path, String msg) {
         errors.add( msg + " [" + path + "]");
     }
 
+    public String getRootURL() {
+        return config.root_url;
+    }
+
     private boolean hasErrors() {
         return ! errors.isEmpty();
+    }
+    
+    public boolean isOffsite( String url) {
+        if ( url.startsWith( this.config.root_url) ) {
+            return false;
+        } else if ( Utils.isAbsoluteUrl( url) ) {
+            return true;
+        } else {
+            return false;
+        }
     }
     
     private int loadBinary(File from, byte[] fromBuffer) throws Exception {
@@ -144,20 +171,74 @@ public final class Compiler {
     }
 
     private void loadWords() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        if (config.spell_checking == null) {return;}
+        
+        File wordsDir = new File( config.spell_checking);
+        if (! (wordsDir.exists() && wordsDir.isDirectory())) {
+            errors.add( "Not a directory: spell_checking setting in config");
+            return;
+        }
+        
+        this.words    = new HashSet<>();
+        this.names    = new HashSet<>();
+        this.newWords = new HashSet<>();
+        
+        for (File f: wordsDir.listFiles()) {
+            if ( f.getName().endsWith( ".txt") ) {
+                try (BufferedReader reader = new BufferedReader( new FileReader( f))) {
+                    String line;
+                    while ((line = reader.readLine()) != null) {
+                        String word = line.trim();
+                        if ( word.isEmpty() ) {continue;}
+                        
+                        if ( word.equals( word.toLowerCase()) ) {
+                            words.add( word.toLowerCase());
+                        } else {
+                            names.add( word);
+                        }
+                    }
+                } catch (Exception ex) {
+                    errors.add( f.getAbsolutePath() + ": " + ex.getMessage());
+                }
+            }
+        }
     }
 
+    public Page lookupPage( Page referrer, String path, String ref) {
+        List<Page> matches = this.key2Pages.get( path);
+        if (matches.size() < 1) {
+            referrer.error( "Path not found for " + ref);
+            return null;
+        } else if (matches.size() > 1) {
+            referrer.error( "Path not found for " + ref);
+            return null;
+        } else {
+            return matches.get(0);
+        }
+    }
+    
+    public int [] menuItemsPerLine() {
+        return config.menu_items_per_line;
+    }
+
+    public LocalDate now() {
+        return now;
+    }
+
+    public int numMenuStyles() {
+        return config.num_menu_styles;
+    }
+    
     private void out(String msg) {
         System.out.println(msg);
     }
 
     private Article parseDirectory( Article parent, String dir) {
-        File dirFile = new File( sink, dir);
+        File dirFile = dir.equals("") ? sink : new File( sink, dir);
         if (! dirFile.exists()) {dirFile.mkdirs();}
         
-        File file = new File( dirFile, "index.html");
-        Article dirArticle = new Article( this, parent, file);
-        remember(dir.equals( "") ? "." : dir, file);
+        Article dirArticle = new Article( this, parent, dir + "/index.txt");
+        remember( dir.isEmpty() ? "." : dir, dirArticle);
         
         if (parent != null) {
             parent.addChild( dirArticle);
@@ -173,13 +254,12 @@ public final class Compiler {
             } else if ( f.getName().equals( "index.txt") ) {
                 parseFile( dirArticle, f);
             } else if ( f.getName().endsWith( ".txt") ) {
-                Article a = new Article( this, 
-                                         dirArticle, 
-                                         new File( dirFile, f.getName().replace( ".txt", ".html")));
+                Article a = new Article( this, dirArticle, path);
                 dirArticle.addChild( a);
+                remember( path, a);
                 parseFile( a, f);
             } else if ( assetFilename.matcher( f.getName()).matches() ) {
-                remember( path, new File( sink, path));
+                //remember( path, new File( sink, path));
             } else {
                 dirArticle.error( "Unhandled file: " + f.getName());
             }
@@ -197,7 +277,7 @@ public final class Compiler {
                Matcher m = directiveLine.matcher( line);
                if ( m.matches() ) {
                    lines.clear();
-                   if (! m.group(2).trim().equals( "")) {
+                   if (! m.group(2).isBlank()) {
                        lines.add( m.group(2).trim());
                        addContent( m.group(1), article, lines, line);
                    } else {
@@ -210,7 +290,7 @@ public final class Compiler {
                            } else {
                                reader.mark( 1000);
                                lines.add( line1);
-                               if ( line1.trim().equals( "") ) {
+                               if ( line1.isBlank() ) {
                                    lastNonWhite = lines.size();
                                }
                            }
@@ -218,7 +298,7 @@ public final class Compiler {
                            addContent( m.group(1), article, lines.subList( 0, lastNonWhite), line);
                        }
                    }
-               } else if (! line.trim().equals( "")) {
+               } else if (! line.isBlank()) {
                    article.error( "Expected directive: " + line);
                    break;
                }
@@ -228,47 +308,130 @@ public final class Compiler {
         }
     }
 
-    private void prepare(Article homePage) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    public String prettify(String text) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    private void record(File to) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    public void record( File to) {
+        this.generated.add( to.getAbsolutePath());
     }
 
     private void regenerate(Article homePage) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
-    public String relativePath(File from, File to) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    private void remember( String path, Page page) {
+        remember1( path, page);
+        for (int i = 1; i < path.length() - 1; i++) {
+            if ( path.substring(i, i+1).equals( "/") ) {
+                remember1( path.substring(i), page);
+            }
+        }
     }
 
-    private void remember( String path, File file) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-    
-    private void reportErrors() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    private void remember1( String path, Page page) {
+        if (! key2Pages.containsKey( path)) {
+            List<Page> list = new ArrayList<>();
+            key2Pages.put( path, list);
+            list.add( page);
+        } else {
+            key2Pages.get( path).add( page);
+        }
     }
 
     private void reportNewWords() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        if (config.misspelt_words != null) {
+            try (FileWriter w = new FileWriter( config.misspelt_words)) {
+               for (String word: newWords) {
+                   w.write( word + "\n");
+               }
+            } catch (Exception ex) {
+               System.err.println( "Error writing unknown words: " + ex.getMessage());
+            }
+        }
     }
 
-    private void tidyUp(File sink) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    public File sourceFile( String path) {
+        return new File( source, path);
+    }
+
+    public void spellCheck( Article article, String text) {
+        if (this.words == null) {return;}
+        
+        for (String part: text.split( "[,\\.!\\? \\n\\(\\);:]")) {
+            String word = part;
+            
+            Matcher m = Compiler.quoteStart.matcher( word);
+            if ( m.find() ) {
+                word = m.group(2);
+            }
+            
+            m = Compiler.prefixStart.matcher( word);
+            if ( m.find() ) {
+                word = m.group(2);
+            }
+            
+            m = Compiler.quoteEnd.matcher( word);
+            if ( m.find() ) {
+                word = m.group(1);
+            }
+            
+            m = Compiler.htmlEntities.matcher( word);
+            while ( m.find() ) {
+                word = word.substring( 0, m.start()) + 
+                       m.group(1) + 
+                       word.substring( m.end(), word.length());
+                m    = Compiler.htmlEntities.matcher( word);
+            }
+            
+            if ( this.words.contains( word.toLowerCase()) ) {continue;}
+            if ( this.names.contains( word) ) {continue;}
+            
+            this.newWords.add( word);
+            article.error( "Unknown word: " + part);
+        }
+    }
+    
+    private boolean tidyUp( File dir) {
+        boolean keep = false;
+        for (File child: dir.listFiles()) {
+            if ( child.isDirectory() ) {
+                if ( tidyUp( child) ) {
+                    keep = true;
+                } else {
+                    out( "Deleting " + toPath(child));
+                    child.delete();
+                }
+            } else if ( child.getName().startsWith( ".") ) {
+                child.delete();
+            } else if ( this.generated.contains( child.getAbsolutePath()) ) {
+                keep = true;
+            } else {
+                out( "Deleting " + toPath(child));
+                child.delete();
+            }
+        }
+        return keep;
+    }
+
+    public File toSinkFile( String path) {
+        return new File( sink, path);
+    }
+
+    public File toSourceFile( String path) {
+        return new File( source, path);
     }
 
     public String toPath( File file) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return Utils.toPath( sink, file);
     }
 
     public static void main(String[] args) {
-
+        try {
+            Compiler c = new Compiler( args[0], args[1], args[2]);
+            c.compile();
+            if ( c.hasErrors() ) {
+                System.exit(1);
+            }
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            System.exit(1);
+        }
     }
 }

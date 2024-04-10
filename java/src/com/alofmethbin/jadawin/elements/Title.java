@@ -1,8 +1,17 @@
 package com.alofmethbin.jadawin.elements;
 
+import com.alofmethbin.jadawin.Article;
+import java.util.List;
+
 public class Title extends Element {
+    private String text;
+    
+    public Title( Article article, List<String> lines) {
+        super( article);
+        text = checkSpecialChars( lines.get(0));
+    }
 
     public String text() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return text;
     }
 }

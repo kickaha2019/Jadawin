@@ -107,9 +107,5 @@ module Styles
         comp
       end
     end
-
-    def stub( text)
-      text.gsub( /[^\w\d]/, '_')
-    end
   end
 end
