@@ -24,7 +24,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public final class Compiler {
-    class Config {
+    static class Config {
         Map<String,int [][]> dimensions;
         String liquid, thymeleaf, root_url, spell_checking, misspelt_words;
         int [] menu_items_per_line;
@@ -33,7 +33,7 @@ public final class Compiler {
     
     private List<String> errors = new ArrayList<>();
     private File source, sink;
-    private Config config;
+    private Any config;
     private Set<String> words, names, newWords;
     private Set<String> generated;
     private Map<String, List<Page>> key2Pages = new HashMap<>();
@@ -51,7 +51,7 @@ public final class Compiler {
         this.source = new File(source);
         this.sink = new File(sink);
         ObjectMapper mapper = new ObjectMapper( new YAMLFactory());
-        this.config = mapper.readValue( new File( configPath), Config.class);
+        config = new Any( mapper.readValue( new File( configPath), Map.class));
         loadWords();
     }
 
@@ -141,7 +141,7 @@ public final class Compiler {
     }
 
     public int [][] dimensions( String key) {
-        return config.dimensions.get(key);
+        return config.get( "dimensions").get(key).asInts2();
     }
     
     public synchronized void error( String path, String msg) {
@@ -149,7 +149,7 @@ public final class Compiler {
     }
 
     public String getRootURL() {
-        return config.root_url;
+        return config.get("root_url").asString();
     }
 
     private boolean hasErrors() {
@@ -157,7 +157,7 @@ public final class Compiler {
     }
     
     public boolean isOffsite( String url) {
-        if ( url.startsWith( this.config.root_url) ) {
+        if ( url.startsWith( getRootURL()) ) {
             return false;
         } else if ( Utils.isAbsoluteUrl( url) ) {
             return true;
@@ -171,9 +171,10 @@ public final class Compiler {
     }
 
     private void loadWords() {
-        if (config.spell_checking == null) {return;}
+        String spellChecking = config.get("spell_checking").asString();
+        if (spellChecking  == null) {return;}
         
-        File wordsDir = new File( config.spell_checking);
+        File wordsDir = new File( spellChecking);
         if (! (wordsDir.exists() && wordsDir.isDirectory())) {
             errors.add( "Not a directory: spell_checking setting in config");
             return;
@@ -218,7 +219,7 @@ public final class Compiler {
     }
     
     public int [] menuItemsPerLine() {
-        return config.menu_items_per_line;
+        return config.get("menu_items_per_line").asInts();
     }
 
     public LocalDate now() {
@@ -226,7 +227,7 @@ public final class Compiler {
     }
 
     public int numMenuStyles() {
-        return config.num_menu_styles;
+        return config.get("num_menu_styles").asInt();
     }
     
     private void out(String msg) {
@@ -336,8 +337,9 @@ public final class Compiler {
     }
 
     private void reportNewWords() {
-        if (config.misspelt_words != null) {
-            try (FileWriter w = new FileWriter( config.misspelt_words)) {
+        String misspeltWords = config.get( "misspelt_words").asString();
+        if (misspeltWords != null) {
+            try (FileWriter w = new FileWriter( misspeltWords)) {
                for (String word: newWords) {
                    w.write( word + "\n");
                }

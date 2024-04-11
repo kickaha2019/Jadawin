@@ -5,8 +5,6 @@ import com.alofmethbin.jadawin.elements.Tag;
 import com.alofmethbin.jadawin.styles.StyleInterface;
 import java.io.File;
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.List;
 
 public class Link implements Page {
     private final Article article;

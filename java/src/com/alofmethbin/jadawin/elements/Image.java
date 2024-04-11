@@ -1,5 +1,6 @@
 package com.alofmethbin.jadawin.elements;
 
+import com.alofmethbin.jadawin.Any;
 import com.alofmethbin.jadawin.Article;
 import com.alofmethbin.jadawin.Utils;
 import com.drew.imaging.ImageMetadataReader;
@@ -9,6 +10,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
 import java.awt.image.BufferedImage;
 import java.io.File;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -32,10 +34,27 @@ public class Image extends Element {
         long timestamp;
         private boolean found;
         
+        ImageInfo( Any any) {
+            this.path = any.get("path").asString();
+            found     = false;
+            orient    = any.get( "orient").asInt();
+            width     = any.get( "width").asInt();
+            height    = any.get( "height").asInt();
+            timestamp = any.get( "timestamp").asLong();
+        }
+        
         ImageInfo( String path) {
             this.path = path;
             found     = true;
             width     = -1;
+        }
+
+        private void save( FileWriter writer) throws IOException {
+            writer.write( "- path: \"" + path + "\"\n");
+            writer.write( "  timestamp: " + timestamp + "\n");
+            writer.write( "  height: " + height + "\n");
+            writer.write( "  width: " + width + "\n");
+            writer.write( "  orient: " + orient + "\n");
         }
     }
     
@@ -114,11 +133,11 @@ public class Image extends Element {
         ObjectMapper mapper = new ObjectMapper( new YAMLFactory());
         
         if ( meta.exists() ) {
-            ImageInfo [] old;
             try {
-                old = mapper.readValue( meta, (new ImageInfo [0]).getClass());
+                Any old = new Any( mapper.readValue( meta, List.class));
             
-                for (ImageInfo info: old) {
+                for (int i = 0; i < old.size(); i++) {
+                    ImageInfo info = new ImageInfo( old.get(i));
                     infos.put( info.path, info);
                     info.found = false;
                 }
@@ -129,18 +148,13 @@ public class Image extends Element {
         
         findImages1( source, source);
         
-        int found = 0;
-        for (ImageInfo info: infos.values()) {
-            if ( info.found ) {found++;}
-        }
-        
-        ImageInfo [] save = new ImageInfo[ found];
-        for (ImageInfo info: infos.values()) {
-            if ( info.found ) {save[--found] = info;}
-        }
-        
-        try {
-            mapper.writeValue( meta, save);
+        try (FileWriter writer = new FileWriter( meta)) {
+            writer.write( "---\n");
+            for (ImageInfo info: infos.values()) {
+                if ( info.found ) {
+                    info.save( writer);
+                }
+            }
         } catch (Exception ex) {
             System.err.println( "*** Unable to save _images.yaml: " + ex.getMessage());
             System.exit(1);
