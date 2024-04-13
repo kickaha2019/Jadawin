@@ -3,12 +3,14 @@ package com.alofmethbin.jadawin.elements;
 import com.alofmethbin.jadawin.Article;
 import java.time.LocalDate;
 import java.util.List;
+import java.util.regex.Pattern;
 
 public class Date extends Element {
     private boolean first;
     private LocalDate date;
     private static String [] months = new String [] 
        {"jan","feb","mar","apr","may","jun","jul","aug","sep","oct","nov","dec"};
+    private static Pattern numericStart = Pattern.compile( "^(\\d+)");
        
     public Date( Article article, List<String> lines) {
         super( article);
@@ -41,11 +43,13 @@ public class Date extends Element {
       int year  = -1;
 
       for (String part: text.split( " ")) {
-        int i = Integer.parseInt( part);
-        if (i >= 1800) {
-            year = i;
-        } else if ((i > 0) && (i < 32)) {
-            day = i;
+        if ( match( numericStart, part) ) {
+            int i = Integer.parseInt( group(1));
+            if (i >= 1800) {
+                year = i;
+            } else if ((i > 0) && (i < 32)) {
+                day = i;
+            }
         } else if (part.length() >= 3) {
             for (int j = 0; j < months.length; j++) {
                 if ( months[j].equalsIgnoreCase( part.substring(0,3))) {

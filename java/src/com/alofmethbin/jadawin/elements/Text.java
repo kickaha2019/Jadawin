@@ -14,7 +14,6 @@ public class Text extends Element {
     private int lineCount = 0, minLines = 0;
     private Map<String,List<String>> name2Urls = new HashMap<>();
     private List<List<Segment>> paragraphs = new ArrayList<>();
-    private Matcher matcher;
     
     private static Pattern linkTargetEnd      = Pattern.compile( "^([^\\)]*)\\)(.*)$");
     private static Pattern linkTextEnd        = Pattern.compile( "^([^\\]]*)\\](.*)$");
@@ -141,24 +140,15 @@ public class Text extends Element {
     public void allowForInset() {
         minLines = 5;
     }
-
-    private String group( int i) {
-        return matcher.group(i);
-    }
     
     @Override
     public int lineCount() {
         return lineCount;
     }
 
-    private boolean match( Pattern pattern, String text) {
-        matcher = pattern.matcher(text);
-        return matcher.find();
-    }
-
     private void parse( String text, List<Segment> paragraph) {
         while ( match( nextSpecialChar, text) ) {
-            if (! text.isEmpty()) {
+            if (! group(1).isEmpty()) {
                 paragraph.add( new Normal( group(1)));
             }
             switch ( group(2).charAt(0) ) {

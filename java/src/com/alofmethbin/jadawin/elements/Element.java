@@ -4,11 +4,14 @@ import com.alofmethbin.jadawin.Article;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public abstract class Element {
     protected Article article;
     private boolean error = false;
     private int index = -1;
+    private Matcher matcher;
     private static Map<String,Map<String,Integer>> lastIndexes = new HashMap<>();
     
 //    public static String specialChars = "[\"<>`\\*]";
@@ -46,7 +49,8 @@ public abstract class Element {
     protected final String checkSpecialChars( String toCheck) {
         String text = toCheck.replaceAll( "[\"<>`\\*]", "");
         if (! text.equals(toCheck)) {
-            error( "Bad characters in " + typeName() + ": " + toCheck);
+            // error( "Bad characters in " + typeName() + ": " + toCheck);
+            error( "Bad characters in " + typeName().toLowerCase());
         }
         return text;
     }
@@ -61,6 +65,10 @@ public abstract class Element {
     }
 
     protected final int getIndex() {return index;}
+
+    protected String group( int i) {
+        return matcher.group(i);
+    }
     
     public final boolean hasError() {
         return error;
@@ -96,6 +104,11 @@ public abstract class Element {
 
     public int lineCount() {
         return 0;
+    }
+
+    protected boolean match( Pattern pattern, String text) {
+        matcher = pattern.matcher(text);
+        return matcher.find();
     }
 
     public void prepare() {

@@ -59,11 +59,15 @@ public class Image extends Element {
     }
     
     public Image( Article article, List<String> lines) throws IOException {
-        this( article, lines.get( 0));
+        this( article, lines.isEmpty() ? null : lines.get( 0));
     }
     
     public Image( Article article, String defn) throws IOException {
         super( article);
+        if (defn == null) {
+            error( typeName() + " missing image name");
+            return;
+        }
         
         String advice=null, source=defn;
         String [] parts = source.split( ";", 2);
@@ -86,7 +90,8 @@ public class Image extends Element {
         
         File sourceFile = article.toSourceFile( source);
         
-        info = infos.get( sourceFile.getCanonicalPath());
+        String path = article.toPath( article.toSinkFile( source));
+        info = infos.get( path);
         if (info == null) {
             if ( sourceFile.exists() ) {
                 error( "Case mismatch for " + defn);
@@ -128,7 +133,7 @@ public class Image extends Element {
         return actual;
     }
     
-    public static void findImages( File source) {
+    public static void findImages( File source) throws IOException {
         File meta = new File( source, "_images1.yaml");
         ObjectMapper mapper = new ObjectMapper( new YAMLFactory());
         
@@ -161,7 +166,7 @@ public class Image extends Element {
         }
     }
         
-    public static void findImages1( File source, File dir) {
+    public static void findImages1( File source, File dir) throws IOException {
         for (File f: dir.listFiles()) {
             if ( f.isDirectory() ) {
                 findImages1( source, f);

@@ -4,8 +4,6 @@ import com.alofmethbin.jadawin.Article;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 public class Table extends Element {
     private List<String> columns = new ArrayList<>();
@@ -14,7 +12,7 @@ public class Table extends Element {
     public Table( Article article, List<String> lines) throws IOException {
         super( article);
         
-        for (String column: lines.get(0).split( "|")) {
+        for (String column: divide( lines.get(0))) {
             columns.add( checkLabel( column));
         }
         
@@ -22,10 +20,17 @@ public class Table extends Element {
             List<Text> row = new ArrayList<>();
             rows.add( row);
             
-            for (String value: lines.get(i).split( "|")) {
+            for (String value: divide( lines.get(i))) {
                 row.add( new Text( article, value));
             }
         }
+    }
+    
+    private String [] divide( String line) {
+        line = line.trim();
+        if ( line.startsWith( "|") ) {line = line.substring(1);}
+        if ( line.endsWith( "|") ) {line = line.substring( 0, line.length() - 1);}
+        return line.split( "\\|");
     }
 
     @Override

@@ -27,7 +27,7 @@ public class List extends Element {
             if ( m.find() ) {
                 keys.add( checkLabel( m.group(1)));
                 values.add( new Text( article, m.group(2)));
-            } else if (! line.trim().equals("") ) {
+            } else if (! line.isBlank()) {
                 if ( isTable ) {
                     keys.add( checkLabel( line));
                     values.add( new Text( article, ""));

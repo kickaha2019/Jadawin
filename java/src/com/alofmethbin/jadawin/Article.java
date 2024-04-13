@@ -4,6 +4,7 @@ import com.alofmethbin.jadawin.elements.Blurb;
 import com.alofmethbin.jadawin.elements.Date;
 import com.alofmethbin.jadawin.elements.Element;
 import com.alofmethbin.jadawin.elements.Image;
+import com.alofmethbin.jadawin.elements.Style;
 import com.alofmethbin.jadawin.elements.Tag;
 import com.alofmethbin.jadawin.elements.Title;
 import com.alofmethbin.jadawin.styles.BaseStyle;
@@ -15,6 +16,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import com.alofmethbin.jadawin.styles.StyleInterface;
+import java.io.IOException;
 
 public final class Article implements Page {
     private List<Page> children = new ArrayList<>();
@@ -170,6 +172,7 @@ public final class Article implements Page {
         return compiler.getRootURL();
     }
 
+    @Override
     public File getSinkFile() {
         return compiler.toSinkFile( path.replace( ".txt", ".html"));
     }
@@ -178,7 +181,7 @@ public final class Article implements Page {
         if (style != null) {
             return style;
         } else if ( isStyled() ) {
-            return (StyleInterface) specials.get( "Style");
+            return ((Style) specials.get( "Style")).getStyle();
         } else {
             return baseStyle;
         }
@@ -280,10 +283,16 @@ public final class Article implements Page {
         } catch (Exception bang) {
             error( bang.getMessage());
         }
+        
+        List<Page> subArticles = new ArrayList<>();
         for (Page child: children) {
             if (child instanceof Article) {
-                child.prepare();
+                subArticles.add( child);
             }
+        }
+        
+        for (Page child: subArticles) {
+            child.prepare();
         }
     }
 
@@ -310,6 +319,10 @@ public final class Article implements Page {
 
     public void spellCheck(String text) {
         compiler.spellCheck( this, text);
+    }
+
+    public String toPath( File file) throws IOException {
+        return compiler.toPath( file);
     }
 
     public File toSinkFile( String relpath) {

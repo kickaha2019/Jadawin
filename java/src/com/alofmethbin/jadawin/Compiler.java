@@ -8,11 +8,19 @@ import com.alofmethbin.jadawin.elements.Tag;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.BufferedReader;
 import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
+import gg.jte.CodeResolver;
+import gg.jte.ContentType;
+import gg.jte.TemplateEngine;
+import gg.jte.TemplateOutput;
+import gg.jte.output.StringOutput;
+import gg.jte.resolve.DirectoryCodeResolver;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.FileWriter;
+import java.io.IOException;
 import java.lang.reflect.Constructor;
+import java.nio.file.Path;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -24,19 +32,13 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public final class Compiler {
-    static class Config {
-        Map<String,int [][]> dimensions;
-        String liquid, thymeleaf, root_url, spell_checking, misspelt_words;
-        int [] menu_items_per_line;
-        int num_menu_styles;
-    }
-    
     private List<String> errors = new ArrayList<>();
     private File source, sink;
     private Any config;
     private Set<String> words, names, newWords;
-    private Set<String> generated;
+    private Set<String> generated = new HashSet<>();
     private Map<String, List<Page>> key2Pages = new HashMap<>();
+    private TemplateEngine templateEngine;
     private byte[] fromBuffer = new byte[1000000];
     private byte[] toBuffer = new byte[1000000];
     private LocalDate now   = LocalDate.now();
@@ -53,6 +55,8 @@ public final class Compiler {
         ObjectMapper mapper = new ObjectMapper( new YAMLFactory());
         config = new Any( mapper.readValue( new File( configPath), Map.class));
         loadWords();
+        CodeResolver codeResolver = new DirectoryCodeResolver(Path.of( config.get( "jte").asString())); 
+        templateEngine = TemplateEngine.create(codeResolver, ContentType.Plain); 
     }
 
     private void addContent(String verb, Article article, List<String> info, String ref) {
@@ -66,17 +70,22 @@ public final class Compiler {
 
         Constructor construct;
         try {
-            construct = clazz.getConstructor(new Class[]{Article.class, info.getClass()});
+            construct = clazz.getConstructor(new Class[]{Article.class, List.class});
         } catch (NoSuchMethodException nsme) {
             article.error("Bad directive: " + verb);
             return;
-        };
+        }
 
         Element element;
         try {
             element = (Element) construct.newInstance(new Object[]{article, info});
         } catch (Exception ex) {
-            article.error(ex.getMessage());
+            String msg = ex.getMessage();
+            article.error( (msg != null) ? msg : ex.getClass().getName());
+        try {
+            construct.newInstance(new Object[]{article, info});
+            
+        } catch (Exception ex1) {}
             return;
         }
 
@@ -85,7 +94,7 @@ public final class Compiler {
         }
     }
     
-    public void compile() {
+    public void compile() throws Exception {
         out("... Initialised");
         Image.findImages(this.source);
         Article homePage = parseDirectory(null, "");
@@ -94,7 +103,7 @@ public final class Compiler {
         out("... Prepared");
         regenerate(homePage);
         out("... Generated");
-        tidyUp(this.sink);
+        //tidyUp(this.sink);
         out("... Tidied up");
         Tag.checkAllRendered();
         out("... Check tags all used");
@@ -259,7 +268,7 @@ public final class Compiler {
                 dirArticle.addChild( a);
                 remember( path, a);
                 parseFile( a, f);
-            } else if ( assetFilename.matcher( f.getName()).matches() ) {
+            } else if ( assetFilename.matcher( f.getName()).find() ) {
                 //remember( path, new File( sink, path));
             } else {
                 dirArticle.error( "Unhandled file: " + f.getName());
@@ -291,13 +300,15 @@ public final class Compiler {
                            } else {
                                reader.mark( 1000);
                                lines.add( line1);
-                               if ( line1.isBlank() ) {
+                               if (! line1.isBlank()) {
                                    lastNonWhite = lines.size();
                                }
                            }
-                           
-                           addContent( m.group(1), article, lines.subList( 0, lastNonWhite), line);
                        }
+                       addContent( m.group(1), 
+                                   article, 
+                                   lines.subList( 0, lastNonWhite), 
+                                   line);
                    }
                } else if (! line.isBlank()) {
                    article.error( "Expected directive: " + line);
@@ -313,8 +324,29 @@ public final class Compiler {
         this.generated.add( to.getAbsolutePath());
     }
 
-    private void regenerate(Article homePage) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    private void regenerate( Article article) throws Exception {
+        TemplateOutput output = new StringOutput();
+        this.templateEngine.render( "page.jte", article, output);
+        String html = output.toString();
+        html = article.postProcessHTML(html);
+        
+        File sinkFile = article.getSinkFile();
+        generated.add( sinkFile.getCanonicalPath());
+        
+        if ( sinkFile.exists() ) {
+            String old = Utils.read( sinkFile);
+            if (! old.trim().equals(html.trim())) {
+                Utils.write(html, sinkFile);
+            }
+        } else {
+            Utils.write( output.toString(), sinkFile);
+        }
+        
+        for (var page: article.children()) {
+            if (page instanceof Article article1) {
+                regenerate( article1);
+            }
+        }
     }
 
     private void remember( String path, Page page) {
@@ -390,7 +422,7 @@ public final class Compiler {
         }
     }
     
-    private boolean tidyUp( File dir) {
+    private boolean tidyUp( File dir) throws IOException {
         boolean keep = false;
         for (File child: dir.listFiles()) {
             if ( child.isDirectory() ) {
@@ -412,16 +444,16 @@ public final class Compiler {
         return keep;
     }
 
+    public String toPath( File file) throws IOException {
+        return Utils.toPath( sink, file);
+    }
+
     public File toSinkFile( String path) {
         return new File( sink, path);
     }
 
     public File toSourceFile( String path) {
         return new File( source, path);
-    }
-
-    public String toPath( File file) {
-        return Utils.toPath( sink, file);
     }
 
     public static void main(String[] args) {

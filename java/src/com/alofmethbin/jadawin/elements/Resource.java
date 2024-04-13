@@ -7,7 +7,7 @@ import java.io.File;
 import java.util.List;
 
 public class Resource extends Element {
-    public Resource( Article article, List<String> lines) {
+    public Resource( Article article, List<String> lines) throws Exception {
         super( article);
         String relpath = lines.get(0);
         
@@ -15,18 +15,16 @@ public class Resource extends Element {
         File sink   = article.toSinkFile( relpath);
         
         if ( source.exists() ) {
-            ByteArrayOutputStream sourceBuffer = new ByteArrayOutputStream();
-            Utils.load( source, sourceBuffer);
+            byte [] neu = Utils.load( source);
             
             if ( sink.exists() ) {
-                ByteArrayOutputStream sinkBuffer = new ByteArrayOutputStream();
-                Utils.load( sink, sinkBuffer);
+                byte [] old = Utils.load( sink);
                 
-                if (! Utils.compare( sourceBuffer, sinkBuffer)) {
-                    Utils.save( sourceBuffer, sink);
+                if (! Utils.compare( neu, old)) {
+                    Utils.save( neu, sink);
                 }
             } else {
-                Utils.save( sourceBuffer, sink);
+                Utils.save( neu, sink);
             }
         } else {
             error( "Unknown resource: " + relpath);

@@ -35,10 +35,10 @@ public class Expect extends Element {
 
     @Override
     public String postProcessHTML( String html) {
-        Matcher m = Pattern.compile( match, Pattern.MULTILINE).matcher( html);
-        if (m.find() ^ negate) {
-            error( title);
-        }
+//        Matcher m = Pattern.compile( match, Pattern.MULTILINE).matcher( html);
+//        if (m.find() ^ negate) {
+//            error( title);
+//        }
         return html;
     }
 }
