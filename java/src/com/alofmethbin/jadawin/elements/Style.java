@@ -16,7 +16,7 @@ public class Style extends Element {
             Constructor constr = clazz.getConstructor( new Class [0]);
             style = (StyleInterface) constr.newInstance( new Object [0]);
         } catch (ClassNotFoundException cnfe) {
-            error( "No such style: " + lines.get(0));
+            error( "Unimplemented style: " + lines.get(0));
         } catch (Exception ex) {    
             error( "Unimplemented style: " + lines.get(0));
         }

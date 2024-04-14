@@ -8,7 +8,7 @@ public class Heading extends Element {
 
     public Heading( Article article, List<String> lines) {
         super( article);
-        text  = lines.get(0);
+        text = checkLabel( lines.get(0));
     }
 
     @Override

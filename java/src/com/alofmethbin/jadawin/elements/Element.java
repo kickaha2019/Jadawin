@@ -35,7 +35,7 @@ public abstract class Element {
     }
 
     public void allowForInset() {
-        error( "Inset cannot precede " + typeName());
+        error( "Inset not followed by Text");
     }
     
     protected final String checkLabel( String toCheck) {

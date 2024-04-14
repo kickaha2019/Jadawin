@@ -18,11 +18,11 @@ public class Hidden extends BaseStyle {
     @Override
     public void prepare( Article article) {
         if (article.parent() == null) {
-            article.error( "Hidden page must be below root of website");
+            article.error( "Hidden page must be at root of website");
         }
 
         if ((article.parent() != null) && (article.parent().parent() != null)) {
-            article.error( "Hidden page must be below root of website");
+            article.error( "Hidden page must be at root of website");
         }
     }
 }

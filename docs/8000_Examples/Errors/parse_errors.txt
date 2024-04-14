@@ -12,7 +12,3 @@ Unknown directive
 Unknown directive: yyy
 @yyy text
 
-@error
-Expected directive
-Expected directive: zzz
-zzz

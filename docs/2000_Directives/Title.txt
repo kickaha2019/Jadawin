@@ -29,37 +29,22 @@ Title should appear in TITLE element
 Titles should not contain the " < > &grave; or *asterisk*
 characters.
 @error
-Duplicate Title definition
-Duplicate Title definition
-@error
 " in title
 Bad characters in title
 @title "
 @error
 < in title
 Bad characters in title
-@error
-Duplicate Title definition
-Duplicate Title definition
 @title <
 @error
 > in title
 Bad characters in title
-@error
-Duplicate Title definition
-Duplicate Title definition
 @title >
 @error
 ` in title
 Bad characters in title
-@error
-Duplicate Title definition
-Duplicate Title definition
 @title `
 @error
 * in title
 Bad characters in title
-@error
-Duplicate Title definition
-Duplicate Title definition
 @title *

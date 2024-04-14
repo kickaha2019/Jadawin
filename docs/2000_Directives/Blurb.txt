@@ -22,43 +22,25 @@ Blurb should appear as TITLE element
 Blurbs should not contain the " < > &grave; or *asterisk*
 characters and are limited in length to 50 characters.
 @error
-Duplicate Blurb definition
-Duplicate Blurb definition
-@error
 " in blurb
 Bad characters in blurb
 @blurb "
 @error
 < in blurb
 Bad characters in blurb
-@error
-Duplicate Blurb definition
-Duplicate Blurb definition
 @blurb <
 @error
 > in blurb
 Bad characters in blurb
-@error
-Duplicate Blurb definition
-Duplicate Blurb definition
 @blurb >
 @error
 ` in blurb
 Bad characters in blurb
-@error
-Duplicate Blurb definition
-Duplicate Blurb definition
 @blurb `
 @error
 * in blurb
 Bad characters in blurb
-@error
-Duplicate Blurb definition
-Duplicate Blurb definition
 @blurb *
-@error
-Duplicate Blurb definition
-Duplicate Blurb definition
 @error
 Blurb too long
 Blurb too long

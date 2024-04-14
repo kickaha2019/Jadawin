@@ -14,17 +14,13 @@ public class Inset extends Image {
         return false;
     }
 
+    @Override
     public boolean isInset() {
         return true;
     }
 
     @Override
     public boolean isOverlay() {
-        return true;
-    }
-
-    @Override
-    public boolean isSpecial() {
         return true;
     }
 }

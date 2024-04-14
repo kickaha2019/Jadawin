@@ -15,7 +15,14 @@ public class Icon extends Image {
     }
 
     @Override
-    public boolean isSpecial() {
-        return true;
+    public void prepare() {
+        Image image = article.getIcon();
+        if (image != this) {
+            if (image instanceof Icon) {
+                error( "Multiple icons");
+            } else {
+                error( "Icon must be first image in article");
+            }
+        }
     }
 }

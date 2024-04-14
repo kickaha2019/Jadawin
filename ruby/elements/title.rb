@@ -6,7 +6,10 @@ module Elements
 
     def initialize( compiler, article, lines)
       @text = lines[0]
-      article.error( 'Bad characters in title') if SPECIAL_CHARS =~ @text
+      if SPECIAL_CHARS =~ @text
+        article.error( 'Bad characters in title')
+        @discard = true
+      end
     end
 
     def multiline?

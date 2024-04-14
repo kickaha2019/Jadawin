@@ -110,7 +110,7 @@ public class Image extends Element {
             if (advice != null) {
                 if (advices.get( info.path) != null) {
                     if (! advice.equals( advices.get( info.path))) {
-                        error( "Inconsistent advice for image: " + defn);
+                        error( "Inconsistent advice for image: " + source);
                     }
                 } else {
                     advices.put( info.path, advice);

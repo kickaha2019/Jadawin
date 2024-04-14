@@ -14,6 +14,7 @@ public class Gallery extends Element {
     
     public Gallery( Article article, List<String> lines) throws IOException {
         super( article);
+        boolean valid = true;
         
         for (String line: lines) {
             Matcher m = crack.matcher(line);
@@ -23,11 +24,16 @@ public class Gallery extends Element {
                 if (! (image.hasError() || text.hasError())) {
                     images.add( image);
                     labels.add( text);
+                } else {
+                    valid = false;
                 }
+            } else if (! line.isBlank()) {
+                error( "No label for " + line.trim());
+                valid = false;
             }
         }
         
-        if ( images.isEmpty() ) {
+        if (valid && images.isEmpty()) {
             error( "Gallery empty");
         }
     }

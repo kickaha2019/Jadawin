@@ -89,7 +89,7 @@ public final class Compiler {
             return;
         }
 
-        if (!element.hasError()) {
+        if (! element.hasError()) {
             article.addContent(element, info.size() > 1);
         }
     }
@@ -216,7 +216,7 @@ public final class Compiler {
 
     public Page lookupPage( Page referrer, String path, String ref) {
         List<Page> matches = this.key2Pages.get( path);
-        if (matches.size() < 1) {
+        if (matches == null) {
             referrer.error( "Path not found for " + ref);
             return null;
         } else if (matches.size() > 1) {
@@ -351,14 +351,16 @@ public final class Compiler {
 
     private void remember( String path, Page page) {
         remember1( path, page);
-        for (int i = 1; i < path.length() - 1; i++) {
+        for (int i = 0; i < path.length() - 1; i++) {
             if ( path.substring(i, i+1).equals( "/") ) {
-                remember1( path.substring(i), page);
+                remember1( path.substring(i+1), page);
             }
         }
     }
 
     private void remember1( String path, Page page) {
+        path = path.replaceFirst( "\\.txt$", "");
+                
         if (! key2Pages.containsKey( path)) {
             List<Page> list = new ArrayList<>();
             key2Pages.put( path, list);

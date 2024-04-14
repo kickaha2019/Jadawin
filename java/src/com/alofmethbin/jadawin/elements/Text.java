@@ -49,7 +49,7 @@ public class Text extends Element {
                 synchronized ( Text.class ) {
                     List<String> urls = name2Urls.get( text);
                     if (urls == null) {
-                        name2Urls.put( url, urls = new ArrayList<>());
+                        name2Urls.put( text, urls = new ArrayList<>());
                     }
                     urls.add( url);
                 }
@@ -61,9 +61,9 @@ public class Text extends Element {
             
             if (url == null) {
                 synchronized ( Text.class ) {
-                    List<String> urls = name2Urls.get(url);
+                    List<String> urls = name2Urls.get( text);
                     if (urls == null) {
-                        error( "Undefined target: " + url);
+                        error( "Undefined target: " + text);
                     } else {
                         for (int i = 1; i < urls.size(); i++) {
                             if (! urls.get(i-1).equals( urls.get(i))) {
@@ -80,7 +80,6 @@ public class Text extends Element {
                 if (! Utils.isAbsoluteUrl( url)) {
                     Page page = article.lookupPage( url);
                     if (page == null) {
-                        article.error( "This should not appear");
                         url = null;
                     } else {
                         url = Utils.relativePath( article.getSinkFile(), page.getSinkFile());

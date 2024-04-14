@@ -33,10 +33,11 @@ public class Tag extends Element {
     public static void checkAllRendered() {
         for (List<Tag> list: tags.values()) {
             for (Tag t: list) {
+                if ( t.hasError() ) {continue;}
                 if (t.rendered < 1) {
-                    t.article.error( "Tag " + t.tag + " not rendered");
+                    t.article.error( "Location " + t.tag + " not rendered");
                 } else if (t.rendered > 1) {
-                    t.article.error( "Tag " + t.tag + " multiply rendered");
+                    t.article.error( "Location " + t.tag + " multiply rendered");
                 }
             }
         }

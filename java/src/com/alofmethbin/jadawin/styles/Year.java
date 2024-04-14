@@ -63,17 +63,33 @@ public class Year extends Events {
             }
         }
         
-        String title = article.getTitle();
-        int year = Integer.parseInt( title);
-        if (! title.equals( Integer.toString(year))) {
+        String title = article.getName();
+        try {
+            int year = Integer.parseInt( title);
+            if (! title.equals( Integer.toString(year))) {
+                article.error( "Expected year as title");
+                return;
+            }
+            
+            for (Page child: article.children()) {
+                LocalDate d = child.getDate();
+                if (d != null) {
+                    if (d.getYear() != year) {
+                        child.error( "Expected " + year + " date");
+                    }
+                } else {
+                    child.error( "Expected date");
+                }
+            }
+        
+            if ( articlesByYear.containsKey( year) ) {
+                for (Article other: articlesByYear.get(year)) {
+                    article.addChild( new Link( other, null, other.getTitle()));
+                }
+            }
+        } catch (NumberFormatException nfe) {
             article.error( "Expected year as title");
             return;
-        }
-        
-        if ( articlesByYear.containsKey( year) ) {
-            for (Article other: articlesByYear.get(year)) {
-                article.addChild( new Link( other, null, other.getTitle()));
-            }
         }
     }    
 }

@@ -1,5 +1,6 @@
 package com.alofmethbin.jadawin.styles;
 
-public class Menu extends BaseStyle {
+import com.alofmethbin.jadawin.Article;
 
+public class Menu extends BaseStyle {
 }

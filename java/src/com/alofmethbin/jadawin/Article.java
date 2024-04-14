@@ -282,6 +282,7 @@ public final class Article implements Page {
             }
         } catch (Exception bang) {
             error( bang.getMessage());
+            //throw bang;
         }
         
         List<Page> subArticles = new ArrayList<>();

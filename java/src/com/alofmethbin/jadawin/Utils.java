@@ -114,8 +114,8 @@ public class Utils {
     }
 
     public static String relativePath( File from, File to) {
-        String [] fromParts = from.list();
-        String [] toParts   = to.list();
+        String [] fromParts = from.getParentFile().list();
+        String [] toParts   = to.getParentFile().list();
         
         int diffFrom = 0;
         while ((diffFrom < fromParts.length) && 
@@ -134,6 +134,8 @@ public class Utils {
             b.append( toParts[i]);
         }
         
+        if (! b.isEmpty()) {b.append( "/");}
+        b.append( to.getName());
         return b.toString();
     }
 

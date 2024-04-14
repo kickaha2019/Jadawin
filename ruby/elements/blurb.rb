@@ -6,8 +6,14 @@ module Elements
 
     def initialize( compiler, article, lines)
       @text = lines.join( ' ')
-      article.error( 'Bad characters in blurb') if SPECIAL_CHARS =~ @text
-      article.error( 'Blurb too long') if @text.size > 50
+      if SPECIAL_CHARS =~ @text
+        article.error( 'Bad characters in blurb')
+        @discard = true
+      end
+      if @text.size > 50
+        article.error( 'Blurb too long')
+        @discard = true
+      end
     end
 
     def page_content?
