@@ -41,6 +41,8 @@ public class List extends Element {
             if ( points.isEmpty() ) {
                 error( "Empty list");
             }
+        } else if (! points.isEmpty()) {
+            error( "Bad list");
         }
     }
 

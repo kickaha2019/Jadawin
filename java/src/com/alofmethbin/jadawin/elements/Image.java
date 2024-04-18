@@ -88,16 +88,10 @@ public class Image extends Element {
             return;
         }
         
-        File sourceFile = article.toSourceFile( source);
-        
         String path = article.toPath( article.toSinkFile( source));
         info = infos.get( path);
         if (info == null) {
-            if ( sourceFile.exists() ) {
-                error( "Case mismatch for " + defn);
-            } else {
-                error( "File not found: " + defn);
-            }
+            error( "File not found: " + defn);
             return;
         }
            

@@ -17,6 +17,11 @@ public class BaseStyle implements StyleInterface {
     }
 
     @Override
+    public String indexStyle(Article aThis) {
+        return "";
+    }
+
+    @Override
     public String indexTitle( Page page) {
         return Utils.prettify( page.getTitle());
     }

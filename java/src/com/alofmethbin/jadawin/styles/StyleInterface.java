@@ -5,6 +5,7 @@ import com.alofmethbin.jadawin.Page;
 import java.util.List;
 
 public interface StyleInterface {
+    public String indexStyle(Article aThis);
     public String indexTitle( Page page);
     public boolean isIndex();
     public boolean isLeaf( Article article);

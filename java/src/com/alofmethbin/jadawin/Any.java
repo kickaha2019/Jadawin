@@ -1,5 +1,6 @@
 package com.alofmethbin.jadawin;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -30,6 +31,14 @@ public class Any {
         return values;
     }
     
+    public Map<String,int [][]> asInts2Map() {
+        Map<String,int [][]> map = new HashMap<>();
+        for (Object key: ((Map) object).keySet()) {
+            map.put( (String) key, get( (String) key).asInts2());
+        }
+        return map;
+    }
+    
     public long asLong() {
         if (object instanceof Integer) {return (Integer) object;}
         return (Long) object;
@@ -37,6 +46,14 @@ public class Any {
     
     public String asString() {
         return (String) object;
+    }
+    
+    public Map<String,String> asStringMap() {
+        Map<String,String> map = new HashMap<>();
+        for (Object key: ((Map) object).keySet()) {
+            map.put( (String) key, get( (String) key).asString());
+        }
+        return map;
     }
     
     public Any get( int index) {

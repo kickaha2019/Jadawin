@@ -1,4 +1,5 @@
 @title  Example of Gallery page
+@tag    Tagged
 @text
 Example of Gallery page
 

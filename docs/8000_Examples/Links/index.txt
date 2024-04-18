@@ -2,8 +2,8 @@
 @text
 Example of Links page
 
-@links Hidden
+@links Tagged
 
 @expect
 Tagged pages should appear in the index for the @links directive
-<DIV CLASS="index_text t0">&raquo;&nbsp;<A HREF=".*Hidden.html\?origin=Hidden">Hidden</A>
+<DIV CLASS="index_text t0">&raquo;&nbsp;<A HREF=".*/Gallery/index.html\?origin=Tagged">Example of Gallery page</A>

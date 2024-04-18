@@ -35,6 +35,7 @@ public final class Compiler {
     private List<String> errors = new ArrayList<>();
     private File source, sink;
     private Any config;
+    
     private Set<String> words, names, newWords;
     private Set<String> generated = new HashSet<>();
     private Map<String, List<Page>> key2Pages = new HashMap<>();
@@ -82,10 +83,6 @@ public final class Compiler {
         } catch (Exception ex) {
             String msg = ex.getMessage();
             article.error( (msg != null) ? msg : ex.getClass().getName());
-        try {
-            construct.newInstance(new Object[]{article, info});
-            
-        } catch (Exception ex1) {}
             return;
         }
 
@@ -325,8 +322,20 @@ public final class Compiler {
     }
 
     private void regenerate( Article article) throws Exception {
+        regenerate( config.get( "colours").asStringMap(),
+                    config.get( "dimensions").asInts2Map(),
+                    article);
+    }
+    
+    private void regenerate( Map<String,String> colours,
+                             Map<String,int [][]> dimensions,
+                             Article article) throws Exception {
         TemplateOutput output = new StringOutput();
-        this.templateEngine.render( "page.jte", article, output);
+        Map<String,Object> args= new HashMap<>();
+        args.put( "colours", colours);
+        args.put( "dimensions", dimensions);
+        args.put( "article", article);
+        this.templateEngine.render( "page.jte", args, output);
         String html = output.toString();
         html = article.postProcessHTML(html);
         
@@ -344,7 +353,7 @@ public final class Compiler {
         
         for (var page: article.children()) {
             if (page instanceof Article article1) {
-                regenerate( article1);
+                regenerate( colours, dimensions, article1);
             }
         }
     }

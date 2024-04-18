@@ -9,9 +9,3 @@ Empty list
 Empty list
 @list
 
-@error
-List both bulletted and key/value
-Bad list
-@list
-Bullet
-Key|Value

@@ -1,4 +1,3 @@
 @text
-This page should appear in the index but
-[hidden page](hidden) shouldn't.
+This page should appear in the index.
 

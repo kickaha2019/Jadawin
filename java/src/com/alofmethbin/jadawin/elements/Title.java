@@ -11,6 +11,11 @@ public class Title extends Element {
         text = checkSpecialChars( lines.get(0));
     }
 
+    @Override
+    public boolean isMultiline() {
+        return false;
+    }
+
     public String text() {
         return text;
     }

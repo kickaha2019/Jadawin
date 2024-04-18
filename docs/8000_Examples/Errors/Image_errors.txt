@@ -8,10 +8,6 @@ Inconsistent advice for image
 Inconsistent advice for image: ../../banana.png
 @image ../../banana.png;bottom
 @error
-Case mismatch?
-Case mismatch for ../../Banana.png
-@image ../../Banana.png
-@error
 Image file not found
 File not found: xxx.jpeg
 @image xxx.jpeg

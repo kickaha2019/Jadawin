@@ -5,12 +5,18 @@ The first line following the `@error`
 describes the expected error, the second line gives 
 the expected error text.
 
-So an expected error is that hidden pages should be
-in the root directory of the source files.
-In [Hidden style](8000_Examples/Hidden_style/hidden)
+So an expected error is that date declarations like:
+
+@code
+  @date xxx
+
+@text
+should give an error. In
+[Date](2000_Directives/Date)
 there is an @error test:
 
 @code
   @error
-  Hidden page must be at root of website
-  Hidden page must be at root of website
+  Bad date
+  Bad date [xxx]
+  @date     xxx

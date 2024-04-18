@@ -10,7 +10,7 @@ The available styles are:
 |`DatedEvents`|Like `Events` but year prepended to index titles|Not used currently|
 |`Document`|Text only indexes|[Example](Document_style)|
 |`Events`|Like `Base` but index sorted by date|[Example](Events_style)|
-|`Hidden`|Page hidden from site menu structure|[Example](hidden)|
+|`Hidden`|Page hidden from site menu structure|
 |`Menu`|Like `Base` but index displayed as a grid of rectangles|[Example](Menu_style)|
 |`News`|Like `Base` but most recent N dated articles beneath page parent displayed in descending date|[Example](News_style)
 |`NoIndex`|Suppress index appearing on page|[Example](NoIndex_style)

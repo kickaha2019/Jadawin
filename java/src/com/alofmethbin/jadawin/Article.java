@@ -92,6 +92,14 @@ public final class Article implements Page {
         return new ArrayList( children);
     }
     
+    public List<Element> content() {
+        return new ArrayList( content);
+    }
+
+    public int [][] dimensions( String key) {
+        return compiler.dimensions(key);
+    }
+    
     public void discardFutureChildren() {
         List<Page> old = children;
         children       = new ArrayList<>();
@@ -149,6 +157,18 @@ public final class Article implements Page {
         }
         
         return null;
+    }
+
+    public String getIndexStyle() {
+        return getStyle().indexStyle( this);
+    }
+    
+    public int getLineCount() {
+        int count = 0;
+        for (Element e: content) {
+            count += e.lineCount();
+        }
+        return count;
     }
     
     public String getName() {
@@ -217,10 +237,21 @@ public final class Article implements Page {
         }
         return false;
     }
+
+    public boolean hasDate() {
+        return getDate() != null;
+    }
     
     public boolean hasGrandChildren() {
         for (Page child: children) {
             if ( child.hasChildren() ) {return true;}
+        }
+        return false;
+    }
+    
+    public boolean hasOverlay() {
+        for (Element e: this.content) {
+            if ( e.isOverlay() ) {return true;}
         }
         return false;
     }
