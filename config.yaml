@@ -9,3 +9,24 @@ image_info_cache: /Users/peter/Caches/Website
 menu_items_per_line: [3,3,5,5]
 num_menu_styles: 7
 jte: /Users/peter/Jadawin/java/jte
+menu_item:
+  radius: [10, 10, 10, 30]
+  margin: [15, 15, 15, 22]
+  width:  [200, 200, 200, 300]
+  height: [120, 120, 150, 225]
+  limit:  [30, 30, 30, 45]
+colours:
+  anchor:     "#00CCCC"
+  body:       "#101010"
+  code:       "#FFA500"
+  emphasized: magenta
+  here:       white
+  hover:      "#AAFFFF"
+  index:      "#303030"
+  page:       "#303030"
+  quoted:     cyan
+  text:       "#DDDD00"
+widths:
+  browser: [360, 768, 1280, 1920]
+  content: [350, 748, 1250, 1880]
+
