@@ -1,8 +1,8 @@
 {% if page.origins %}
-{% include 't_breadcrumbs_body', page:page %}
+{% include 't_breadcrumbs_body', breadcrumbs:page.breadcrumbs, origin:"default" %}
 {% for origin in page.origins %}
-  {% include 't_breadcrumbs_body', page:page %}
+  {% include 't_breadcrumbs_body', breadcrumbs:origin[1], origin:origin[0] %}
 {% endfor %}
 {% else %}
-{% include 't_breadcrumbs_body', page:page %}
+{% include 't_breadcrumbs_body', breadcrumbs:page.breadcrumbs, origin:false %}
 {% endif %}

@@ -42,7 +42,7 @@ module Elements
         {'type'  => 'list',
          'index' => next_index( 'list', article),
          'rows'  => @list.collect do |value|
-           {'data' => value.to_data_single_paragraph( compiler, article)}
+           {'data' => [value.to_data_single_paragraph( compiler, article)]}
          end
         }
       else
@@ -50,8 +50,8 @@ module Elements
          'index' => next_index( 'table', article),
          'rows'  => @table.keys.collect do |key|
            text = @table[key].to_data_single_paragraph( compiler, article)
-           [{'data' => {'type' => 'raw', 'text' => key}, 'bold' => true,  'align' => 'left'},
-            {'data' => text, 'bold' => false, 'align' => 'left'}]
+           [{'data' => [{'type' => 'raw', 'text' => key}], 'bold' => true,  'align' => 'left'},
+            {'data' => [text], 'bold' => false, 'align' => 'left'}]
          end
         }
       end

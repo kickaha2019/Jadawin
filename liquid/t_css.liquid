@@ -78,10 +78,10 @@ table td {padding: 5px; border-style: solid;
 table {margin-left: auto; margin-right: auto; margin-bottom: 1em}
 td p {margin: 0px}
 
-{% if content %}
-  {% include 't_content_css', with widths:widths, colours:colours, content:content, dimensions:dimensions, size:0 %}
+{% if page.content %}
+  {% include 't_content_css', with widths:widths, colours:colours, content:page.content, dimensions:dimensions, size:0 %}
 {% endif %}
-{% include 't_image_indexes_css' with colours:colours, image_index:image_index, size:0 %}
+{% include 't_image_indexes_css' with colours:colours, image_index:page.image_index, size:0 %}
 {% include 't_rect_indexes_css' with colours:colours, rect_index:page.rect_index, size:0 %}
 
 @media all and (min-width: {{ widths.browser[1] }}px) {
@@ -100,10 +100,10 @@ td p {margin: 0px}
   .story_index {display: flex}
   .story {flex-grow: 1; max-width: {{ widths.content[1] }}px}
   div.legend {font-size: 24px;}
-  {% if content %}
-    {% include 't_content_css', colours:colours, content:content, dimensions:dimensions, size:1 %}
+  {% if page.content %}
+    {% include 't_content_css', colours:colours, content:page.content, dimensions:dimensions, size:1 %}
   {% endif %}
-  {% include 't_image_indexes_css' with colours:colours, image_index:image_index, size:1 %}
+  {% include 't_image_indexes_css' with colours:colours, image_index:page.image_index, size:1 %}
   {% include 't_rect_indexes_css' with colours:colours, rect_index:page.rect_index, size:1 %}
 }
 
@@ -121,10 +121,10 @@ td p {margin: 0px}
   div.legend {font-size: 32px;}
   .index {width: 196px}
   .t0, .t1, h1 .code {font-size: 24px}
-  {% if content %}
-    {% include 't_content_css', colours:colours, content:content, dimensions:dimensions, size:2 %}
+  {% if page.content %}
+    {% include 't_content_css', colours:colours, content:page.content, dimensions:dimensions, size:2 %}
   {% endif %}
-  {% include 't_image_indexes_css' with colours:colours, image_index:image_index, size:2 %}
+  {% include 't_image_indexes_css' with colours:colours, image_index:page.image_index, size:2 %}
   {% include 't_rect_indexes_css' with colours:colours, rect_index:page.rect_index, size:2 %}
 }
 
@@ -141,10 +141,10 @@ td p {margin: 0px}
   .story {max-width: {{ widths.content[3] }}px}
   div.legend {font-size: 36px;}
   .index {width: 244px}
-  {% if content %}
-    {% include 't_content_css', colours:colours, content:content, dimensions:dimensions, size:3 %}
+  {% if page.content %}
+    {% include 't_content_css', colours:colours, content:page.content, dimensions:dimensions, size:3 %}
   {% endif %}
-  {% include 't_image_indexes_css' with colours:colours, image_index:image_index, size:3 %}
+  {% include 't_image_indexes_css' with colours:colours, image_index:page.image_index, size:3 %}
   {% include 't_rect_indexes_css' with colours:colours, rect_index:page.rect_index, size:3 %}
 }
 

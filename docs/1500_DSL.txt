@@ -18,7 +18,8 @@ or as:
 @code
   @title
   Title for page
-  
+
+@text
 A special directive `@style` controls how the
 HTML page looks, particularly for how index
 pages are rendered.

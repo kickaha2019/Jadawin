@@ -16,7 +16,10 @@ function hideOverlay() {
 </script>
 {% endif %}
 <style>
-{% include 't_css' with colours:config.colours, widths:config.widths, page:page %}
+{% include 't_css' with colours:config.colours,
+                        widths:config.widths,
+                        page:page,
+                        dimensions:config.dimensions %}
 </style>
 {% include 't_breadcrumbs_origin_head' with page:page %}
 </HEAD><BODY>
@@ -43,7 +46,7 @@ function hideOverlay() {
   {% endif %}
   {% include 't_text_indexes' with text_index:page.text_index,
                                    text_index_size:page.text_index_size %}
-  {% include 't_image_indexes' with config:config, page:page %}
+  {% include 't_image_indexes' with image_index:page.image_index %}
   {% include 't_rect_indexes' with rect_index:page.rect_index %}
 </DIV>
 </DIV></BODY></HTML>

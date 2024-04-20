@@ -1,2 +1,3 @@
 @style  Menu
+@title  Home
 @blurb  A static website generator

@@ -6,7 +6,7 @@
         <PRE CLASS="code">{{ element.text }}</PRE>
       {% when "css" %}
       {% when "gallery" %}
-        {% include 't_gallery' %}
+        {% include 't_gallery' with gallery:element %}
       {% when "heading" %}
         <DIV CLASS="heading">{{ element.text }}</DIV>
       {% when "image" %}
@@ -17,7 +17,7 @@
                               clazz:element.clazz,
                               overlay:element.overlay %}
       {% when "list" %}
-        {% include 't_list' %}
+        {% include 't_list' with list:element %}
       {% when "none" %}
       {% when "paragraph" %}
         <P{% if element.id %} ID="{{ element.id }}"{% endif %}>{% include 't_content' with element.data %}</P>
