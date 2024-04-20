@@ -30,7 +30,7 @@ module Elements
 
     def columns
       @columns.collect do |column|
-        {'data' => {'type' => 'raw', 'text' => column}, 'bold' => true, 'align' => 'center'}
+        {'data' => [{'type' => 'raw', 'text' => column}], 'bold' => true, 'align' => 'center'}
       end
     end
 
@@ -55,11 +55,11 @@ module Elements
       fields = r.collect do |field|
         text = field.to_data_single_paragraph( compiler, article)
         align = is_number?( text) ? 'right' : 'left'
-        {'data' => text, 'bold' => false, 'align' => align}
+        {'data' => [text], 'bold' => false, 'align' => align}
       end
 
       while fields.size < @columns.size
-        fields << {'data' => {'type' => 'none'}, 'bold' => false, 'align' => 'left'}
+        fields << {'data' => [{'type' => 'none'}], 'bold' => false, 'align' => 'left'}
       end
 
       fields

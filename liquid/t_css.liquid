@@ -1,7 +1,4 @@
-{% assign browser_width  = "360, 768, 1280, 1920" | split: ',' %}
-{% assign content_width  = "350, 748, 1250, 1880" | split: ',' %}
-
-body {background: {{ body_colour }}; background-image: none}
+body {background: {{ colours.body }}; background-image: none}
 p {margin-top: 0px}
 
 {% if overlay %}
@@ -17,10 +14,10 @@ p {margin-top: 0px}
                 background: rgba(0,0,0,0.01);}
 {% endif %}
 
-.page {width: 360px; background: {{ page_colour }}; box-sizing: border-box;
+.page {width: 360px; background: {{ colours.page }}; box-sizing: border-box;
        border-radius: 5px; margin-left: auto; margin-right: auto;
        min-height: 96vh}
-.content {width: {{ content_width[0] }}px; margin-left: auto; margin-right: auto;
+.content {width: {{ widths.content[0] }}px; margin-left: auto; margin-right: auto;
           margin-top: 0px; margin-bottom: 0px; padding-top: 5px}
 .payload {display: flex;
           flex-flow: column nowrap;
@@ -32,24 +29,24 @@ p {margin-top: 0px}
 .centre {margin-left: auto; margin-right: auto; display: block;
          margin-top: 0px; margin-bottom: 1em;}
 
-.story {min-width: 185px; max-width: {{ content_width[0] }}px; padding-top: 10px;
+.story {min-width: 185px; max-width: {{ widths.content[0] }}px; padding-top: 10px;
         box-sizing: border-box; overflow: hidden}
 
 div.title      {display: flex; justify-content: space-between;
                 align-items: center}
-div.title span {text-decoration: underline; color: {{ text_colour }} }
+div.title span {text-decoration: underline; color: {{ colours.text }} }
 div.title div  {text-align: center}
 div.title a    {text-decoration: none}
 div.legend     {text-align: center; color: white; font-size: 18px;}
 
-.text_indexes {padding-top: 10px; padding-bottom: 10px; background: {{ index_colour }}}
+.text_indexes {padding-top: 10px; padding-bottom: 10px; background: {{ colours.index }}}
 .index {display: flex; align-items: center; justify-content: center;
         flex-flow: column nowrap; width: 128px;
-        border-style: solid; border-width: 1px; border-color: {{ page_colour }};
+        border-style: solid; border-width: 1px; border-color: {{ colours.page }};
         border-radius: 5px; padding: 3px; margin: 5px}
 .dummy {height: 1px}
 .index div {width: 100%; text-align: center}
-.border_white {border-color: {{ here_colour }}}
+.border_white {border-color: {{ colours.here }}}
 .index_text {width: 100%;}
 
 .story_index {display: none; padding-bottom: 25px;
@@ -60,40 +57,40 @@ div.legend     {text-align: center; color: white; font-size: 18px;}
 .size3, .size2, .size1 {display: none}
 .size0 {display: block}
 
-.t0, .t1, h1 {font-family: Tahoma, sans-serif; font-size: 14px; color: {{ text_colour }}}
-a, a div {color: {{ anchor_colour }}}
+.t0, .t1, h1 {font-family: Tahoma, sans-serif; font-size: 14px; color: {{ colours.text }}}
+a, a div {color: {{ colours.anchor }}}
 .t0 {text-decoration: none}
-a:hover, a:hover div {color: {{ hover_colour }}}
-span, b {color: {{ here_colour }}}
+a:hover, a:hover div {color: {{ colours.hover }}}
+span, b {color: {{ colours.here }}}
 
-em {font-style: normal; color: {{ emphasized_colour. }}}
-.code {background: {{ here_colour }}; color: {{ code_colour }};
+em {font-style: normal; color: {{ colours.emphasized }}}
+.code {background: {{ colours.here }}; color: {{ colours.code }};
        font-size: 14px; font-family: Courier, monospace}
 h1 {width: 100%; text-align: center; text-decoration: underline; font-weight: normal}
 
 table {border-spacing: 0px; border-collapse: collapse}
 table th {padding: 5px; border-style: solid;
-          border-width: 1px; border-color: {{ here_colour }};
+          border-width: 1px; border-color: {{ colours.here }};
           font-weight: bold; text-align: center}
 table td {padding: 5px; border-style: solid;
-          border-width: 1px; border-color: {{ here_colour }}}
+          border-width: 1px; border-color: {{ colours.here }}}
 
 table {margin-left: auto; margin-right: auto; margin-bottom: 1em}
 td p {margin: 0px}
 
 {% if content %}
-  {% include 'content_css', content:content, dimensions:dimensions, size:0 %}
+  {% include 't_content_css', with widths:widths, colours:colours, content:content, dimensions:dimensions, size:0 %}
 {% endif %}
-{% include 'image_indexes_css' with image_index:image_index, size:0 %}
-{% include 'rect_indexes_css' with rect_indexes:rect_indexes, size:0 %}
+{% include 't_image_indexes_css' with colours:colours, image_index:image_index, size:0 %}
+{% include 't_rect_indexes_css' with colours:colours, rect_index:page.rect_index, size:0 %}
 
-@media all and (min-width: {{ browser_width[1] }}px) {
+@media all and (min-width: {{ widths.browser[1] }}px) {
 {% if overlay %}
   #overlay_image img {max-width: {{ dimensions.overlay[1][0] }}px;
                       max-height: {{ dimensions.overlay[1][1] }}px}
 {% endif %}
-  div.page {width: {{ browser_width[1] }}px; border-radius: 10px; padding-top: 10px}
-  .content {width: {{ content_width[1] }}px; padding-top: 10px}
+  div.page {width: {{ widths.browser[1] }}px; border-radius: 10px; padding-top: 10px}
+  .content {width: {{ widths.content[1] }}px; padding-top: 10px}
   .size0 {display: none}
   .size1 {display: flex}
   .t0, .t1, h1, .news-date, .code {font-size: 20px}
@@ -101,54 +98,54 @@ td p {margin: 0px}
   .document {flex-direction: row-reverse; justify-content: space-between}
   .text_indexes {margin-right: 20px}
   .story_index {display: flex}
-  .story {flex-grow: 1; max-width: {{ content_width[1] }}px}
+  .story {flex-grow: 1; max-width: {{ widths.content[1] }}px}
   div.legend {font-size: 24px;}
   {% if content %}
-    {% include 'content_css', content:content, dimensions:dimensions, size:1 %}
+    {% include 't_content_css', colours:colours, content:content, dimensions:dimensions, size:1 %}
   {% endif %}
-  {% include 'image_indexes_css' with image_index:image_index, size:1 %}
-  {% include 'rect_indexes_css' with rect_indexes:rect_indexes, size:1 %}
+  {% include 't_image_indexes_css' with colours:colours, image_index:image_index, size:1 %}
+  {% include 't_rect_indexes_css' with colours:colours, rect_index:page.rect_index, size:1 %}
 }
 
-@media all and (min-width: {{ browser_width[2] }}px) {
+@media all and (min-width: {{ widths.browser[2] }}px) {
 {% if overlay %}
   #overlay_image img {max-width: {{ dimensions.overlay[2][0] }}px;
                       max-height: {{ dimensions.overlay[2][1] }}px}
 {% endif %}
-  div.page {width: {{ browser_width[2] }}px; border-radius: 15px; padding-top: 15px}
-  .content {width: {{ content_width[2] }}px; padding-top: 15px}
+  div.page {width: {{ widths.browser[2] }}px; border-radius: 15px; padding-top: 15px}
+  .content {width: {{ widths.content[2] }}px; padding-top: 15px}
   .size1 {display: none}
   .size2 {display: block}
   .text_indexes {margin-right: 40px}
-  .story {max-width: {{ content_width[2] }}px; padding-left: 0px}
+  .story {max-width: {{ widths.content[2] }}px; padding-left: 0px}
   div.legend {font-size: 32px;}
   .index {width: 196px}
   .t0, .t1, h1 .code {font-size: 24px}
   {% if content %}
-    {% include 'content_css', content:content, dimensions:dimensions, size:2 %}
+    {% include 't_content_css', colours:colours, content:content, dimensions:dimensions, size:2 %}
   {% endif %}
-  {% include 'image_indexes_css' with image_index:image_index, size:2 %}
-  {% include 'rect_indexes_css' with rect_indexes:rect_indexes, size:2 %}
+  {% include 't_image_indexes_css' with colours:colours, image_index:image_index, size:2 %}
+  {% include 't_rect_indexes_css' with colours:colours, rect_index:page.rect_index, size:2 %}
 }
 
-@media all and (min-width: {{ browser_width[3] }}px) {
+@media all and (min-width: {{ widths.browser[3] }}px) {
 {% if overlay %}
   #overlay_image img {max-width: {{ dimensions.overlay[3][0] }}px;
                       max-height: {{ dimensions.overlay[3][1] }}px}
 {% endif %}
-  div.page {width: {{ browser_width[3] }}px; border-radius: 20px; padding-top: 20px}
-  .content {width: {{ content_width[3] }}px; padding-top: 20px}
+  div.page {width: {{ widths.browser[3] }}px; border-radius: 20px; padding-top: 20px}
+  .content {width: {{ widths.content[3] }}px; padding-top: 20px}
   .size2 {display: none}
   .size3 {display: block}
   .t0, .t1, h1, .code {font-size: 30px}
-  .story {max-width: {{ content_width[3] }}px}
+  .story {max-width: {{ widths.content[3] }}px}
   div.legend {font-size: 36px;}
   .index {width: 244px}
   {% if content %}
-    {% include 'content_css', content:content, dimensions:dimensions, size:3 %}
+    {% include 't_content_css', colours:colours, content:content, dimensions:dimensions, size:3 %}
   {% endif %}
-  {% include 'image_indexes_css' with image_index:image_index, size:3 %}
-  {% include 'rect_indexes_css' with rect_indexes:rect_indexes, size:3 %}
+  {% include 't_image_indexes_css' with colours:colours, image_index:image_index, size:3 %}
+  {% include 't_rect_indexes_css' with colours:colours, rect_index:page.rect_index, size:3 %}
 }
 
 div.children {margin-left: auto; margin-right: auto}
@@ -157,5 +154,5 @@ div.centre     {text-align: center; padding-bottom: 10px}
 div.heading    {text-align: center; text-decoration: underline; padding-bottom: 20px}
 div.text       {padding-bottom: 20px; text-align: left}
 
-{% include 'navigation_css' %}
+{% include 't_navigation_css' with widths:widths, colours:colours %}
 

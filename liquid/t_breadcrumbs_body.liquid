@@ -1,0 +1,21 @@
+{% if page.breadcrumbs %}
+  {% if page.origin %}
+    <DIV CLASS="breadcrumbs t0 content o_{{ page.origin }}">
+  {% else %}
+    <DIV CLASS="breadcrumbs t0 content">
+  {% endif %}
+  {% for i in (0..9) %}
+    {% if page.breadcrumbs[i] %}
+      {% if i > 0 %}
+        &raquo;
+      {% endif %}
+      <A HREF="{{ page.breadcrumbs[i].path }}">{{ page.breadcrumbs[i].title }}</A>
+    {% else %}
+      {% break %}
+    {% endif %}
+  {% endfor %}
+  {% unless page.previous_page or page.next_page %}
+    &raquo; <SPAN>{{ page.page_title -}}</SPAN>
+  {% endunless %}
+  </DIV>
+{% endif %}

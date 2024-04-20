@@ -1,0 +1,19 @@
+{% for element in content %}
+    {% case element.type %}
+      {% when "code" %}
+        {% include 't_code_css', code:element, size:size %}
+      {% when "css" %}
+        {{ element.text }}
+      {% when "gallery" %}
+        {% include 't_gallery_css', gallery:element, dimensions:dimensions, size:size %}
+      {% when "heading" %}
+        {% include 't_heading_css', colours:colours, heading:element %}
+      {% when "image" %}
+        {% include 't_image_css', image:element.details, id:element.id, dimensions:dimensions, size:size %}
+      {% when "svg" %}
+        {% include 't_svg_css', widths:widths, svg:element, dimensions:dimensions, size:size %}
+      {% when "table" %}
+        {% include 't_table_css', table:element, size:size %}
+    {% endcase %}
+{% endfor %}
+

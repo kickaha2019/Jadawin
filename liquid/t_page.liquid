@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<HTML LANG="en"><HEAD><TITLE>{{ page.blurb }}</TITLE>
+<meta name="description" content="{{ page.blurb }}">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta http-equiv="Content-Type" content="text/html;charset=utf-8" >
+{% if page.overlay %}
+<script>
+function showOverlay(image_path) {
+  var img = '<IMG SRC="' + image_path + '" onclick="hideOverlay()">';
+  document.getElementById("overlay").style.display = 'flex';
+  document.getElementById("overlay_image").innerHTML = img;
+}
+function hideOverlay() {
+  document.getElementById("overlay").style.display = 'none';
+}
+</script>
+{% endif %}
+<style>
+{% include 't_css' with colours:config.colours, widths:config.widths, page:page %}
+</style>
+{% include 't_breadcrumbs_origin_head' with page:page %}
+</HEAD><BODY>
+{% if page.overlay %}
+<DIV ID="overlay" CLASS="overlay" onclick="hideOverlay()">
+  <DIV CLASS="overlay_back size1 size2 size3" onclick="hideOverlay()"></DIV>
+  <DIV CLASS="size1 size2 size3" ID="overlay_image" onclick="hideOverlay()"></DIV>
+  <DIV CLASS="overlay_front size1 size2 size3" onclick="hideOverlay()"></DIV>
+</DIV>
+{% endif %}
+<DIV CLASS="page">
+<DIV CLASS="legend">Jadawin - a simple static site generator</DIV>
+{% include 't_breadcrumbs_origin_body' with config:config, page:page %}
+<DIV CLASS="payload content {{ page.index_style }}">
+  {% if page.content %}
+    <DIV CLASS="story t1">
+      {% include 't_title' with page:page %}
+      {% include 't_story_indexes' with config:config, page:page %}
+      {% include 't_content', content:page.content %}
+      {% if page.line_count > 20 %}
+        {% include 't_navigation' with config:config, page:page %}
+      {% endif %}
+    </DIV>
+  {% endif %}
+  {% include 't_text_indexes' with text_index:page.text_index,
+                                   text_index_size:page.text_index_size %}
+  {% include 't_image_indexes' with config:config, page:page %}
+  {% include 't_rect_indexes' with rect_index:page.rect_index %}
+</DIV>
+</DIV></BODY></HTML>

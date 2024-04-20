@@ -1,5 +1,5 @@
 <TABLE CLASS="table">
-  {% for row in content.rows %}
+  {% for row in table.rows %}
     <TR>
       {% for cell in row %}
         {% if cell.bold %}
@@ -7,7 +7,7 @@
         {% else %}
           <TD STYLE="text-align: {{ cell.align }}">
         {% endif %}
-        {% include 'content' with cell.data %}
+        {% include 't_content' with content:cell.data %}
         </TD>
       {% endfor %}
     </TR>

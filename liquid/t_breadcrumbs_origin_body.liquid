@@ -1,0 +1,8 @@
+{% if page.origins %}
+{% include 't_breadcrumbs_body', page:page %}
+{% for origin in page.origins %}
+  {% include 't_breadcrumbs_body', page:page %}
+{% endfor %}
+{% else %}
+{% include 't_breadcrumbs_body', page:page %}
+{% endif %}

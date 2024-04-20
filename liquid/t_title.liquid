@@ -1,0 +1,30 @@
+{% if page.previous_page or page.next_page %}
+  <DIV CLASS="title">
+    {% if page.previous_page %}
+      <A CLASS="nav" HREF="{{ page.previous_page }}"><DIV CLASS="nav_ltriangle"></DIV><DIV CLASS="nav_rect"></DIV></A>
+    {% else %}
+      <DIV CLASS="nav_none"></DIV>
+    {% endif %}
+    <DIV>
+      <SPAN>{{ page.page_title }}</SPAN>
+      {% if page.page_date %}
+        <BR>{{ page.page_date }}
+      {% endif %}
+    </DIV>
+    {% if page.next_page %}
+      <A CLASS="nav" HREF="{{ page.next_page }}"><DIV CLASS="nav_rect"></DIV><DIV CLASS="nav_rtriangle"></DIV></A>
+    {% else %}
+      <DIV CLASS="nav_none"></DIV>
+    {% endif %}
+  </DIV>
+  <BR>
+{% else %}
+  {% if page.page_date %}
+    <DIV CLASS="title">
+    <DIV CLASS="nav_none"></DIV>
+    <DIV><SPAN>{{ page.page_date }}</SPAN></DIV>
+    <DIV CLASS="nav_none"></DIV>
+    </DIV>
+    <BR>
+  {% endif %}
+{% endif %}

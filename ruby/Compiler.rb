@@ -32,7 +32,7 @@ class Compiler
     @key2paths     = Hash.new {|h,k| h[k] = []}
     Liquid::Template.file_system = Liquid::LocalFileSystem.new( @config['liquid'],
                                                                 pattern = "%s.liquid")
-    @page_template = Liquid::Template.parse("{% include 'page' %}")
+    @page_template = Liquid::Template.parse("{% include 't_page' with config:config, page:page %}")
     Liquid.cache_classes = false
   end
 
@@ -297,9 +297,8 @@ class Compiler
   def regenerate( parents, article)
     debug_hook( article, "Regenerating")
 
-    data = article.to_data( self, parents)
-    data['dimensions'] = @config['dimensions']
-    html = @page_template.render( data)
+    html = @page_template.render( {'config' => @config,
+                                   'page'   => article.to_data( self, parents)})
 
     if /Liquid error:/m =~ html
       article.error( 'Liquid templating error')

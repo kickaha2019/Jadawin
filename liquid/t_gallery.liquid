@@ -2,7 +2,7 @@
   {% for item in content.images %}
     <DIV>
       <DIV>
-        {% include 'image',
+        {% include 't_image',
                    specs:false,
                    details:item.details,
                    id:false,
@@ -11,7 +11,7 @@
                    overlay:item.overlay %}
       </DIV>
       <DIV>
-        <P>{% include 'content' with item.tag %}</P>
+        <P>{% include 't_content' with content:item.tag %}</P>
       </DIV>
     </DIV>
   {% endfor %}

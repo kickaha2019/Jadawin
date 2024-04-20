@@ -25,7 +25,8 @@ File / directory|Usage
 
 @text
 Files and
-directories starting with the `_` character are ignored.
+directories starting with the ` _ ` underscore
+character are ignored.
 
 Style sheets for the generated HTML files are
 included inline rather than being in separate CSS files.

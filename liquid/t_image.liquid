@@ -15,7 +15,7 @@
 {% endfor %}
 {% endif %}
 {% if details %}
-<IMG {% include 'id' with id %} {% include 'clazz' with clazz %} SRC="{{ details.path }}"
+<IMG {% include 't_id' with id:id %} {% include 't_clazz' with clazz:clazz %} SRC="{{ details.path }}"
   {% if title %} TITLE="{{ title }}"{% endif %}
    ALT="{{ details.tag }}"
 {% if overlay %}
