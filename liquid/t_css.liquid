@@ -1,7 +1,14 @@
 body {background: {{ colours.body }}; background-image: none}
 p {margin-top: 0px}
 
-{% if overlay %}
+{% if config.logo %}
+.logo {width: 350px;
+       height: 50px;
+       background-image: url("{{ page.root }}/{{ config.logo[0] }}");
+       margin-left: auto; margin-right: auto; margin-top: 0px; margin-bottom: 0px;}
+{% endif %}
+
+{% if page.overlay %}
 .overlay {position: fixed; display: none; z-index: 100;
           width: 100vw; height: 100vh; left: 0px; right: 0px;
           align-items: center; justify-content: center}
@@ -37,7 +44,9 @@ div.title      {display: flex; justify-content: space-between;
 div.title span {text-decoration: underline; color: {{ colours.text }} }
 div.title div  {text-align: center}
 div.title a    {text-decoration: none}
+{% if config.legend %}
 div.legend     {text-align: center; color: white; font-size: 18px;}
+{% endif %}
 
 .text_indexes {padding-top: 10px; padding-bottom: 10px; background: {{ colours.index }}}
 .index {display: flex; align-items: center; justify-content: center;
@@ -85,9 +94,14 @@ td p {margin: 0px}
 {% include 't_rect_indexes_css' with colours:colours, rect_index:page.rect_index, size:0 %}
 
 @media all and (min-width: {{ widths.browser[1] }}px) {
-{% if overlay %}
+{% if page.overlay %}
   #overlay_image img {max-width: {{ dimensions.overlay[1][0] }}px;
                       max-height: {{ dimensions.overlay[1][1] }}px}
+{% endif %}
+{% if config.logo %}
+  .logo {width: 748px;
+         height: 100px;
+       background-image: url("{{ page.root }}/{{ config.logo[1] }}")}
 {% endif %}
   div.page {width: {{ widths.browser[1] }}px; border-radius: 10px; padding-top: 10px}
   .content {width: {{ widths.content[1] }}px; padding-top: 10px}
@@ -99,7 +113,9 @@ td p {margin: 0px}
   .text_indexes {margin-right: 20px}
   .story_index {display: flex}
   .story {flex-grow: 1; max-width: {{ widths.content[1] }}px}
+{% if config.legend %}
   div.legend {font-size: 24px;}
+{% endif %}
   {% if page.content %}
     {% include 't_content_css', colours:colours, content:page.content, dimensions:dimensions, size:1 %}
   {% endif %}
@@ -108,9 +124,14 @@ td p {margin: 0px}
 }
 
 @media all and (min-width: {{ widths.browser[2] }}px) {
-{% if overlay %}
+{% if page.overlay %}
   #overlay_image img {max-width: {{ dimensions.overlay[2][0] }}px;
                       max-height: {{ dimensions.overlay[2][1] }}px}
+{% endif %}
+{% if config.logo %}
+  .logo {width: 1250px;
+         height: 150px;
+       background-image: url("{{ page.root }}/{{ config.logo[2] }}")}
 {% endif %}
   div.page {width: {{ widths.browser[2] }}px; border-radius: 15px; padding-top: 15px}
   .content {width: {{ widths.content[2] }}px; padding-top: 15px}
@@ -118,7 +139,9 @@ td p {margin: 0px}
   .size2 {display: block}
   .text_indexes {margin-right: 40px}
   .story {max-width: {{ widths.content[2] }}px; padding-left: 0px}
+{% if config.legend %}
   div.legend {font-size: 32px;}
+{% endif %}
   .index {width: 196px}
   .t0, .t1, h1 .code {font-size: 24px}
   {% if page.content %}
@@ -129,9 +152,14 @@ td p {margin: 0px}
 }
 
 @media all and (min-width: {{ widths.browser[3] }}px) {
-{% if overlay %}
+{% if page.overlay %}
   #overlay_image img {max-width: {{ dimensions.overlay[3][0] }}px;
                       max-height: {{ dimensions.overlay[3][1] }}px}
+{% endif %}
+{% if config.logo %}
+  .logo {width: 1880px;
+         height: 200px;
+       background-image: url("{{ page.root }}/{{ config.logo[3] }}")}
 {% endif %}
   div.page {width: {{ widths.browser[3] }}px; border-radius: 20px; padding-top: 20px}
   .content {width: {{ widths.content[3] }}px; padding-top: 20px}
@@ -139,7 +167,9 @@ td p {margin: 0px}
   .size3 {display: block}
   .t0, .t1, h1, .code {font-size: 30px}
   .story {max-width: {{ widths.content[3] }}px}
+{% if config.legend %}
   div.legend {font-size: 36px;}
+{% endif %}
   .index {width: 244px}
   {% if page.content %}
     {% include 't_content_css', colours:colours, content:page.content, dimensions:dimensions, size:3 %}
@@ -154,5 +184,5 @@ div.centre     {text-align: center; padding-bottom: 10px}
 div.heading    {text-align: center; text-decoration: underline; padding-bottom: 20px}
 div.text       {padding-bottom: 20px; text-align: left}
 
-{% include 't_navigation_css' with widths:widths, colours:colours %}
+{% include 't_navigation_css' with widths:widths, colours:colours, page:page %}
 

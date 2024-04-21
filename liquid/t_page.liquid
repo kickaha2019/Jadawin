@@ -3,6 +3,9 @@
 <meta name="description" content="{{ page.blurb }}">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8" >
+{% if config.favicon %}
+<link rel="icon" type="image/png" href="{{ page.root }}/{{ config.favicon }}">
+{% endif %}
 {% if page.overlay %}
 <script>
 function showOverlay(image_path) {
@@ -31,13 +34,18 @@ function hideOverlay() {
 </DIV>
 {% endif %}
 <DIV CLASS="page">
-<DIV CLASS="legend">Jadawin - a simple static site generator</DIV>
+{% if config.logo %}
+<DIV CLASS="logo"></DIV>
+{% endif %}
+{% if config.legend %}
+<DIV CLASS="legend">{{ config.legend }}</DIV>
+{% endif %}
 {% include 't_breadcrumbs_origin_body' with config:config, page:page %}
 <DIV CLASS="payload content {{ page.index_style }}">
   {% if page.content %}
     <DIV CLASS="story t1">
       {% include 't_title' with page:page %}
-      {% include 't_story_indexes' with config:config, page:page %}
+      {% include 't_story_indexes' with story_index:page.story_index %}
       {% include 't_content', content:page.content %}
       {% if page.line_count > 20 %}
         {% include 't_navigation' with config:config, page:page %}

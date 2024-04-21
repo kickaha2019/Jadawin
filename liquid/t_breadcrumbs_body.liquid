@@ -5,11 +5,11 @@
     <DIV CLASS="breadcrumbs t0 content">
   {% endif %}
   {% for i in (0..9) %}
-    {% if page.breadcrumbs[i] %}
+    {% if breadcrumbs[i] %}
       {% if i > 0 %}
         &raquo;
       {% endif %}
-      <A HREF="{{ page.breadcrumbs[i].path }}">{{ page.breadcrumbs[i].title }}</A>
+      <A HREF="{{ breadcrumbs[i].path }}">{{ breadcrumbs[i].title }}</A>
     {% else %}
       {% break %}
     {% endif %}

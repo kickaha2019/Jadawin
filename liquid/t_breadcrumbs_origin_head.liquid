@@ -11,7 +11,7 @@ const re = /(?:\?|,)origin=([^#&]*)/;
 const m = re.exec( window.location);
 if ( m ) {
   var found = false;
-  {% for origin in origins %}
+  {% for origin in page.origins %}
     if (m[1] == "{{ origin[0] }}") {found = true;}
   {% endfor %}
   if ( found ) {

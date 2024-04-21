@@ -1,5 +1,5 @@
-{% if page_title %}
-{% if previous_page or next_page %}
+{% if page.page_title %}
+{% if page.previous_page or page.next_page %}
 a.nav {display: flex; align-items: center}
 .nav_rect      {height: 6px; width: 14px; background: {{ colours.anchor }};
                 display: inline-block}

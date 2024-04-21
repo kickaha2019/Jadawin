@@ -1,13 +1,13 @@
-{% if page_title %}
-{% if previous_page or next_page %}
+{% if page.page_title %}
+{% if page.previous_page or page.next_page %}
   <DIV CLASS="title">
-    {% if previous_page %}
-      <A CLASS="nav" HREF="{{ previous_page }}"><DIV CLASS="nav_ltriangle"></DIV><DIV CLASS="nav_rect"></DIV></A>
+    {% if page.previous_page %}
+      <A CLASS="nav" HREF="{{ page.previous_page }}"><DIV CLASS="nav_ltriangle"></DIV><DIV CLASS="nav_rect"></DIV></A>
     {% else %}
       <DIV CLASS="nav_none"></DIV>
     {% endif %}
-    {% if next_page %}
-      <A CLASS="nav" HREF="{{ next_page }}"><DIV CLASS="nav_rect"></DIV><DIV CLASS="nav_rtriangle"></DIV></A>
+    {% if page.next_page %}
+      <A CLASS="nav" HREF="{{ page.next_page }}"><DIV CLASS="nav_rect"></DIV><DIV CLASS="nav_rtriangle"></DIV></A>
     {% else %}
       <DIV CLASS="nav_none"></DIV>
     {% endif %}

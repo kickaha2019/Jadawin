@@ -1,5 +1,5 @@
 {% if text_index %}
-    <DIV CLASS="text_indexes {{ text_index_size }}">
+    <DIV CLASS="text_indexes{% if text_index_size %} {{ text_index_size }}{% endif %}">
     {% for item in text_index %}
         <DIV CLASS="index_text t0">&raquo;&nbsp;<
           {%- if item.off_page -%}
