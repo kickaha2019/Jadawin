@@ -381,7 +381,7 @@ class Compiler
           word = m[1]
         end
 
-        if m = /^(pre-|quasi-|ex-|half-|mini-|multi-|non-)(.*)$/i.match( word)
+        if m = /^(pre-|quasi-|ex-|half-|mini-|multi-|non-|pseudo-)(.*)$/i.match( word)
           word = m[2]
         end
 

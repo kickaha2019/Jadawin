@@ -111,7 +111,7 @@ module Elements
     end
 
     def self.find_images( source)
-      cache_path    = source + '/_images.yaml'
+      cache_path    = source + '/_ruby-vips.yaml'
       @@image_cache = {}
 
       if File.exist?( cache_path)
@@ -143,15 +143,13 @@ module Elements
           timestamp = File.mtime( source + path).to_i
           if timestamp != cached['timestamp']
             begin
-              w,h,o = * get_image_dims( source + path)
+              w,h = * get_image_dims( source + path)
             rescue
               w = h = -1
-              o = 0
             end
             cached['timestamp'] = timestamp
             cached['height']    = h
             cached['width']     = w
-            cached['orient']    = o
           end
 
           cached['found']     = true
@@ -171,7 +169,7 @@ module Elements
         end
       end
 
-      return width, height, orient.to_i
+      return width, height
     end
 
     def image
@@ -228,7 +226,7 @@ module Elements
 
       unless File.exist?( imagefile)
         create_directory( imagefile)
-        im = Vips::Image.thumbnail( @source, w, height: h)
+        im = Vips::Image.thumbnail( @source, w, height: h, auto_rotate: true)
         save_image( im, imagefile)
       end
 
@@ -237,7 +235,8 @@ module Elements
 
     def prepare_thumbnail( thumbfile, width, height)
       return nil, width, height unless @height && @width
-      w,h,x,y = shave_thumbnail( width, height, @width, @height)
+      #p [thumbfile, @width, @height, width, height, x, y, w, h]
+      #w,h,x,y = shave_thumbnail( width, height, @width, @height)
       m = /^(.*)(\.\w*)$/.match( @sink)
       unless m
         raise 'Internal error'
@@ -249,8 +248,29 @@ module Elements
       end
 
       unless File.exist?( thumbfile)
-        im = Vips::Image.new_from_file @source, access: :sequential
-        im = im.crop( x, y, w, h).resize( (1.0 * width) / @width)
+        w,h,x,y = shave_thumbnail2( width, height, @width, @height)
+        im = Vips::Image.thumbnail( @source, w, height: h, auto_rotate: true)
+
+        w = im.get('width')
+        h = im.get('height')
+
+        if w < (x + width)
+          x = w - width
+          if x < 0
+            width += x
+            x     =  0
+          end
+        end
+
+        if h < (y + height)
+          y = h - height
+          if y < 0
+            height += y
+            y      =  0
+          end
+        end
+
+        im = im.crop( x, y, width, height)
         save_image( im, thumbfile)
       end
 
@@ -275,20 +295,37 @@ module Elements
       (sh > dim[1]) ? sh : dim[1]
     end
 
-    def shave_thumbnail( width, height, width0, height0)
+    # def shave_thumbnail( width, height, width0, height0)
+    #   advice = @@advices[@source]
+    #   if ((width0 * 1.0) / height0) > ((width * 1.0) / height)
+    #     w = (height0 * (width * 1.0) / height).to_i
+    #     x = (width0 - w) / 2
+    #     x = 0 if advice == 'left'
+    #     x = (width0 - w) if advice == 'right'
+    #     return w, height0, x, 0
+    #   else
+    #     h = (width0 * (height * 1.0) / width).to_i
+    #     y = (height0 - h) / 2
+    #     y = 0 if advice == 'top'
+    #     y = height0 - h if advice == 'bottom'
+    #     return width0, h, 0, y
+    #   end
+    # end
+
+    def shave_thumbnail2( width, height, width0, height0)
       advice = @@advices[@source]
       if ((width0 * 1.0) / height0) > ((width * 1.0) / height)
-        w = (height0 * (width * 1.0) / height).to_i
-        x = (width0 - w) / 2
+        w = (width0 * (height * 1.0) / height0).to_i
+        x = (w - width) / 2
         x = 0 if advice == 'left'
-        x = (width0 - w) if advice == 'right'
-        return w, height0, x, 0
+        x = (w - width) if advice == 'right'
+        return w, height, x, 0
       else
-        h = (width0 * (height * 1.0) / width).to_i
-        y = (height0 - h) / 2
+        h = (height0 * (width * 1.0) / width0).to_i
+        y = (h - height) / 2
         y = 0 if advice == 'top'
-        y = height0 - h if advice == 'bottom'
-        return width0, h, 0, y
+        y = (h - height) if advice == 'bottom'
+        return width, h, 0, y
       end
     end
 
