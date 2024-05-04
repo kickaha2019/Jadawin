@@ -11,38 +11,169 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class Liquid2JTE {
-
-    private Map<String, Pattern> patterns = new HashMap<>();
+    private static Map<String, Pattern> patterns = new HashMap<>();
+    private static Matcher patternMatcher;
+    private static String VARIABLE_PATTERN = "[a-zA-Z0-9\\.\\[\\]_]*";
     private int errors = 0;
 
     private class Function {
-
         String name;
         List<Token> tokens;
+        List<String> params = new ArrayList<>();
+        List<String> loops  = new ArrayList<>();
 
         Function(String name, List<Token> tokens) {
             this.name = name;
             this.tokens = tokens;
         }
 
+        private void addLoop( String name) {
+            if (! loops.contains(name)) {
+                loops.add( name);
+            }
+        }
+
+        void addParam( String name) {
+            name = name.split( "[\\.\\[]")[0];
+            if ( name.isBlank() ) {
+                error( "adding blank parameter");
+            }
+            if (! params.contains(name)) {
+                params.add( name);
+            }
+        }
+
+        private void addParamsFromChain(String text) {
+            String [] chain = text.split( "\\|");
+            addParamsFromExpression( chain[0]);
+            for (int i = 1; i < chain.length; i++) {
+                if ( match( "^(.*):(.*)$", chain[i]) ) {
+                    addParamsFromExpression( group(2));
+                } else if (! chain[i].trim().equals( "floor")) {
+                    error( "Unable to parse " + text);
+                }
+            }
+        }
+
+        private void addParamsFromExpression(String text) {
+            for (String element: parseExpression( text)) {
+                if ( variable( element) ) {
+                    addParam( element);
+                }
+            }
+        }
+
+        private void deduceParams() {
+            for (Token t: tokens) {
+                t.deduceParams( this);
+            }
+        }
+        
         void dump() {
-            System.out.println(name);
+            System.out.print(name);
+            System.out.println( "(");
+            String separ = " ";
+            for (String param: params) {
+                if (! loops.contains( param)) {
+                    System.out.print( separ);
+                    separ = ", ";
+                    System.out.print( param);
+                }
+            }
+            System.out.println( ")");
             for (Token token : tokens) {
                 System.out.print("  ");
                 token.dump();
             }
             System.out.println();
         }
+        
+        void error( String msg) {
+            Liquid2JTE.this.error( name, msg);
+        }
+
+        private List<String> parseExpression( String text) {
+            List<String> parsed = new ArrayList<>();
+            for (String e: text.split( " ")) {
+                while (! e.isBlank()) {
+                    if ( match( "^\\s*(\\(|\\)|\\+|\\-|!=|==|>|<|" + VARIABLE_PATTERN + ")(.*)$", e) ) {
+                        parsed.add( group(1));
+                        e = group(2);
+                    } else {
+                        error( "Unable to parse " + text);
+                    }
+                }
+            }
+            return parsed;
+        }
+
+        private boolean variable( String element) {
+            return ! match( "^(\\(|\\)|\\+|\\-|==|>|<|!=|and|or)$", element);
+        }
     }
 
     private static class Token {
-
         Type type;
         String text;
 
         public Token(Type type, String text) {
             this.type = type;
             this.text = text;
+        }
+
+        private void deduceParams( Function function) {
+            switch ( type ) {
+                case BREAK:
+                    break;
+                case CASE:
+                    function.addParam( text.trim());
+                    break;
+                case ELSE:
+                    break;
+                case EMBED:
+                    function.addParamsFromChain( text);
+                    break;
+                case ENDCASE:
+                case ENDFOR:
+                case ENDIF:
+                case ENDUNLESS:
+                    break;
+                case FOR:
+                    if ( match( "^([a-zA-Z]*) in\\s+(" + VARIABLE_PATTERN + ")$", text) ) {
+                        function.addLoop( group(1));
+                        function.addParam( group(2));
+                    } else if ( match( "^([a-zA-Z]*) in\\s*(\\(\\d+\\.\\.\\d+\\))$", text) ) {
+                        function.addLoop( group(1));
+                    } else {
+                        function.error( "Unable to parse for expression");
+                    }
+                    break;
+                case IF:
+                    function.addParamsFromChain( text);
+                    break;
+                case INCLUDE:
+                    if ( match( "^\\s*'[a-z_]*'\\s*(with|,)\\s*(.*)$", text) ) {
+                        for (String p: group(1).split( ",")) {
+                            if ( match( "^(.*):(.*)$", p) ) {
+                                function.addParam( group(2));
+                            } else {
+                                function.error( "Unable to parse include expression");
+                            }
+                        }
+                    } else {
+                        function.error( "Unable to parse include expression");
+                    }
+                    break;
+                case TEXT:
+                    break;
+                case UNLESS:
+                    function.addParamsFromChain( text);
+                    break;
+                case WHEN:
+                    break;
+                default:  
+                    function.error( "deduceParams unhandled type " + type.name());
+            }
         }
 
         private void dump() {
@@ -61,7 +192,7 @@ public class Liquid2JTE {
     private final String sinkPath;
     private final Map<String, Function> functions = new HashMap<>();
 
-    public Liquid2JTE(String source, String sink) {
+    public Liquid2JTE( String source, String sink) {
         this.sourcePath = source;
         this.sinkPath = sink;
     }
@@ -70,6 +201,7 @@ public class Liquid2JTE {
         try {
             Liquid2JTE l2j = new Liquid2JTE(args[0], args[1]);
             l2j.loadSources();
+            l2j.deduceParams();
             if (l2j.errors > 0) {
                 System.exit(1);
             }
@@ -80,6 +212,21 @@ public class Liquid2JTE {
         }
     }
 
+    private void deduceParams() {
+        for (Function f: functions.values()) {
+            f.deduceParams();
+        }
+    }
+
+    private void error(String name, String msg) {
+        errors++;
+        System.err.println("*** " + msg + " in [" + name + "]");
+    }
+
+    private static String group( int index) {
+        return patternMatcher.group( index);
+    }
+    
     private void loadSources() throws Exception {
         for (File f : (new File(sourcePath)).listFiles()) {
             if (f.getName().endsWith(".liquid")) {
@@ -100,12 +247,12 @@ public class Liquid2JTE {
         }
     }
 
-    private void error(String name, String msg) {
-        errors++;
-        System.err.println("*** " + msg + " in [" + name + "]");
+    private static boolean match(String regex, String text) {
+        patternMatcher = matcher( regex, text);
+        return patternMatcher.find();
     }
 
-    private Matcher matcher(String regex, String text) {
+    private static Matcher matcher(String regex, String text) {
         if (!patterns.containsKey(regex)) {
             patterns.put(regex, Pattern.compile(regex, Pattern.MULTILINE));
         }

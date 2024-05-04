@@ -11,6 +11,7 @@ require 'yaml'
 require 'cgi'
 require 'liquid'
 require 'fileutils'
+require 'json'
 
 require_relative 'Article'
 require_relative 'elements/error'
@@ -297,8 +298,9 @@ class Compiler
   def regenerate( parents, article)
     debug_hook( article, "Regenerating")
 
+    to_data = article.to_data( self, parents)
     html = @page_template.render( {'config' => @config,
-                                   'page'   => article.to_data( self, parents)})
+                                   'page'   => to_data})
 
     if /Liquid error:/m =~ html
       article.error( 'Liquid templating error')
