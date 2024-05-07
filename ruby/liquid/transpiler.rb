@@ -16,7 +16,7 @@ class Transpiler
     end
 
     def print( text)
-      @io.print( "                    "[0...@indent] + text)
+      @io.print( (' ' * @indent) + text)
     end
 
     def puts( text)
@@ -35,6 +35,42 @@ class Transpiler
     @error_location = nil
   end
 
+  def handle_break( tokens, context)
+    context.puts( 'break')
+  end
+
+  def handle_case( tokens, context)
+    context.puts( 'case ' + handle_expression(tokens).join(' '))
+    context.indent( 4)
+  end
+
+  def handle_else( tokens, context)
+    context.indent( -2)
+    context.puts( 'else')
+    context.indent( 2)
+  end
+
+  def handle_endcase( tokens, context)
+    context.indent( -4)
+    context.puts( 'end')
+  end
+
+  def handle_endif( tokens, context)
+    context.indent( -2)
+    context.puts( 'end')
+  end
+
+  def handle_endfor( tokens, context)
+    context.indent( -2)
+    context.puts( 'end')
+    context.puts "c[name#{context.indented}] = save#{context.indented}"
+  end
+
+  def handle_endunless( tokens, context)
+    context.indent( -2)
+    context.puts( 'end')
+  end
+
   def handle_expression(tokens)
     [].tap do |handled|
       i, inside_expression, inside_filter = 0, false, false
@@ -43,7 +79,7 @@ class Transpiler
         i += 1
 
         if (/^[a-z]/i =~ token) &&
-           (! RESERVED_WORDS.include?( token))
+            (! RESERVED_WORDS.include?( token))
           unless inside_expression
             inside_expression = true
             handled << 'x(c,'
@@ -80,28 +116,6 @@ class Transpiler
     end
   end
 
-  def handle_case( tokens, context)
-    context.puts( 'case ' + handle_expression(tokens).join(' '))
-    context.indent( 4)
-  end
-
-  def handle_else( tokens, context)
-    context.indent( -2)
-    context.puts( 'else')
-    context.indent( 2)
-  end
-
-  def handle_endif( tokens, context)
-    context.indent( -2)
-    context.puts( 'end')
-  end
-
-  def handle_endfor( tokens, context)
-    context.indent( -2)
-    context.puts( 'end')
-    context.puts "c[name#{context.indented}] = save#{context.indented}"
-  end
-
   def handle_for( tokens, context)
     context.puts "name#{context.indented}  = '#{tokens[0]}'"
     context.puts "value#{context.indented} = c['#{tokens[0]}']"
@@ -120,21 +134,22 @@ class Transpiler
 
   def handle_include( tokens, context)
     context.puts( 'c1 = Hash.new {|h,k| h[k] = c[k]}')
-    if tokens[1] == 'with'
-      from = 2
-      while (from < tokens.size)
-        raise 'Bad syntax in include directive' if tokens[from+1] != ':'
-        i = from+2
-        while (i < tokens.size) && (tokens[i] != ',')
-          i += 1
-        end
-        context.puts( "c1[#{tokens[from]}] = " +
-                      handle_expression(tokens[from+2...i]).join(' '))
-        from = i+1
+
+    from = 1
+    from += 1 if tokens[from] == ','
+    from += 1 if tokens[from] == 'with'
+
+    while (from < tokens.size)
+      raise 'Bad syntax in include directive' if tokens[from+1] != ':'
+      i = from+2
+      while (i < tokens.size) && (tokens[i] != ',')
+        i += 1
       end
-    else
-      raise 'Unhandled include directive'
+      context.puts( "c1[#{tokens[from]}] = " +
+                    handle_expression(tokens[from+2...i]).join(' '))
+      from = i+1
     end
+
     context.puts( "h << #{tokens[0][1..-2]}( c1)")
   end
 
@@ -147,6 +162,11 @@ class Transpiler
       from = j
     end
     context.puts( text[from...-1]) if from < text.size
+  end
+
+  def handle_unless( tokens, context)
+    context.puts( 'unless ' + handle_expression(tokens).join(' '))
+    context.indent( 2)
   end
 
   def handle_when( tokens, context)
@@ -179,18 +199,42 @@ class Transpiler
     end
   end
 
+  def suppress_whitespace( stanza)
+    return stanza if stanza.empty?
+
+    if stanza[0] == '-'
+      stanza = stanza[1..-1]
+    elsif /^\-/ =~ stanza[0]
+      stanza[0] = stanza[0][1..-1]
+    end
+
+    return stanza if stanza.empty?
+
+    if stanza[-1] == '-'
+      return stanza[0..-2]
+    elsif /^\-/ =~ stanza[-1]
+      stanza[-1] = stanza[-1][1..-1]
+    end
+
+    stanza
+  end
+
   def template( name, text, io)
     begin
       context = Context.new( io)
       context.indent(2)
-      puts "Template: #{name}"
       context.puts "def self.#{name}(c)"
       context.indent(2)
       context.puts 'h = []'
 
       stanzas( text) do |stanza|
         if stanza.is_a?( Array)
-          self.send( ('handle_' + stanza[0]).to_sym, stanza[1..-1], context)
+          stanza = suppress_whitespace( stanza)
+          unless stanza.empty?
+            self.send( ('handle_' + stanza[0]).to_sym,
+
+                       stanza[1..-1], context)
+          end
         else
           handle_text( stanza, context)
         end
@@ -224,7 +268,7 @@ class Transpiler
           raise "Missing #{stop}"
         end
       else
-        if j = text.index( /["a-z0-9_\s]/i, i+1)
+        if j = text.index( /["'a-z0-9_\s]/i, i+1)
           token = text[i...j]
           if (! (k = text.index( stop, i)).nil?) && (k < j)
             tokens << text[i...k] if k > i

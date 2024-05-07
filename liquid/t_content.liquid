@@ -19,8 +19,6 @@
       {% when "list" %}
         {% include 't_list' with list:element %}
       {% when "none" %}
-      {% when "paragraph" %}
-        <P{% if element.id %} ID="{{ element.id }}"{% endif %}>{% include 't_content' with element.data %}</P>
       {% when "raw" %}
         {{ element.text }}
       {% when "svg" %}
