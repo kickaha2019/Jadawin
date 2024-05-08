@@ -1,10 +1,29 @@
 class Transpiler
-  RESERVED_WORDS = ['or', 'and']
+  RESERVED_WORDS = ['or', 'and', 'true', 'false']
 
   class Context
-    def initialize( io)
-      @io     = io
+    def initialize( sink, clazz)
+      @io     = File.open( sink + '/' + clazz + '.rb', 'w')
+      @io.puts <<"HEAD"
+class #{clazz}
+  def self.x( context, *args)
+    args.each do |arg|
+      if context.is_a?( Hash)
+        context = context[arg]
+      else
+        context = context.send( arg.to_sym)
+      end
+    end
+    context
+  end
+HEAD
       @indent = 0
+      @rstrip = false
+    end
+
+    def close
+      @io.puts "end"
+      @io.close
     end
 
     def indent( delta)
@@ -15,6 +34,10 @@ class Transpiler
       @indent
     end
 
+    def rstrip( flag=true)
+      @rstrip = true
+    end
+
     def print( text)
       @io.print( (' ' * @indent) + text)
     end
@@ -23,10 +46,17 @@ class Transpiler
       print( text + "\n")
     end
 
-    def wrap_text( text)
-      if /#\{/ =~ text
+    def wrap_text( text, check=true)
+      if @rstrip
+        @rstrip = false
+        text = text.lstrip
+        return if text == ''
+      end
+
+      if check && (/#\{/ =~ text)
         raise 'Illegal character sequence #{'
       end
+
       puts "h << \"#{text.gsub("\n","\\\\n").gsub('"',"\\\"")}\""
     end
   end
@@ -40,8 +70,9 @@ class Transpiler
   end
 
   def handle_case( tokens, context)
-    context.puts( 'case ' + handle_expression(tokens).join(' '))
+    context.puts( 'case ' + handle_expression(tokens))
     context.indent( 4)
+    context.rstrip
   end
 
   def handle_else( tokens, context)
@@ -63,7 +94,7 @@ class Transpiler
   def handle_endfor( tokens, context)
     context.indent( -2)
     context.puts( 'end')
-    context.puts "c[name#{context.indented}] = save#{context.indented}"
+    context.puts "c[name#{context.indented}] = value#{context.indented}"
   end
 
   def handle_endunless( tokens, context)
@@ -73,15 +104,15 @@ class Transpiler
 
   def handle_expression(tokens)
     [].tap do |handled|
-      i, inside_expression, inside_filter = 0, false, false
+      i, inside_reference, inside_filter = 0, false, false
       while i < tokens.size
         token = tokens[i]
         i += 1
 
         if (/^[a-z]/i =~ token) &&
             (! RESERVED_WORDS.include?( token))
-          unless inside_expression
-            inside_expression = true
+          unless inside_reference
+            inside_reference = true
             handled << 'x(c,'
           end
           handled << "\"#{token}\""
@@ -89,9 +120,9 @@ class Transpiler
         elsif token == '.'
           handled << ','
         else
-          if inside_expression
+          if inside_reference
             handled << ')'
-            inside_expression = false
+            inside_reference = false
           end
           if token == '|'
             if inside_filter
@@ -106,14 +137,14 @@ class Transpiler
         end
       end
 
-      if inside_expression
+      if inside_reference
         handled << ')'
       end
 
       if inside_filter
         handled << ')'
       end
-    end
+    end.join('')
   end
 
   def handle_for( tokens, context)
@@ -122,13 +153,13 @@ class Transpiler
     if tokens[1] != 'in'
       raise 'Unhandled for directive'
     end
-    context.puts handle_expression(tokens[2..-1]).join(' ') + '.each do |loop|'
+    context.puts handle_expression(tokens[2..-1]) + '.each do |loop|'
     context.indent( 2)
     context.puts "c['#{tokens[0]}'] = loop"
   end
 
   def handle_if( tokens, context)
-    context.puts( 'if ' + handle_expression(tokens).join(' '))
+    context.puts( 'if ' + handle_expression(tokens))
     context.indent( 2)
   end
 
@@ -146,7 +177,7 @@ class Transpiler
         i += 1
       end
       context.puts( "c1[#{tokens[from]}] = " +
-                    handle_expression(tokens[from+2...i]).join(' '))
+                    handle_expression(tokens[from+2...i]))
       from = i+1
     end
 
@@ -156,22 +187,22 @@ class Transpiler
   def handle_text( text, context)
     from = 0
     while ! (i = text.index( '{{', from)).nil?
-      context.puts( text[from...i]) if from < i
+      context.wrap_text( text[from...i]) if from < i
       tokens, j = tokenise( text, i+2, '}}')
-      context.puts( '#{' + handle_expression(tokens).join(' ') + '}')
+      context.puts( 'h << "#{' + handle_expression(tokens) + '}"')
       from = j
     end
-    context.puts( text[from...-1]) if from < text.size
+    context.wrap_text( text[from..-1]) if from < text.size
   end
 
   def handle_unless( tokens, context)
-    context.puts( 'unless ' + handle_expression(tokens).join(' '))
+    context.puts( 'unless ' + handle_expression(tokens))
     context.indent( 2)
   end
 
   def handle_when( tokens, context)
     context.indent( -2)
-    context.puts( 'when ' + handle_expression(tokens).join(' '))
+    context.puts( 'when ' + handle_expression(tokens))
     context.indent( 2)
   end
 
@@ -192,7 +223,7 @@ class Transpiler
           raise "Missing %}"
         end
       end
-      yield text[from...-1] if from < text.size
+      yield text[from..-1] if from < text.size
     rescue Exception => bang
       @error_location = text[from..(from+29)].gsub("\n",' ')
       raise bang
@@ -219,9 +250,8 @@ class Transpiler
     stanza
   end
 
-  def template( name, text, io)
+  def template( name, text, context)
     begin
-      context = Context.new( io)
       context.indent(2)
       context.puts "def self.#{name}(c)"
       context.indent(2)
@@ -287,26 +317,19 @@ class Transpiler
     end
   end
 
-  def transpile( source, clazz, sink)
-    File.open( sink + '/' + clazz + '.rb', 'w') do |io|
-      io.puts <<"HEAD"
-class #{clazz}
-HEAD
-      if File.directory?( source)
-        Dir.entries( source).each do |f|
-          if m = /^(.*)\.liquid$/.match( f)
-            template( m[1], IO.read( source + '/' + f), io)
-          end
-        end
-      else
-        template( source.split('/')[-1].split('.')[0], IO.read( source), io)
+  def transpile_dir( source, clazz, sink)
+    context = Context.new( sink, clazz)
+    Dir.entries( source).each do |f|
+      if m = /^(.*)\.liquid$/.match( f)
+        template( m[1], IO.read( source + '/' + f), context)
       end
-      io.puts <<"FOOT"
-end
-FOOT
     end
+    context.close
+  end
+
+  def transpile_source( name, source, clazz, sink)
+    context = Context.new( sink, clazz)
+    template( name, source, context)
+    context.close
   end
 end
-
-t = Transpiler.new
-t.transpile( ARGV[0], ARGV[1], ARGV[2])
