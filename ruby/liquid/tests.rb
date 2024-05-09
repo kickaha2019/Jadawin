@@ -10,8 +10,7 @@ require 'liquid'
 
 require_relative 'transpiler'
 
-class TestTranspiler < MiniTest::Unit::TestCase
-  @@clazz_index = 0
+class TestTranspiler < Minitest::Test
   @@transpiler  = Transpiler.new
   @@dir         = ENV['TEMP_DIR'] ? ENV['TEMP_DIR'] : Dir.tmpdir
   Liquid::Template.file_system = Liquid::LocalFileSystem.new( @@dir,
@@ -19,17 +18,38 @@ class TestTranspiler < MiniTest::Unit::TestCase
   Liquid.cache_classes = false
 
   def setup
+    Dir.entries( @@dir).each do |f|
+      if /\.liquid$/ =~ f
+        File.delete( @@dir + '/' + f)
+      end
+    end
   end
 
   def fire( code, params = {})
     liquid         =  Liquid::Template.parse(code)
     liquid_output  =  liquid.render( params)
-    clazz          =  "Temp#{@@clazz_index}"
-    @@clazz_index  += 1
+    clazz          =  "Temp"
     @@transpiler.transpile_source( 'test', code, clazz, @@dir)
-    require( @@dir + '/' + clazz + '.rb')
+    load( @@dir + '/' + clazz + '.rb')
     transpiled_output = Object.const_get(clazz).test( params)
     assert_equal liquid_output, transpiled_output
+  end
+
+  def fire2( code, params = {})
+    liquid         =  Liquid::Template.parse(code)
+    liquid_output  =  liquid.render( params)
+    prepare( code, 'test.liquid')
+    clazz          =  "Temp"
+    @@transpiler.transpile_dir( @@dir, clazz, @@dir)
+    load( @@dir + '/' + clazz + '.rb')
+    transpiled_output = Object.const_get(clazz).test( params)
+    assert_equal liquid_output, transpiled_output
+  end
+
+  def prepare( code, path)
+    File.open( @@dir + '/' + path, 'w') do |io|
+      io.print code
+    end
   end
 
   def test_break
@@ -85,11 +105,46 @@ Apple
 IF
   end
 
+  def test_include1
+    prepare( <<INCLUDE1, 'included.liquid')
+Passed {{ threepwood }}
+INCLUDE1
+    fire2( "{% include 'included', threepwood:guybrush %}",
+           {'guybrush' => 'Mighty pirate'})
+  end
+
+  def test_include2
+    prepare( <<INCLUDE2A, 'included1.liquid')
+{% for i in (1..1) %}{% include 'included2', i:i %}{% endfor %}
+INCLUDE2A
+    prepare( <<INCLUDE2B, 'included2.liquid')
+{{ threepwood }} # {{ i }}
+INCLUDE2B
+    fire2( "{% include 'included1', threepwood:guybrush %}",
+           {'guybrush' => 'Mighty pirate'})
+  end
+
   def test_object
     fire( '{{ hash.array[0] }}', {'hash' => {'array' => ['Hello World']}})
   end
 
   def test_text
     fire( 'Hello World')
+  end
+
+  def test_times
+    fire( <<TIMES)
+{{ 3 | times: 2 }}    
+{{ 24 | times: 7 }}    
+{{ 183.357 | times: 12 }}
+TIMES
+  end
+
+  def test_unless
+    fire( <<UNLESS)
+{% unless false %}
+Apple
+{% endunless %}
+UNLESS
   end
 end

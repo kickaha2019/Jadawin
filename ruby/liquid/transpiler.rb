@@ -1,5 +1,8 @@
 class Transpiler
   RESERVED_WORDS = ['or', 'and', 'true', 'false']
+  FILTERS = {
+    'times' => 'value * args[0]'
+  }
 
   class Context
     def initialize( sink, clazz)
@@ -17,6 +20,13 @@ class #{clazz}
     context
   end
 HEAD
+      FILTERS.each_pair do |name, code|
+        @io.puts <<"FILTER"
+  def self.f_#{name}( value, *args)
+    #{ code }
+  end
+FILTER
+      end
       @indent = 0
       @rstrip = false
     end
@@ -34,16 +44,17 @@ HEAD
       @indent
     end
 
-    def rstrip( flag=true)
-      @rstrip = true
-    end
-
     def print( text)
       @io.print( (' ' * @indent) + text)
+      @rstrip = false
     end
 
     def puts( text)
       print( text + "\n")
+    end
+
+    def rstrip( flag=true)
+      @rstrip = true
     end
 
     def wrap_text( text, check=true)
@@ -116,7 +127,6 @@ HEAD
             handled << 'x(c,'
           end
           handled << "\"#{token}\""
-        elsif token == ':'
         elsif token == '.'
           handled << ','
         else
@@ -129,8 +139,14 @@ HEAD
               handled << ')'
             end
             inside_filter = true
-            handled.unshift( "f_#{tokens[i+1]}(")
-            i += 1
+            handled.prepend( "f_#{tokens[i]}(")
+
+            if tokens[i+1] == ':'
+              i += 2
+              handled << ','
+            else
+              i += 1
+            end
           else
             handled << token
           end
@@ -176,7 +192,7 @@ HEAD
       while (i < tokens.size) && (tokens[i] != ',')
         i += 1
       end
-      context.puts( "c1[#{tokens[from]}] = " +
+      context.puts( "c1['#{tokens[from]}'] = " +
                     handle_expression(tokens[from+2...i]))
       from = i+1
     end
@@ -290,7 +306,21 @@ HEAD
         else
           raise "Unclosed quoted string"
         end
-      elsif /[a-z0-9_]/i =~ text[i..i]
+      elsif /[0-9]/ =~ text[i..i]
+        if j = text.index( /[^0-9\.]/i, i+1)
+          tokens << text[i...j]
+          from = j
+        else
+          raise "Missing #{stop}"
+        end
+      elsif /^\.[0-9]/ =~ text[i..(i+1)]
+        if j = text.index( /[^0-9]/i, i+1)
+          tokens << text[i...j]
+          from = j
+        else
+          raise "Missing #{stop}"
+        end
+      elsif /[a-z_]/i =~ text[i..i]
         if j = text.index( /[^a-z0-9_]/i, i+1)
           tokens << text[i...j]
           from = j
