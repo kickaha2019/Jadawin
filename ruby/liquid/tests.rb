@@ -52,6 +52,27 @@ class TestTranspiler < Minitest::Test
     end
   end
 
+  def test_assign1
+    fire( <<ASSIGN1)
+{% assign my_variable = "tomato" %}
+{{ my_variable }}
+ASSIGN1
+  end
+
+  def test_at_least
+    fire( <<AT_LEAST)
+{{ 4 | at_least: 5 }}
+{{ 4 | at_least: 3 }}
+AT_LEAST
+  end
+
+  def test_at_most
+    fire( <<AT_MOST)
+{{ 4 | at_least: 5 }}
+{{ 4 | at_least: 3 }}
+AT_MOST
+  end
+
   def test_break
     fire( <<BREAK)
 {% for i in (0..9) %}
@@ -79,14 +100,33 @@ CASE
 CASE_ELSE
   end
 
-  def test_if_else
-    fire( <<IF_ELSE)
-{% if false %}
-Apple
-{% else %}
-Banana
-{% endif %}
-IF_ELSE
+  def test_continue
+    fire( <<CONTINUE)
+{% for i in (1..5) %}
+  {% if i == 4 %}
+    {% continue %}
+  {% else %}
+    {{ i }}
+  {% endif %}
+{% endfor %}
+CONTINUE
+  end
+
+  def test_divided_by
+    fire( <<DIVIDED_BY)
+{{ 16 | divided_by: 4 }}
+{{ 5 | divided_by: 3 }}
+{{ 20 | divided_by: 7.0 }}
+DIVIDED_BY
+  end
+
+  def test_floor
+    fire( <<FLOOR)
+{{ 1.2 | floor }}
+{{ 2.0 | floor }}
+{{ 183.357 | floor }}
+{{ "3.5" | floor }}
+FLOOR
   end
 
   def test_for
@@ -97,6 +137,26 @@ IF_ELSE
 FOR
   end
 
+  def test_for_else
+    fire( <<FOR, {'basket' => []})
+{% for fruit in basket %}
+{{ fruit }}
+{% else %}
+Empty basket
+{% endfor %}
+FOR
+  end
+
+  def test_if_else
+    fire( <<IF_ELSE)
+{% if false %}
+Apple
+{% else %}
+Banana
+{% endif %}
+IF_ELSE
+  end
+
   def test_if
     fire( <<IF)
 {% if true %}
@@ -105,27 +165,26 @@ Apple
 IF
   end
 
-  def test_include1
-    prepare( <<INCLUDE1, 'included.liquid')
-Passed {{ threepwood }}
-INCLUDE1
-    fire2( "{% include 'included', threepwood:guybrush %}",
-           {'guybrush' => 'Mighty pirate'})
-  end
-
-  def test_include2
-    prepare( <<INCLUDE2A, 'included1.liquid')
-{% for i in (1..1) %}{% include 'included2', i:i %}{% endfor %}
-INCLUDE2A
-    prepare( <<INCLUDE2B, 'included2.liquid')
-{{ threepwood }} # {{ i }}
-INCLUDE2B
-    fire2( "{% include 'included1', threepwood:guybrush %}",
-           {'guybrush' => 'Mighty pirate'})
-  end
-
   def test_object
     fire( '{{ hash.array[0] }}', {'hash' => {'array' => ['Hello World']}})
+  end
+
+  def test_render1
+    prepare( <<RENDER1, 'included.liquid')
+Passed {{ threepwood }}
+RENDER1
+    fire2( "{% render 'included', threepwood:guybrush %}",
+           {'guybrush' => 'Mighty pirate'})
+  end
+
+  def test_split
+    fire( <<SPLIT)
+{% assign beatles = "John, Paul, George, Ringo" | split: ", " %}
+
+{% for member in beatles %}
+  {{ member }}
+{% endfor %}
+SPLIT
   end
 
   def test_text
@@ -146,5 +205,16 @@ TIMES
 Apple
 {% endunless %}
 UNLESS
+  end
+
+  def test_white_space
+    fire( <<WHITE_SPACE)
+{% assign username = "John G. Chalmers-Smith" %}
+{%- if username and username.size > 10 -%}
+  Wow, {{ username -}} , you have a long name!
+{%- else -%}
+  Hello there!
+{%- endif %}
+WHITE_SPACE
   end
 end

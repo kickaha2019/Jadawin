@@ -86,9 +86,19 @@ FILTER
     context.rstrip
   end
 
+  def handle_continue( tokens, context)
+    context.puts( 'next')
+  end
+
   def handle_else( tokens, context)
     context.indent( -2)
     context.puts( 'else')
+    context.indent( 2)
+  end
+
+  def handle_elsif( tokens, context)
+    context.indent( -2)
+    context.puts( 'elsif ' + handle_expression(tokens))
     context.indent( 2)
   end
 
@@ -179,15 +189,14 @@ FILTER
     context.indent( 2)
   end
 
-  def handle_include( tokens, context)
-    context.puts( 'c1 = Hash.new {|h,k| h[k] = c[k]}')
-
+  def handle_render( tokens, context)
+    context.puts( 'c1 = {}')
     from = 1
     from += 1 if tokens[from] == ','
     from += 1 if tokens[from] == 'with'
 
     while (from < tokens.size)
-      raise 'Bad syntax in include directive' if tokens[from+1] != ':'
+      raise 'Bad syntax in render directive' if tokens[from+1] != ':'
       i = from+2
       while (i < tokens.size) && (tokens[i] != ',')
         i += 1

@@ -2,13 +2,13 @@
   {% for item in gallery.images %}
     <DIV>
       <DIV>
-        {% include 't_image',
-                   specs:false,
-                   details:item.details,
-                   id:false,
-                   title:false,
-                   clazz:item.clazz,
-                   overlay:item.overlay %}
+        {% render 't_image',
+                  specs:false,
+                  details:item.details,
+                  id:false,
+                  title:false,
+                  clazz:item.clazz,
+                  overlay:item.overlay %}
       </DIV>
       <DIV>
         <P>{% include 't_content' with content:item.tag %}</P>

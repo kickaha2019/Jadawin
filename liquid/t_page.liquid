@@ -44,7 +44,7 @@ function hideOverlay() {
 <DIV CLASS="payload content {{ page.index_style }}">
   {% if page.content %}
     <DIV CLASS="story t1">
-      {% include 't_title' with page:page %}
+      {% render 't_title' with page:page %}
       {% include 't_story_indexes' with story_index:page.story_index %}
       {% include 't_content', content:page.content %}
       {% if page.line_count > 20 %}
