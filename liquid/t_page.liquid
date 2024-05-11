@@ -19,12 +19,13 @@ function hideOverlay() {
 </script>
 {% endif %}
 <style>
-{% include 't_css' with colours:config.colours,
-                        widths:config.widths,
-                        page:page,
-                        dimensions:config.dimensions %}
+{% render 't_css' with colours:config.colours,
+                       widths:config.widths,
+                       page:page,
+                       config:config,
+                       dimensions:config.dimensions %}
 </style>
-{% include 't_breadcrumbs_origin_head' with page:page %}
+{% render 't_breadcrumbs_origin_head' with page:page %}
 </HEAD><BODY>
 {% if page.overlay %}
 <DIV ID="overlay" CLASS="overlay" onclick="hideOverlay()">
@@ -40,21 +41,21 @@ function hideOverlay() {
 {% if config.legend %}
 <DIV CLASS="legend">{{ config.legend }}</DIV>
 {% endif %}
-{% include 't_breadcrumbs_origin_body' with config:config, page:page %}
+{% render 't_breadcrumbs_origin_body' with config:config, page:page %}
 <DIV CLASS="payload content {{ page.index_style }}">
   {% if page.content %}
     <DIV CLASS="story t1">
       {% render 't_title' with page:page %}
-      {% include 't_story_indexes' with story_index:page.story_index %}
+      {% render 't_story_indexes' with story_index:page.story_index %}
       {% include 't_content', content:page.content %}
       {% if page.line_count > 20 %}
-        {% include 't_navigation' with config:config, page:page %}
+        {% render 't_navigation' with config:config, page:page %}
       {% endif %}
     </DIV>
   {% endif %}
-  {% include 't_text_indexes' with text_index:page.text_index,
+  {% render 't_text_indexes' with text_index:page.text_index,
                                    text_index_size:page.text_index_size %}
-  {% include 't_image_indexes' with image_index:page.image_index %}
-  {% include 't_rect_indexes' with rect_index:page.rect_index %}
+  {% render 't_image_indexes' with image_index:page.image_index %}
+  {% render 't_rect_indexes' with rect_index:page.rect_index %}
 </DIV>
 </DIV></BODY></HTML>

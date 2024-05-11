@@ -1,8 +1,8 @@
 {% if page.origins %}
-{% include 't_breadcrumbs_body', breadcrumbs:page.breadcrumbs, origin:"default", page:page %}
+{% render 't_breadcrumbs_body', breadcrumbs:page.breadcrumbs, origin:"default", page:page %}
 {% for origin in page.origins %}
-  {% include 't_breadcrumbs_body', breadcrumbs:origin[1], origin:origin[0], page:page %}
+  {% render 't_breadcrumbs_body', breadcrumbs:origin[1], origin:origin[0], page:page %}
 {% endfor %}
 {% else %}
-{% include 't_breadcrumbs_body', breadcrumbs:page.breadcrumbs, origin:false, page:page %}
+{% render 't_breadcrumbs_body', breadcrumbs:page.breadcrumbs, origin:false, page:page %}
 {% endif %}

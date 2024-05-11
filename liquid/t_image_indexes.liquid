@@ -10,7 +10,7 @@
         {% if item.blurb %}
           <SPAN CLASS="tooltiptext">{{ item.blurb }}</SPAN>
         {% endif %}
-        <DIV>{% include 't_image',
+        <DIV>{% render 't_image',
                          id:false,
                          specs:false,
                          title:false,
