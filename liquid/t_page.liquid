@@ -47,7 +47,7 @@ function hideOverlay() {
     <DIV CLASS="story t1">
       {% render 't_title' with page:page %}
       {% render 't_story_indexes' with story_index:page.story_index %}
-      {% include 't_content', content:page.content %}
+      {% render 't_content', content:page.content %}
       {% if page.line_count > 20 %}
         {% render 't_navigation' with config:config, page:page %}
       {% endif %}

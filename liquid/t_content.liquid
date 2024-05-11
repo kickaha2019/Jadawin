@@ -1,33 +1,33 @@
 {% for element in content %}
     {% case element.type %}
       {% when "array" %}
-        {% include 't_content' with content:element.data %}
+        {% render 't_content' with content:element.data %}
       {% when "code" %}
         <PRE CLASS="code">{{ element.text }}</PRE>
       {% when "css" %}
       {% when "gallery" %}
-        {% include 't_gallery' with gallery:element %}
+        {% render 't_gallery' with gallery:element %}
       {% when "heading" %}
         <DIV CLASS="heading">{{ element.text }}</DIV>
       {% when "image" %}
-        {% include 't_image', specs:element.specs,
+        {% render 't_image', specs:element.specs,
                               details:element.details,
                               id:element.id,
                               title:false,
                               clazz:element.clazz,
                               overlay:element.overlay %}
       {% when "list" %}
-        {% include 't_list' with list:element %}
+        {% render 't_list' with list:element %}
       {% when "none" %}
       {% when "raw" %}
         {{ element.text }}
       {% when "svg" %}
-        {% include 't_text_indexes', text_index:element.text_index, text_index_size:'size0' %}
-        {% include 't_svg', source:element.source,
+        {% render 't_text_indexes', text_index:element.text_index, text_index_size:'size0' %}
+        {% render 't_svg', source:element.source,
                             background:element.background,
                             width:element.width %}
       {% when "table" %}
-        {% include 't_table' with table:element %}
+        {% render 't_table' with table:element %}
       {% else %}
         <B>Liquid error: Element type {{ element.type }}</B>
     {% endcase %}
