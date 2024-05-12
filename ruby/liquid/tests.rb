@@ -68,8 +68,8 @@ AT_LEAST
 
   def test_at_most
     fire( <<AT_MOST)
-{{ 4 | at_least: 5 }}
-{{ 4 | at_least: 3 }}
+{{ 4 | at_most: 5 }}
+{{ 4 | at_most: 3 }}
 AT_MOST
   end
 

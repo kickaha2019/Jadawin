@@ -1,42 +1,37 @@
 class Transpiler
   RESERVED_WORDS = ['or', 'and', 'true', 'false']
-  FILTERS = {
-    'times' => 'value * args[0]'
-  }
 
   class Context
     def initialize( sink, clazz)
       @io     = File.open( sink + '/' + clazz + '.rb', 'w')
       @io.puts <<"HEAD"
 class #{clazz}
-  def self.x( context, *args)
-    args.each do |arg|
-      if context.is_a?( Hash)
-        context = context[arg]
-      else
-        context = context.send( arg.to_sym)
-      end
-    end
-    context
-  end
 HEAD
-      FILTERS.each_pair do |name, code|
-        @io.puts <<"FILTER"
-  def self.f_#{name}( value, *args)
-    #{ code }
-  end
-FILTER
+      path = self.method(:close).source_location[0].sub( 'transpiler.rb', 'transpiled_methods.rb')
+      IO.readlines( path).each do |line|
+        @io.print line if /^\s/ =~ line
       end
       @indent = 0
       @rstrip = false
+      @stack  = []
+      @buffer = []
     end
 
     def close
+      flush
       @io.puts "end"
       @io.close
     end
 
+    def flush
+      unless @buffer.empty?
+        @io.puts( (' ' * @indent) + "h << \"#{@buffer.join('').gsub("\n","\\\\n").gsub('"',"\\\"")}\"")
+      end
+      @buffer = []
+    end
+
     def indent( delta)
+      flush
       @indent += delta
     end
 
@@ -44,9 +39,22 @@ FILTER
       @indent
     end
 
+    def lstrip
+      @buffer = [@buffer.join('').rstrip]
+    end
+
+    def pop
+      @stack.pop
+    end
+
     def print( text)
+      flush
       @io.print( (' ' * @indent) + text)
       @rstrip = false
+    end
+
+    def push( action)
+      @stack << action
     end
 
     def puts( text)
@@ -55,6 +63,10 @@ FILTER
 
     def rstrip( flag=true)
       @rstrip = true
+    end
+
+    def stacked( i=-1)
+      @stack[-1]
     end
 
     def wrap_text( text, check=true)
@@ -68,12 +80,19 @@ FILTER
         raise 'Illegal character sequence #{'
       end
 
-      puts "h << \"#{text.gsub("\n","\\\\n").gsub('"',"\\\"")}\""
+      @buffer << text
     end
   end
 
   def initialize
     @error_location = nil
+  end
+
+  def handle_assign( tokens, context)
+    if tokens[1] != '='
+      raise 'Bad assign statement'
+    end
+    context.puts( "c[\"#{tokens[0]}\"] = " + handle_expression(tokens[2..-1]))
   end
 
   def handle_break( tokens, context)
@@ -84,6 +103,7 @@ FILTER
     context.puts( 'case ' + handle_expression(tokens))
     context.indent( 4)
     context.rstrip
+    context.push( 'case')
   end
 
   def handle_continue( tokens, context)
@@ -91,9 +111,16 @@ FILTER
   end
 
   def handle_else( tokens, context)
-    context.indent( -2)
-    context.puts( 'else')
-    context.indent( 2)
+    if context.stacked == 'for'
+      context.indent( -2)
+      context.puts( 'end')
+      context.puts( "unless looped#{context.indented}")
+      context.indent( 2)
+    else
+      context.indent( -2)
+      context.puts( 'else')
+      context.indent( 2)
+    end
   end
 
   def handle_elsif( tokens, context)
@@ -105,22 +132,26 @@ FILTER
   def handle_endcase( tokens, context)
     context.indent( -4)
     context.puts( 'end')
+    context.pop
   end
 
   def handle_endif( tokens, context)
     context.indent( -2)
     context.puts( 'end')
+    context.pop
   end
 
   def handle_endfor( tokens, context)
     context.indent( -2)
     context.puts( 'end')
     context.puts "c[name#{context.indented}] = value#{context.indented}"
+    context.pop
   end
 
   def handle_endunless( tokens, context)
     context.indent( -2)
     context.puts( 'end')
+    context.pop
   end
 
   def handle_expression(tokens)
@@ -170,23 +201,27 @@ FILTER
       if inside_filter
         handled << ')'
       end
-    end.join('')
+    end.join(' ')
   end
 
   def handle_for( tokens, context)
     context.puts "name#{context.indented}  = '#{tokens[0]}'"
     context.puts "value#{context.indented} = c['#{tokens[0]}']"
+    context.puts "looped#{context.indented} = false"
     if tokens[1] != 'in'
       raise 'Unhandled for directive'
     end
     context.puts handle_expression(tokens[2..-1]) + '.each do |loop|'
     context.indent( 2)
     context.puts "c['#{tokens[0]}'] = loop"
+    context.puts "looped#{context.indented} = true"
+    context.push( 'for')
   end
 
   def handle_if( tokens, context)
     context.puts( 'if ' + handle_expression(tokens))
     context.indent( 2)
+    context.push( 'if')
   end
 
   def handle_render( tokens, context)
@@ -214,7 +249,10 @@ FILTER
     while ! (i = text.index( '{{', from)).nil?
       context.wrap_text( text[from...i]) if from < i
       tokens, j = tokenise( text, i+2, '}}')
-      context.puts( 'h << "#{' + handle_expression(tokens) + '}"')
+      tokens, lstrip, rstrip = suppress_whitespace( tokens)
+      context.lstrip if lstrip
+      context.puts( 'h << "#{' + handle_expression( tokens) + '}"')
+      context.rstrip if rstrip
       from = j
     end
     context.wrap_text( text[from..-1]) if from < text.size
@@ -223,6 +261,7 @@ FILTER
   def handle_unless( tokens, context)
     context.puts( 'unless ' + handle_expression(tokens))
     context.indent( 2)
+    context.push( 'unless')
   end
 
   def handle_when( tokens, context)
@@ -256,23 +295,26 @@ FILTER
   end
 
   def suppress_whitespace( stanza)
-    return stanza if stanza.empty?
+    return stanza, false, false if stanza.empty?
+    lstrip = false
 
     if stanza[0] == '-'
       stanza = stanza[1..-1]
+      lstrip = true
     elsif /^\-/ =~ stanza[0]
       stanza[0] = stanza[0][1..-1]
+      lstrip = true
     end
 
     return stanza if stanza.empty?
 
     if stanza[-1] == '-'
-      return stanza[0..-2]
+      return stanza[0..-2], lstrip, true
     elsif /^\-/ =~ stanza[-1]
       stanza[-1] = stanza[-1][1..-1]
     end
 
-    stanza
+    return stanza, lstrip, false
   end
 
   def template( name, text, context)
@@ -284,12 +326,14 @@ FILTER
 
       stanzas( text) do |stanza|
         if stanza.is_a?( Array)
-          stanza = suppress_whitespace( stanza)
+          stanza, lstrip, rstrip = suppress_whitespace( stanza)
+          context.lstrip if lstrip
           unless stanza.empty?
             self.send( ('handle_' + stanza[0]).to_sym,
 
                        stanza[1..-1], context)
           end
+          context.rstrip if rstrip
         else
           handle_text( stanza, context)
         end
