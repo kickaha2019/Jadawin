@@ -15,7 +15,7 @@ module TranspiledMethods
     end
   end
 
-  def self.f_floor( value, *args)
+  def self.f_floor( value)
     if value.is_a?( String)
       value = value.to_f
     end

@@ -92,7 +92,7 @@ HEAD
     if tokens[1] != '='
       raise 'Bad assign statement'
     end
-    context.puts( "c[\"#{tokens[0]}\"] = " + handle_expression(tokens[2..-1]))
+    context.puts( "c[\"#{tokens[0]}\"] = " + handle_expression(tokens,2))
   end
 
   def handle_break( tokens, context)
@@ -154,54 +154,65 @@ HEAD
     context.pop
   end
 
-  def handle_expression(tokens)
-    [].tap do |handled|
-      i, inside_reference, inside_filter = 0, false, false
-      while i < tokens.size
-        token = tokens[i]
-        i += 1
+  def handle_expression( tokens, offset=0)
+    text, i = handle_expression2( tokens, offset)
+    if i < tokens.size
+      raise 'Unable to parse expression'
+    end
+    text
+  end
 
-        if (/^[a-z]/i =~ token) &&
-            (! RESERVED_WORDS.include?( token))
-          unless inside_reference
-            inside_reference = true
-            handled << 'x(c,'
-          end
-          handled << "\"#{token}\""
-        elsif token == '.'
-          handled << ','
-        else
-          if inside_reference
+  def handle_expression2(tokens, offset)
+    i,handled = offset, []
+    inside_reference, inside_filter = false, false
+
+    while i < tokens.size
+      token = tokens[i]
+      break if [',',':'].include?( token)
+      i += 1
+      token = " #{token} " if RESERVED_WORDS.include?( token)
+
+      if /^[a-z]/i =~ token
+        unless inside_reference
+          inside_reference = true
+          handled << 'x(c,'
+        end
+        handled << "\"#{token}\""
+      elsif token == '.'
+        handled << ','
+      else
+        if inside_reference
+          handled << ')'
+          inside_reference = false
+        end
+        if token == '|'
+          if inside_filter
             handled << ')'
-            inside_reference = false
           end
-          if token == '|'
-            if inside_filter
-              handled << ')'
-            end
-            inside_filter = true
-            handled.prepend( "f_#{tokens[i]}(")
+          inside_filter = true
+          handled.prepend( "f_#{tokens[i]}(")
 
-            if tokens[i+1] == ':'
-              i += 2
-              handled << ','
-            else
-              i += 1
-            end
+          if tokens[i+1] == ':'
+            i += 2
+            handled << ','
           else
-            handled << token
+            i += 1
           end
+        else
+          handled << token
         end
       end
+    end
 
-      if inside_reference
-        handled << ')'
-      end
+    if inside_reference
+      handled << ')'
+    end
 
-      if inside_filter
-        handled << ')'
-      end
-    end.join(' ')
+    if inside_filter
+      handled << ')'
+    end
+
+    return handled.join(''), i
   end
 
   def handle_for( tokens, context)
@@ -211,7 +222,7 @@ HEAD
     if tokens[1] != 'in'
       raise 'Unhandled for directive'
     end
-    context.puts handle_expression(tokens[2..-1]) + '.each do |loop|'
+    context.puts handle_expression(tokens, 2) + '.each do |loop|'
     context.indent( 2)
     context.puts "c['#{tokens[0]}'] = loop"
     context.puts "looped#{context.indented} = true"
@@ -232,13 +243,10 @@ HEAD
 
     while (from < tokens.size)
       raise 'Bad syntax in render directive' if tokens[from+1] != ':'
-      i = from+2
-      while (i < tokens.size) && (tokens[i] != ',')
-        i += 1
-      end
-      context.puts( "c1['#{tokens[from]}'] = " +
-                    handle_expression(tokens[from+2...i]))
-      from = i+1
+      expr, i = handle_expression2( tokens, from+2)
+      context.puts( "c1['#{tokens[from]}'] = " + expr)
+      i += 1 if tokens[i] == ','
+      from = i
     end
 
     context.puts( "h << #{tokens[0][1..-2]}( c1)")
@@ -342,6 +350,7 @@ HEAD
       context.puts "h.join('')"
       context.indent(-2)
       context.puts 'end'
+      context.indent(-2)
     rescue Exception => bang
       puts "*** File:  #{name}"
       puts "*** Text:  #{@error_location}" if @error_location

@@ -9,7 +9,6 @@ require 'bundler/setup'
 # require 'rexml/xpath'
 require 'yaml'
 require 'cgi'
-require 'liquid'
 require 'fileutils'
 require 'json'
 
@@ -31,10 +30,7 @@ class Compiler
     @new_words     = []
     @generated     = {}
     @key2paths     = Hash.new {|h,k| h[k] = []}
-    Liquid::Template.file_system = Liquid::LocalFileSystem.new( @config['liquid'],
-                                                                pattern = "%s.liquid")
-    @page_template = Liquid::Template.parse("{% include 't_page' with config:config, page:page %}")
-    Liquid.cache_classes = false
+    prepare_templates
   end
 
 # =================================================================
@@ -193,6 +189,25 @@ class Compiler
     end
   end
 
+  def prepare_templates
+    if @config['mode'].nil? ||
+        @config['mode'] == 'liquid' ||
+        @config['mode'] == 'liquid-c'
+      require 'liquid'
+      if @config['mode'] == 'liquid-c'
+        require 'liquid/c'
+      end
+      Liquid::Template.file_system = Liquid::LocalFileSystem.new( @config['liquid'],
+                                                                  pattern = "%s.liquid")
+      @page_template = Liquid::Template.parse("{% include 't_page' with config:config, page:page %}")
+      Liquid.cache_classes = false
+    elsif @config['mode'] == 'transpile'
+      require_relative 'liquid/transpiler'
+      Transpiler.new.transpile_dir( @config['liquid'], 'Transpiled', @config['liquid'])
+      require( @config['liquid'] + '/Transpiled.rb')
+    end
+  end
+
   def dimensions( key)
     @config['dimensions'][key]
   end
@@ -299,8 +314,13 @@ class Compiler
     debug_hook( article, "Regenerating")
 
     to_data = article.to_data( self, parents)
-    html = @page_template.render( {'config' => @config,
-                                   'page'   => to_data})
+    params  = {'config' => @config,
+               'page'   => to_data}
+    if @config['mode'] == 'transpile'
+      html = Transpiled.test( params)
+    else
+      html = @page_template.render( params)
+    end
 
     if /Liquid error:/m =~ html
       article.error( 'Liquid templating error')

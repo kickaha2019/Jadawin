@@ -177,6 +177,14 @@ RENDER1
            {'guybrush' => 'Mighty pirate'})
   end
 
+  def test_render2
+    prepare( <<RENDER1, 'included.liquid')
+Passed {{ count }} {{ fruit }}
+RENDER1
+    fire2( "{% render 'included', count:3, fruit:'apples' %}",
+           {})
+  end
+
   def test_split
     fire( <<SPLIT)
 {% assign beatles = "John, Paul, George, Ringo" | split: ", " %}
