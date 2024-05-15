@@ -157,16 +157,29 @@ Banana
 IF_ELSE
   end
 
-  def test_if
-    fire( <<IF)
+  def test_if1
+    fire( <<IF1, {'fruit' => {'green' => true, 'red' => false}})
+{% if fruit.green or fruit.red %}
+Apple
+{% endif %}
+IF1
+  end
+
+  def test_if2
+    fire( <<IF2)
 {% if true %}
 Apple
 {% endif %}
-IF
+IF2
   end
 
-  def test_object
+  def test_object1
     fire( '{{ hash.array[0] }}', {'hash' => {'array' => ['Hello World']}})
+  end
+
+  def test_object2
+    fire( '{{ hash.array[0].field }}',
+          {'hash' => {'array' => [{'field' => 'Hello World'}]}})
   end
 
   def test_render1
@@ -185,6 +198,14 @@ RENDER1
            {})
   end
 
+  def test_render3
+    prepare( <<RENDER1, 'included.liquid')
+Passed {{ count }} {{ fruit }}
+RENDER1
+    fire2( "{% render 'included', count:counts[0],fruit:'apples' %}",
+           {'counts' => [3]})
+  end
+
   def test_split
     fire( <<SPLIT)
 {% assign beatles = "John, Paul, George, Ringo" | split: ", " %}
@@ -195,8 +216,12 @@ RENDER1
 SPLIT
   end
 
-  def test_text
+  def test_text1
     fire( 'Hello World')
+  end
+
+  def test_text2
+    fire( 'const re = /(?:\?|,)origin=([^#&]*)/;')
   end
 
   def test_times

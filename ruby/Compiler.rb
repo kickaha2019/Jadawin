@@ -11,6 +11,7 @@ require 'yaml'
 require 'cgi'
 require 'fileutils'
 require 'json'
+require 'strscan'
 
 require_relative 'Article'
 require_relative 'elements/error'
@@ -317,7 +318,7 @@ class Compiler
     params  = {'config' => @config,
                'page'   => to_data}
     if @config['mode'] == 'transpile'
-      html = Transpiled.test( params)
+      html = Transpiled.t_page( params)
     else
       html = @page_template.render( params)
     end

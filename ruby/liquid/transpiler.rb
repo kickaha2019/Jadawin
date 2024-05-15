@@ -164,27 +164,33 @@ HEAD
 
   def handle_expression2(tokens, offset)
     i,handled = offset, []
-    inside_reference, inside_filter = false, false
+    inside_filter = false
 
     while i < tokens.size
       token = tokens[i]
-      break if [',',':'].include?( token)
+      break if [',',':',']'].include?( token)
       i += 1
       token = " #{token} " if RESERVED_WORDS.include?( token)
 
       if /^[a-z]/i =~ token
-        unless inside_reference
-          inside_reference = true
-          handled << 'x(c,'
-        end
-        handled << "\"#{token}\""
+        handled << "x(c,'#{token}')"
       elsif token == '.'
-        handled << ','
-      else
-        if inside_reference
-          handled << ')'
-          inside_reference = false
+        if tokens[i] == 'size'
+          handled[-1] = handled[-1] + '.size'
+        elsif /^[a-z]/i =~ tokens[i]
+          handled[-1] = 'x(' + handled[-1] + ",'#{tokens[i]}')"
+        else
+          raise 'Bad . reference'
         end
+        i += 1
+      elsif token == '['
+        ref, i = handle_expression2( tokens, i)
+        if tokens[i] != ']'
+          raise 'Bad [] expression'
+        end
+        handled[-1] = handled[-1] + "[#{ref}]"
+        i += 1
+      else
         if token == '|'
           if inside_filter
             handled << ')'
@@ -202,10 +208,6 @@ HEAD
           handled << token
         end
       end
-    end
-
-    if inside_reference
-      handled << ')'
     end
 
     if inside_filter
@@ -355,6 +357,7 @@ HEAD
       puts "*** File:  #{name}"
       puts "*** Text:  #{@error_location}" if @error_location
       puts "*** Error: #{bang.message}"
+      raise bang
     end
   end
 
@@ -368,6 +371,9 @@ HEAD
         else
           raise "Unclosed quoted string"
         end
+      elsif /[,\[\]:]/ =~ text[i..i]
+        tokens << text[i..i]
+        from = i +1
       elsif /[0-9]/ =~ text[i..i]
         if j = text.index( /[^0-9\.]/i, i+1)
           tokens << text[i...j]
