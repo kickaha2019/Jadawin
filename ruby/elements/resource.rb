@@ -8,6 +8,7 @@ module Elements
       path = path[0]
       path1  = (/^\// =~ path) ? path : abs_filename( article.filename, path).gsub( '//', '/')
       source = compiler.source_filename( path1)
+      Image.use_image( path1)
 
       if File.exist? source
         sink = compiler.sink_filename( path1)

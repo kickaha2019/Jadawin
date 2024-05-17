@@ -55,6 +55,7 @@ module Elements
       end
 
       info = @@image_cache[source1]
+      info['used'] = true
       if info['width'] < 1
         article.error( 'Badly formatted image file: ' + source)
         return
@@ -138,6 +139,8 @@ module Elements
           cached    = @@image_cache[path]
           if cached.nil?
             @@image_cache[path] = cached = {'path' => path, 'timestamp' => -1}
+          else
+            cached['used'] = false
           end
 
           timestamp = File.mtime( source + path).to_i
@@ -340,6 +343,20 @@ module Elements
        'id'      => anchor,
        'details' => details( compiler, article, dims,:prepare_source_image)
        }
+    end
+
+    def self.use_image( path)
+      if cache = @@image_cache[path]
+        cache['used'] = true
+      end
+    end
+
+    def self.validate_all_images_used( compiler)
+      @@image_cache.each_pair do |key, info|
+        unless info['used']
+          compiler.error( key, "Image not used")
+        end
+      end
     end
   end
 end

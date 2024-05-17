@@ -89,6 +89,9 @@ class Compiler
     # Check locations all rendered
     Elements::Tag.check_all_rendered
 
+    # Check all images used
+    Elements::Image.validate_all_images_used( self)
+
     # Report new words
     report_new_words
 
