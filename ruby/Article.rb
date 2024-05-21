@@ -5,6 +5,8 @@
 =end
 
 require 'digest/sha1'
+require 'liquid'
+
 require_relative 'utils'
 require_relative 'elements/heading'
 require_relative 'elements/icon'
@@ -15,12 +17,14 @@ require_relative 'elements/resource'
 require_relative 'elements/svg'
 require_relative 'styles/base'
 
-class Article
+class Article < Liquid::Drop
   include Utils
   attr_accessor :content_added
-  attr_reader   :blurb, :style
+  attr_reader   :blurb, :style, :parents
 
-  def initialize( filename)
+  def initialize( compiler, parent, filename)
+    @compiler        = compiler
+    @parents         = parent ? (parent.parents + [parent]) : []
     @filename        = filename
     @children        = []
     @children_sorted = true
@@ -61,12 +65,12 @@ class Article
     @specials['Blurb'] ? @specials['Blurb'].text : nil
   end
 
-  def breadcrumbs( parents)
-    return false if parents.empty?
+  def breadcrumbs( ancestors)
+    return false if ancestors.empty?
 
-    parents.collect do |parent|
-      {'path'  => relative_path( filename, parent.filename),
-       'title' => prettify( parent.title)}
+    ancestors.collect do |ancestor|
+      {'path'  => relative_path( filename, ancestor.filename),
+       'title' => prettify( ancestor.title)}
     end
   end
 
@@ -179,14 +183,14 @@ class Article
     html
   end
 
-  def prepare( compiler, parents)
+  def prepare( parents)
     if (! styled?) && story?
       override_style( Styles::Story.new)
     end
-    style.prepare( compiler, self, parents)
+    style.prepare( @compiler, self, parents)
 
     @content.each_index do |i|
-      @content[i].prepare( compiler,
+      @content[i].prepare( @compiler,
                            self,
                            parents,
                            (@content.size > (i + 1)) ? @content[(i+1)..-1] : [])
@@ -194,7 +198,7 @@ class Article
   end
 
   def report_errors( compiler)
-    @errors.each {|err| compiler.error( @filename.gsub('html','txt'), err)}
+    @errors.each {|err| @compiler.error( @filename.gsub('html','txt'), err)}
   end
 
   def override_style( style)
@@ -243,7 +247,7 @@ class Article
     @specials['Title'] ? @specials['Title'].text : name
   end
 
-  def to_data( compiler, parents)
+  def to_data
     data = {}
     data['page_title']    = page_title( parents)
     data['blurb']         = blurb ? blurb : prettify( title)
@@ -253,12 +257,12 @@ class Article
     data['origins']       = @origins
 
     if has_any_content?
-      data['content']    = @content.select {|c| c.page_content?}.collect {|c| c.to_data( compiler, self)}
+      data['content']    = @content.select {|c| c.page_content?}.collect {|c| c.to_data( @compiler, self)}
       data['line_count'] = @content.inject(0) {|r,c| r + c.line_count}
       data['overlay']    = @content.inject(false) {|r,c| r || c.overlay?}
     end
 
-    style.render( compiler, parents, self, data)
+    style.render( @compiler, parents, self, data)
     data
   end
 

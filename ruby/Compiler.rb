@@ -126,13 +126,13 @@ class Compiler
   def parse( parent, path)
 
     # Article for the directory
-    dir_article = Article.new( path + '/index.html')
+    dir_article = Article.new( self, parent, path + '/index.html')
     remember( (path == '') ? '.' : path, dir_article)
     parent.add_child( dir_article) if parent
 
     # Hash of articles in this directory
     dir_articles = Hash.new do |h,k|
-      a = Article.new( path + '/' + k + '.html')
+      a = Article.new( self, dir_article, path + '/' + k + '.html')
       dir_article.add_child( a)
       remember( path + '/' + k, a)
       h[k] = a
@@ -203,6 +203,7 @@ class Compiler
       end
       Liquid::Template.file_system = Liquid::LocalFileSystem.new( @config['liquid'],
                                                                   pattern = "%s.liquid")
+      # @page_template = Liquid::Template.parse("{% include 'page_layout' with config:config, page:page %}")
       @page_template = Liquid::Template.parse("{% include 't_page' with config:config, page:page %}")
       Liquid.cache_classes = false
     elsif @config['mode'] == 'transpile'
@@ -291,7 +292,7 @@ class Compiler
     debug_hook( article, "Preparing")
 
     begin
-      article.prepare( self, parents)
+      article.prepare( parents)
     rescue Exception => bang
       article.error( bang.message)
       raise
@@ -317,9 +318,9 @@ class Compiler
   def regenerate( parents, article)
     debug_hook( article, "Regenerating")
 
-    to_data = article.to_data( self, parents)
+    to_data = article.to_data
     params  = {'config' => @config,
-               'page'   => to_data}
+               'page'   => article.to_data}
     if @config['mode'] == 'transpile'
       html = Transpiled.t_page( params)
     else
