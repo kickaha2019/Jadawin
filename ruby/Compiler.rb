@@ -72,11 +72,11 @@ class Compiler
     Elements::Image.find_images( @source)
 
     # Parse all the articles recursively
-    @articles = parse( nil, "")
+    @articles = parse( [], "")
     puts "... Parsed      #{Time.now.strftime( '%Y-%m-%d %H:%M:%S')}"
 
     # Prepare the articles now all articles parsed
-    prepare( [], @articles)
+    prepare( @articles)
     puts "... Prepared    #{Time.now.strftime( '%Y-%m-%d %H:%M:%S')}"
 
     # Regenerate the HTML files
@@ -123,16 +123,17 @@ class Compiler
   end
 
   # Parse the articles
-  def parse( parent, path)
+  def parse( parents, path)
 
     # Article for the directory
-    dir_article = Article.new( self, path + '/index.html')
+    dir_article = Article.new( self, parents, path + '/index.html')
     remember( (path == '') ? '.' : path, dir_article)
-    parent.add_child( dir_article) if parent
+    parents[-1].add_child( dir_article) unless parents.empty?
+    parents = parents + [dir_article]
 
     # Hash of articles in this directory
     dir_articles = Hash.new do |h,k|
-      a = Article.new( self, path + '/' + k + '.html')
+      a = Article.new( self, parents, path + '/' + k + '.html')
       dir_article.add_child( a)
       remember( path + '/' + k, a)
       h[k] = a
@@ -147,7 +148,7 @@ class Compiler
 
       if File.directory?( @source + path1)
         Dir.mkdir( @sink + path1) if not File.exist?( @sink + path1)
-        parse( dir_article, path1)
+        parse( parents, path1)
       elsif m = /^(.*)\.txt$/.match( file)
         child = dir_articles[m[1]]
         parse_article(path, file, child)
@@ -287,18 +288,18 @@ class Compiler
     end
   end
 
-  def prepare( parents, article)
+  def prepare( article)
     debug_hook( article, "Preparing")
 
     begin
-      article.prepare( parents)
+      article.prepare
     rescue Exception => bang
       article.error( bang.message)
       raise
     end
 
     article.children.each do |child|
-      prepare( parents + [article], child)
+      prepare( child)
     end
   end
 
@@ -317,7 +318,7 @@ class Compiler
   def regenerate( parents, article)
     debug_hook( article, "Regenerating")
 
-    to_data = article.to_data( parents)
+    to_data = article.to_data
     params  = {'config' => @config,
                'page'   => to_data}
     if @config['mode'] == 'transpile'

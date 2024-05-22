@@ -25,7 +25,7 @@ class Link
   #   true
   # end
 
-  def prepare( parents)
+  def prepare
   end
 
   def title

@@ -20,8 +20,9 @@ class Article
   attr_accessor :content_added
   attr_reader   :blurb, :style
 
-  def initialize( compiler, filename)
+  def initialize( compiler, parents, filename)
     @compiler        = compiler
+    @parents         = parents
     @filename        = filename
     @children        = []
     @children_sorted = true
@@ -62,12 +63,12 @@ class Article
     @specials['Blurb'] ? @specials['Blurb'].text : nil
   end
 
-  def breadcrumbs( parents)
-    return false if parents.empty?
+  def breadcrumbs( ancestors)
+    return false if ancestors.empty?
 
-    parents.collect do |parent|
-      {'path'  => relative_path( filename, parent.filename),
-       'title' => prettify( parent.title)}
+    ancestors.collect do |ancestor|
+      {'path'  => relative_path( filename, ancestor.filename),
+       'title' => prettify( ancestor.title)}
     end
   end
 
@@ -159,17 +160,13 @@ class Article
     false
   end
 
-  def origin( name, parents)
+  def origin( name, ancestors)
     @origins = [] unless @origins
-    @origins << [name, breadcrumbs( parents)]
+    @origins << [name, breadcrumbs( ancestors)]
   end
 
-  def page_title( parents)
-    if parents[0]
-      prettify( title)
-    else
-      nil
-    end
+  def page_title
+    @parents.empty? ? nil : prettify( title)
   end
 
   def post_process_html( root_url, html)
@@ -180,16 +177,16 @@ class Article
     html
   end
 
-  def prepare( parents)
+  def prepare
     if (! styled?) && story?
       override_style( Styles::Story.new)
     end
-    style.prepare( @compiler, self, parents)
+    style.prepare( @compiler, self, @parents)
 
     @content.each_index do |i|
       @content[i].prepare( @compiler,
                            self,
-                           parents,
+                           @parents,
                            (@content.size > (i + 1)) ? @content[(i+1)..-1] : [])
     end
   end
@@ -244,13 +241,13 @@ class Article
     @specials['Title'] ? @specials['Title'].text : name
   end
 
-  def to_data( parents)
+  def to_data
     data = {}
-    data['page_title']    = page_title( parents)
+    data['page_title']    = page_title
     data['blurb']         = blurb ? blurb : prettify( title)
     data['page_date']     = date ? format_date(date) : nil
     data['root']          = relative_path( filename, '/')
-    data['breadcrumbs']   = breadcrumbs( parents)
+    data['breadcrumbs']   = breadcrumbs( @parents)
     data['origins']       = @origins
 
     if has_any_content?
@@ -259,7 +256,7 @@ class Article
       data['overlay']    = @content.inject(false) {|r,c| r || c.overlay?}
     end
 
-    style.render( @compiler, parents, self, data)
+    style.render( @compiler, @parents, self, data)
     data
   end
 
