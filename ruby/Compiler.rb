@@ -126,13 +126,13 @@ class Compiler
   def parse( parent, path)
 
     # Article for the directory
-    dir_article = Article.new( path + '/index.html')
+    dir_article = Article.new( self, path + '/index.html')
     remember( (path == '') ? '.' : path, dir_article)
     parent.add_child( dir_article) if parent
 
     # Hash of articles in this directory
     dir_articles = Hash.new do |h,k|
-      a = Article.new( path + '/' + k + '.html')
+      a = Article.new( self, path + '/' + k + '.html')
       dir_article.add_child( a)
       remember( path + '/' + k, a)
       h[k] = a
@@ -291,7 +291,7 @@ class Compiler
     debug_hook( article, "Preparing")
 
     begin
-      article.prepare( self, parents)
+      article.prepare( parents)
     rescue Exception => bang
       article.error( bang.message)
       raise
@@ -317,7 +317,7 @@ class Compiler
   def regenerate( parents, article)
     debug_hook( article, "Regenerating")
 
-    to_data = article.to_data( self, parents)
+    to_data = article.to_data( parents)
     params  = {'config' => @config,
                'page'   => to_data}
     if @config['mode'] == 'transpile'
@@ -359,7 +359,7 @@ class Compiler
   end
 
   def report_errors( article)
-    article.report_errors( self)
+    article.report_errors
     article.children.each do |child|
       report_errors( child) if child.is_a?( Article)
     end

@@ -20,7 +20,8 @@ class Article
   attr_accessor :content_added
   attr_reader   :blurb, :style
 
-  def initialize( filename)
+  def initialize( compiler, filename)
+    @compiler        = compiler
     @filename        = filename
     @children        = []
     @children_sorted = true
@@ -179,22 +180,22 @@ class Article
     html
   end
 
-  def prepare( compiler, parents)
+  def prepare( parents)
     if (! styled?) && story?
       override_style( Styles::Story.new)
     end
-    style.prepare( compiler, self, parents)
+    style.prepare( @compiler, self, parents)
 
     @content.each_index do |i|
-      @content[i].prepare( compiler,
+      @content[i].prepare( @compiler,
                            self,
                            parents,
                            (@content.size > (i + 1)) ? @content[(i+1)..-1] : [])
     end
   end
 
-  def report_errors( compiler)
-    @errors.each {|err| compiler.error( @filename.gsub('html','txt'), err)}
+  def report_errors
+    @errors.each {|err| @compiler.error( @filename.gsub('html','txt'), err)}
   end
 
   def override_style( style)
@@ -243,7 +244,7 @@ class Article
     @specials['Title'] ? @specials['Title'].text : name
   end
 
-  def to_data( compiler, parents)
+  def to_data( parents)
     data = {}
     data['page_title']    = page_title( parents)
     data['blurb']         = blurb ? blurb : prettify( title)
@@ -253,12 +254,12 @@ class Article
     data['origins']       = @origins
 
     if has_any_content?
-      data['content']    = @content.select {|c| c.page_content?}.collect {|c| c.to_data( compiler, self)}
+      data['content']    = @content.select {|c| c.page_content?}.collect {|c| c.to_data( @compiler, self)}
       data['line_count'] = @content.inject(0) {|r,c| r + c.line_count}
       data['overlay']    = @content.inject(false) {|r,c| r || c.overlay?}
     end
 
-    style.render( compiler, parents, self, data)
+    style.render( @compiler, parents, self, data)
     data
   end
 
