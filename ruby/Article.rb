@@ -5,6 +5,8 @@
 =end
 
 require 'digest/sha1'
+require 'liquid'
+
 require_relative 'utils'
 require_relative 'elements/heading'
 require_relative 'elements/icon'
@@ -15,7 +17,7 @@ require_relative 'elements/resource'
 require_relative 'elements/svg'
 require_relative 'styles/base'
 
-class Article
+class Article < Liquid::Drop
   include Utils
   attr_accessor :content_added
   attr_reader   :blurb, :style

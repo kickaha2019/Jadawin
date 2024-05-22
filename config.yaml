@@ -3,7 +3,7 @@ dimensions:
   icon:      [[96, 72],[96, 72],[192, 144],[240, 180]]
   image:     [[360, 270],[360, 270],[748,561],[1024,768]]
   overlay:   [[350, 240],[600,450],[800,600],[1024,768]]
-mode: transpile
+mode: liquid
 liquid: /Users/peter/Jadawin/liquid
 root_url: https://alofmethbin.com/Jadawin/
 image_info_cache: /Users/peter/Caches/Website

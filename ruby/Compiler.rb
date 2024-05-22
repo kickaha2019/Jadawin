@@ -204,7 +204,8 @@ class Compiler
       end
       Liquid::Template.file_system = Liquid::LocalFileSystem.new( @config['liquid'],
                                                                   pattern = "%s.liquid")
-      @page_template = Liquid::Template.parse("{% include 't_page' with config:config, page:page %}")
+      @page_template = Liquid::Template.parse("{% include 'page_layout' with config:config, page:page %}")
+      # @page_template = Liquid::Template.parse("{% include 't_page' with config:config, page:page %}")
       Liquid.cache_classes = false
     elsif @config['mode'] == 'transpile'
       require_relative 'liquid/transpiler'
@@ -318,9 +319,8 @@ class Compiler
   def regenerate( parents, article)
     debug_hook( article, "Regenerating")
 
-    to_data = article.to_data
     params  = {'config' => @config,
-               'page'   => to_data}
+               'page'   => article}
     if @config['mode'] == 'transpile'
       html = Transpiled.t_page( params)
     else
