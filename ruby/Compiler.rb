@@ -204,8 +204,7 @@ class Compiler
       end
       Liquid::Template.file_system = Liquid::LocalFileSystem.new( @config['liquid'],
                                                                   pattern = "%s.liquid")
-      @page_template = Liquid::Template.parse("{% include 'page_layout' with config:config, page:page %}")
-      # @page_template = Liquid::Template.parse("{% include 't_page' with config:config, page:page %}")
+      @page_templates = {}
       Liquid.cache_classes = false
     elsif @config['mode'] == 'transpile'
       require_relative 'liquid/transpiler'
@@ -322,9 +321,13 @@ class Compiler
     params  = {'config' => @config,
                'page'   => article}
     if @config['mode'] == 'transpile'
-      html = Transpiled.t_page( params)
+      #html = Transpiled.t_page( params)
     else
-      html = @page_template.render( params)
+      layout = article.layout
+      unless @page_templates[layout]
+        @page_templates[layout] = Liquid::Template.parse("{% include '#{layout}_layout' with config:config, page:page %}")
+      end
+      html = @page_templates[layout].render( params)
     end
 
     if /Liquid error:/m =~ html

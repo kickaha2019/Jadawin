@@ -48,6 +48,13 @@ module Styles
       article.has_any_content?
     end
 
+    def name
+      n = self.class.name.split('::')[-1]
+      n[0].downcase + n[1..-1].gsub( /[A-Z]/) do |letter|
+        '_' + letter.downcase
+      end
+    end
+
     def post_process_html( root_url, article, html)
       lines, inside_pre = [], false
       html.split( "\n").each do |line|

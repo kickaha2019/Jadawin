@@ -149,6 +149,10 @@ class Article < Liquid::Drop
     nil
   end
 
+  def layout
+    @style ? @style.name : 'default'
+  end
+
   def leaf?
     style.leaf?( self)
   end
