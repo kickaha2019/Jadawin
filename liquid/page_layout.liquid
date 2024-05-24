@@ -8,11 +8,19 @@
 {% endif %}
 {%
   liquid
-  assign galleries = page.content | where: "type", "gallery" | default: 0
-  assign insets    = page.content | where: "type", "inset" | default: 0
-  assign overlays  = galleries.size | add: insets.size
+  assign galleries = page.content | where: "type", "gallery"
+  if galleries.size > 0
+    assign overlays = true
+  else
+    assign insets    = page.content | where: "type", "inset"
+    if insets.size > 0
+        assign overlays = true
+    else
+        assign overlays = false
+    endif
+  endif
 %}
-{% if overlays > 0 %}
+{% if overlays %}
 <script>
 function showOverlay(image_path) {
   var img = '<IMG SRC="' + image_path + '" onclick="hideOverlay()">';
@@ -34,7 +42,7 @@ function hideOverlay() {
 </style>
 {% render 't_breadcrumbs_origin_head' with page:page %}
 </HEAD><BODY>
-{% if overlays > 0 %}
+{% if overlays %}
 <DIV ID="overlay" CLASS="overlay" onclick="hideOverlay()">
   <DIV CLASS="overlay_back size1 size2 size3" onclick="hideOverlay()"></DIV>
   <DIV CLASS="size1 size2 size3" ID="overlay_image" onclick="hideOverlay()"></DIV>
