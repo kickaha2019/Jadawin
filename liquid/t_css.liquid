@@ -8,7 +8,7 @@ p {margin-top: 0px}
        margin-left: auto; margin-right: auto; margin-top: 0px; margin-bottom: 0px;}
 {% endif %}
 
-{% if page.overlay %}
+{% if overlays > 0 %}
 .overlay {position: fixed; display: none; z-index: 100;
           width: 100vw; height: 100vh; left: 0px; right: 0px;
           align-items: center; justify-content: center}
@@ -94,7 +94,7 @@ td p {margin: 0px}
 {% render 't_rect_indexes_css' with config:config, rect_index:page.rect_index, size:0 %}
 
 @media all and (min-width: {{ widths.browser[1] }}px) {
-{% if page.overlay %}
+{% if overlays > 0 %}
   #overlay_image img {max-width: {{ dimensions.overlay[1][0] }}px;
                       max-height: {{ dimensions.overlay[1][1] }}px}
 {% endif %}
@@ -124,7 +124,7 @@ td p {margin: 0px}
 }
 
 @media all and (min-width: {{ widths.browser[2] }}px) {
-{% if page.overlay %}
+{% if overlays > 0 %}
   #overlay_image img {max-width: {{ dimensions.overlay[2][0] }}px;
                       max-height: {{ dimensions.overlay[2][1] }}px}
 {% endif %}
@@ -152,7 +152,7 @@ td p {margin: 0px}
 }
 
 @media all and (min-width: {{ widths.browser[3] }}px) {
-{% if page.overlay %}
+{% if overlays > 0 %}
   #overlay_image img {max-width: {{ dimensions.overlay[3][0] }}px;
                       max-height: {{ dimensions.overlay[3][1] }}px}
 {% endif %}

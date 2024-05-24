@@ -6,10 +6,6 @@ module Elements
       0
     end
 
-    def overlay?
-      true
-    end
-
     def prepare( compiler, article, parents, younger)
       super
       okay = false
@@ -31,7 +27,7 @@ module Elements
 
     def to_data( compiler, article)
       dims = get_scaled_dims( compiler.dimensions( 'icon'), [self])
-      {'type'    => 'image',
+      {'type'    => 'inset',
        'clazz'   => ((@index % 2) == 0) ? 'left' : 'right',
        'overlay' => overlay( compiler, article),
        'id'      => anchor,

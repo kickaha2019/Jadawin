@@ -42,10 +42,6 @@ module Elements
       @@next_index[type][article.filename] += 1
     end
 
-    def overlay?
-      false
-    end
-
     def page_content?
       true
     end

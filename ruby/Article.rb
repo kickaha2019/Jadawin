@@ -149,10 +149,6 @@ class Article < Liquid::Drop
     nil
   end
 
-  def layout
-    @style ? @style.name : 'default'
-  end
-
   def leaf?
     style.leaf?( self)
   end
@@ -259,7 +255,6 @@ class Article < Liquid::Drop
     if has_any_content?
       data['content']    = @content.select {|c| c.page_content?}.collect {|c| c.to_data( @compiler, self)}
       data['line_count'] = @content.inject(0) {|r,c| r + c.line_count}
-      data['overlay']    = @content.inject(false) {|r,c| r || c.overlay?}
     end
 
     style.render( @compiler, @parents, self, data)

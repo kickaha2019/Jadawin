@@ -10,6 +10,8 @@
         {% render 't_heading_css', colours:colours, heading:element %}
       {% when "image" %}
         {% render 't_image_css', image:element.details, id:element.id, dimensions:dimensions, size:size %}
+      {% when "inset" %}
+        {% render 't_image_css', image:element.details, id:element.id, dimensions:dimensions, size:size %}
       {% when "svg" %}
         {% render 't_svg_css', widths:widths, svg:element, dimensions:dimensions, size:size %}
       {% when "table" %}

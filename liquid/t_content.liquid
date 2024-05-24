@@ -16,6 +16,13 @@
                               title:false,
                               clazz:element.clazz,
                               overlay:element.overlay %}
+      {% when "inset" %}
+        {% render 't_image', specs:element.specs,
+                              details:element.details,
+                              id:element.id,
+                              title:false,
+                              clazz:element.clazz,
+                              overlay:element.overlay %}
       {% when "list" %}
         {% render 't_list' with list:element %}
       {% when "none" %}

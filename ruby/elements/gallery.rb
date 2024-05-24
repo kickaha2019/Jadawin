@@ -25,10 +25,6 @@ module Elements
       5 * ((@images.size + 7) / 8).to_i
     end
 
-    def overlay?
-      true
-    end
-
     def prepare( compiler, article, parents, younger)
       @labels.each do |text|
         text.prepare( compiler, article, parents, younger)
