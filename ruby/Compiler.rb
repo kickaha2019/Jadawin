@@ -364,8 +364,8 @@ class Compiler
     current = ''
 
     if ! rewrite
-      current = IO.readlines( path).collect {|line| line.chomp}
-      rewrite = (current.join("\n").strip != html.strip)
+      current = IO.readlines( path).collect {|line| line.chomp}.join("\n")
+      rewrite = (current.strip != html.strip)
     end
 
     if rewrite

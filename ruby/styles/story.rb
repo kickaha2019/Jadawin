@@ -39,7 +39,9 @@ module Styles
       if article.has_any_content?
         if article.children?
           data['next_page']   = relative_path( article.filename, article.children[0].filename)
-          data['story_index'] = article.text_index( article.children) if article.children.size > 1
+          if article.children.size > 1
+            data['story_index'] = article.text_index( article.children)
+          end
         end
       else
         super

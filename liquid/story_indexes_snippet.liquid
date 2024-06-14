@@ -1,7 +1,7 @@
 {% if story_index %}
     <DIV CLASS="story_index">
     {% for item in story_index %}
-        <A HREF="{{ item.path }}">{{ item.title }}</A>
+        <A HREF="{{ item.path }}">{{ item.title | replace: " ", "&nbsp;" }}</A>
     {% endfor %}
     </DIV>
 {% endif %}

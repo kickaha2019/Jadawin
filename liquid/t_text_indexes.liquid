@@ -7,7 +7,7 @@
           {%- else -%}
             A HREF=
           {%- endif -%}
-          "{{ item.path }}">{{ item.title }}</A>
+          "{{ item.path }}">{{ item.title | replace: " ", "&nbsp;" }}</A>
         </DIV>
     {% endfor %}
     </DIV>

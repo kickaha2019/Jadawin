@@ -58,10 +58,12 @@ div.legend     {text-align: center; color: white; font-size: 18px;}
 .border_white {border-color: {{ colours.here }}}
 .index_text {width: 100%;}
 
+{% if page.story_index %}
 .story_index {display: none; padding-bottom: 25px;
               flex-wrap: wrap; justify-content: center;
               margin-left: auto; margin-right: auto}
 .story_index a {padding-left: 15px; padding-right: 15px;}
+{% endif %}
 
 .size3, .size2, .size1 {display: none}
 .size0 {display: block}
@@ -111,8 +113,10 @@ td p {margin: 0px}
   .news {flex-direction: row}
   .document {flex-direction: row-reverse; justify-content: space-between}
   .text_indexes {margin-right: 20px}
+{% if page.story_index %}
   .story_index {display: flex}
   .story {flex-grow: 1; max-width: {{ widths.content[1] }}px}
+{% endif %}
 {% if config.legend %}
   div.legend {font-size: 24px;}
 {% endif %}

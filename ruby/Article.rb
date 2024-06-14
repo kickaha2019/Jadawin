@@ -233,7 +233,7 @@ class Article < Liquid::Drop
       end
       {'path'     => relative_path( filename, article.filename),
        'off_page' => article.off_page?,
-       'title'    => title.gsub( ' ', '&nbsp;'),
+       'title'    => title, 
        'index'    => index
       }
     end
