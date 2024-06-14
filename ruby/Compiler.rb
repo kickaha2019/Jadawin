@@ -21,16 +21,14 @@ class Compiler
   include Utils
 
   # Initialisation
-  def initialize( source, config, sink, debug_pages=nil)
+  def initialize( *settings)
     @errors        = 0
-    @source        = source
-    @sink          = sink
-    @debug_pages   = debug_pages.nil? ? nil : Regexp.new( debug_pages)
-    @config        = YAML.load( File.open( config))
-    @words, @names = load_words
     @new_words     = []
     @generated     = {}
+    @mode          = 'liquid'
+    @test          = false
     @key2paths     = Hash.new {|h,k| h[k] = []}
+    setup( * settings)
     prepare_templates
   end
 
@@ -195,21 +193,49 @@ class Compiler
   end
 
   def prepare_templates
-    if @config['mode'].nil? ||
-        @config['mode'] == 'liquid' ||
-        @config['mode'] == 'liquid-c'
+    if @mode == 'liquid' || @mode == 'liquid-c'
       require 'liquid'
-      if @config['mode'] == 'liquid-c'
+      if @mode == 'liquid-c'
         require 'liquid/c'
       end
       Liquid::Template.file_system = Liquid::LocalFileSystem.new( @config['liquid'],
                                                                   pattern = "%s.liquid")
       @page_template = Liquid::Template.parse("{% include 'page_layout' with config:config, page:page %}")
-      Liquid.cache_classes = false
-    elsif @config['mode'] == 'transpile'
-      require_relative 'liquid/transpiler'
-      Transpiler.new.transpile_dir( @config['liquid'], 'Transpiled', @config['liquid'])
+      Liquid.cache_classes = true
+    elsif @mode == 'transpile'
+      require 'liquid-transpiler'
+      require 'liquid-transpiled-methods'
+      transpiler = LiquidTranspiler::LiquidTranspiler.new
+      unless transpiler.transpile_dir( @config['liquid'],
+                                       @config['liquid'] + '/Transpiled.rb')
+        transpiler.errors {|error| puts error}
+        raise '*** Error transpiling'
+      end
+
       require( @config['liquid'] + '/Transpiled.rb')
+      @transpiled = Transpiled.new
+    else
+      raise "Unknown mode option: #{@mode}"
+    end
+  end
+
+  def setup( source, config, sink, *options)
+    @source        = source
+    @sink          = sink
+    @config        = YAML.load( File.open( config))
+    @words, @names = load_words
+    @debug_pages   = nil
+
+    options.each do |option|
+      if option == 'test'
+        @test = true
+      elsif m = /^mode=(.*)$/.match( option)
+        @mode = m[1]
+      elsif m = /^debug=(.*)$/.match( option)
+        @debug_pages = Regexp.new( m[1])
+      else
+        raise "Unknown option: #{option}"
+      end
     end
   end
 
@@ -320,8 +346,8 @@ class Compiler
 
     params  = {'config' => @config,
                'page'   => article.to_data}
-    if @config['mode'] == 'transpile'
-      #html = Transpiled.t_page( params)
+    if @mode == 'transpile'
+      html = @transpiled.render( 'page_layout', params)
     else
       html = @page_template.render( params)
     end
@@ -335,6 +361,7 @@ class Compiler
     record_article( article, path)
     Dir.mkdir( File.dirname( path)) if not File.exist?( File.dirname( path))
     rewrite = ! File.exist?( path)
+    current = ''
 
     if ! rewrite
       current = IO.readlines( path).collect {|line| line.chomp}
@@ -342,8 +369,14 @@ class Compiler
     end
 
     if rewrite
-      puts "... Writing #{path}"
-      File.open( path, 'w') {|io| io.print html}
+      if @test
+        File.open( '/tmp/before.html', 'w') {|io| io.print current}
+        File.open( '/tmp/after.html', 'w') {|io| io.print html}
+        raise "Would write #{path} see /tmp"
+      else
+        puts "... Writing #{path}"
+        File.open( path, 'w') {|io| io.print html}
+      end
     end
 
     article.children.each do |child|
