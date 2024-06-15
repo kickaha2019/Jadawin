@@ -29,7 +29,7 @@
       {% when "raw" %}
         {{ element.text }}
       {% when "svg" %}
-        {% render 't_text_indexes', text_index:element.text_index, text_index_size:'size0' %}
+        {% render 'text_indexes_snippet', text_index:element.text_index, text_index_size:'size0' %}
         {% render 't_svg', source:element.source,
                             background:element.background,
                             width:element.width %}

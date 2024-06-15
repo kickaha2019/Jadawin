@@ -225,15 +225,16 @@ class Article < Liquid::Drop
     articles.select {|a| a.style.index? && (wide || (! a.wide?))}.collect do |article|
       index += 1
       title = style.index_title(article)
-      if title.size > 45
-        while (title.size > 45) && (/ / =~ title)
-          title = title.split( ' ')[0...-1].join( ' ')
-        end
-        title = title + ' ...'
-      end
+      # if title.size > 45
+      #   p ['DEBUG100', title, filename]
+      #   while (title.size > 45) && (/ / =~ title)
+      #     title = title.split( ' ')[0...-1].join( ' ')
+      #   end
+      #   title = title + ' ...'
+      # end
       {'path'     => relative_path( filename, article.filename),
        'off_page' => article.off_page?,
-       'title'    => title, 
+       'title'    => title,
        'index'    => index
       }
     end

@@ -17,7 +17,7 @@
                          details:item.details,
                          clazz:'image_index',
                          overlay:false %}</DIV>
-        <DIV>{{ item.title }}</DIV>
+        <DIV>{{ item.title | replace: " (", " <BR>(" }}</DIV>
       </A>
     {% endfor %}
     {% for i in (1..8) %}

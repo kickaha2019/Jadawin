@@ -21,7 +21,7 @@ module Styles
 
     def index_title( page)
       if d = page.date
-        super( page) + d.strftime( " (%b&nbsp;#{d.day}#{format_ord(d.day)})")
+        super( page) + d.strftime( " (%b #{d.day}#{format_ord(d.day)})")
       else
         super( page)
       end

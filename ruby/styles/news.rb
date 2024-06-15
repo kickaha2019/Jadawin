@@ -37,7 +37,7 @@ module Styles
       end
 
       dated_articles.reverse.each do |dated|
-        title = dated.title + dated.date.strftime( ' (%b&nbsp;%Y)')
+        title = dated.title + dated.date.strftime( ' (%b %Y)')
         article.add_child( Link.new( dated, dated, title))
       end
     end

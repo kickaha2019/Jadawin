@@ -68,9 +68,9 @@ function hideOverlay() {
       {% endif %}
     </DIV>
   {% endif %}
-  {% render 't_text_indexes' with text_index:page.text_index,
+  {% render 'text_indexes_snippet' with text_index:page.text_index,
                                    text_index_size:page.text_index_size %}
-  {% render 't_image_indexes' with image_index:page.image_index %}
+  {% render 'image_indexes_snippet' with image_index:page.image_index %}
   {% render 't_rect_indexes' with rect_index:page.rect_index %}
 </DIV>
 </DIV></BODY></HTML>
