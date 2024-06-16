@@ -221,21 +221,11 @@ class Article < Liquid::Drop
   end
 
   def text_index( articles, wide=true)
-    index = 0
     articles.select {|a| a.style.index? && (wide || (! a.wide?))}.collect do |article|
-      index += 1
       title = style.index_title(article)
-      # if title.size > 45
-      #   p ['DEBUG100', title, filename]
-      #   while (title.size > 45) && (/ / =~ title)
-      #     title = title.split( ' ')[0...-1].join( ' ')
-      #   end
-      #   title = title + ' ...'
-      # end
       {'path'     => relative_path( filename, article.filename),
        'off_page' => article.off_page?,
-       'title'    => title,
-       'index'    => index
+       'title'    => title
       }
     end
   end

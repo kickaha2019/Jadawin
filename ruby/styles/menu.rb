@@ -114,10 +114,8 @@ module Styles
     def rect_indexes( compiler, article)
       srand( Digest::SHA1.hexdigest( article.filename).to_i(16))
 
-      index = -1
       entries = article.children.select {|a| a.style.index?}.collect do |child|
-        {'index' => (index += 1),
-         'path'  => relative_path( article.filename, child.filename),
+        {'path'  => relative_path( article.filename, child.filename),
          'title' => prettify( child.title),
          'blurb' => (child.blurb ? child.blurb : prettify( child.title))}
       end

@@ -41,11 +41,11 @@
                                   floor }}px}
 
     {% for entry in rect_index.entries %}
-       #r{{ entry.index }} {font-size: {{ config.menu_item.width[size] |
-                                          times: 1.5 |
-                                          divided_by: entry.blurb_width |
-                                          at_most: config.menu_item.limit[size] |
-                                          floor }}px}
+       #r{{ forloop.index0 }} {font-size: {{ config.menu_item.width[size] |
+                                             times: 1.5 |
+                                             divided_by: entry.blurb_width |
+                                             at_most: config.menu_item.limit[size] |
+                                             floor }}px}
     {% endfor %}
   {% endif %}
 
