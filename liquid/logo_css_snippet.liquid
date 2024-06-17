@@ -1,0 +1,8 @@
+{% if config.logo %}
+  {% if size == 0 %}
+.logo {margin-left: auto; margin-right: auto; margin-top: 0px; margin-bottom: 0px;}
+  {% endif %}
+.logo {width: {{ config.dimensions.logo[size][0] }}px;
+       height: {{ config.dimensions.logo[size][1] }}px;
+       background-image: url("{{ page.root }}/{{ config.logo[size] }}")}
+{% endif %}

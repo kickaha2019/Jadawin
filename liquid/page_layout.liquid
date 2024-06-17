@@ -33,12 +33,12 @@ function hideOverlay() {
 </script>
 {% endif %}
 <style>
-{% render 't_css' with colours:config.colours,
-                       widths:config.widths,
-                       page:page,
-                       config:config,
-                       dimensions:config.dimensions,
-                       overlays:overlays %}
+{% render 'css_snippet' with colours:config.colours,
+                        widths:config.widths,
+                        page:page,
+                        config:config,
+                        dimensions:config.dimensions,
+                        overlays:overlays %}
 </style>
 {% render 't_breadcrumbs_origin_head' with page:page %}
 </HEAD><BODY>

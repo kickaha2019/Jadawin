@@ -1,12 +1,7 @@
 body {background: {{ colours.body }}; background-image: none}
 p {margin-top: 0px}
 
-{% if config.logo %}
-.logo {width: 350px;
-       height: 50px;
-       background-image: url("{{ page.root }}/{{ config.logo[0] }}");
-       margin-left: auto; margin-right: auto; margin-top: 0px; margin-bottom: 0px;}
-{% endif %}
+{% render 'logo_css_snippet', page:page, config:config, size:0 %}
 
 {% if overlays %}
 .overlay {position: fixed; display: none; z-index: 100;
@@ -100,11 +95,8 @@ td p {margin: 0px}
   #overlay_image img {max-width: {{ dimensions.overlay[1][0] }}px;
                       max-height: {{ dimensions.overlay[1][1] }}px}
 {% endif %}
-{% if config.logo %}
-  .logo {width: 748px;
-         height: 100px;
-       background-image: url("{{ page.root }}/{{ config.logo[1] }}")}
-{% endif %}
+
+  {% render 'logo_css_snippet', page:page, config:config, size:1 %}
   div.page {width: {{ widths.browser[1] }}px; border-radius: 10px; padding-top: 10px}
   .content {width: {{ widths.content[1] }}px; padding-top: 10px}
   .size0 {display: none}
@@ -132,11 +124,7 @@ td p {margin: 0px}
   #overlay_image img {max-width: {{ dimensions.overlay[2][0] }}px;
                       max-height: {{ dimensions.overlay[2][1] }}px}
 {% endif %}
-{% if config.logo %}
-  .logo {width: 1250px;
-         height: 150px;
-       background-image: url("{{ page.root }}/{{ config.logo[2] }}")}
-{% endif %}
+  {% render 'logo_css_snippet', page:page, config:config, size:2 %}
   div.page {width: {{ widths.browser[2] }}px; border-radius: 15px; padding-top: 15px}
   .content {width: {{ widths.content[2] }}px; padding-top: 15px}
   .size1 {display: none}
@@ -160,11 +148,7 @@ td p {margin: 0px}
   #overlay_image img {max-width: {{ dimensions.overlay[3][0] }}px;
                       max-height: {{ dimensions.overlay[3][1] }}px}
 {% endif %}
-{% if config.logo %}
-  .logo {width: 1880px;
-         height: 200px;
-       background-image: url("{{ page.root }}/{{ config.logo[3] }}")}
-{% endif %}
+  {% render 'logo_css_snippet', page:page, config:config, size:3 %}
   div.page {width: {{ widths.browser[3] }}px; border-radius: 20px; padding-top: 20px}
   .content {width: {{ widths.content[3] }}px; padding-top: 20px}
   .size2 {display: none}
