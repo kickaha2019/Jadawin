@@ -1,7 +1,5 @@
 {% for element in content %}
     {% case element.type %}
-      {% when "code" %}
-        {% render 't_code_css', code:element, size:size %}
       {% when "css" %}
         {{ element.text }}
       {% when "gallery" %}

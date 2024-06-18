@@ -166,6 +166,13 @@ td p {margin: 0px}
   {% render 'rect_indexes_css_snippet' with config:config, rect_index:page.rect_index, size:3 %}
 }
 
+{% render 'types_css_section', config:config, page:page, size:0 %}
+{% for size in (1..3) %}
+  @media all and (min-width: {{ widths.browser[size] }}px) {
+    {% render 'types_css_section', config:config, page:page, size:size %}
+  }
+{% endfor %}
+
 div.children {margin-left: auto; margin-right: auto}
 
 div.centre     {text-align: center; padding-bottom: 10px}

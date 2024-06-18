@@ -1,0 +1,10 @@
+{% if page.content %}
+  {% assign types = page.content | map: "type" | uniq %}
+  {% for type in types %}
+    {% case type %}
+    {% when 'code' %}
+      {% render 't_code_css', code:element, size:size %}
+    {% endcase %}
+  {% endfor %}
+{% endif %}
+

@@ -30,7 +30,6 @@ module Elements
 
     def to_data( compiler, article)
       {'type'  => 'code',
-       'index' => @index,
        'text'  => @lines.join( "\n") + "\n"}
     end
   end
