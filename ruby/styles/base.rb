@@ -81,9 +81,6 @@ module Styles
     def render( compiler, parents, article, data)
       to_index = article.children.select {|a| a.style.index?}
       unless to_index.size == 0
-        #article.error( 'Both content and children') if article.has_any_content?
-        data['text_index']      = article.text_index( to_index, false)
-        data['text_index_size'] = 'size0'
         data['image_index']     = image_indexes( compiler, article, to_index)
       end
     end

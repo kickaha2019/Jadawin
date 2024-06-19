@@ -1,13 +1,23 @@
-{% if text_index %}
-    <DIV CLASS="text_indexes{% if text_index_size %} {{ text_index_size }}{% endif %}">
-    {% for item in text_index %}
+{% liquid
+assign indexes = page.text_index
+if page.rect_index
+  assign indexes = page.rect_index.entries
+else
+ if page.image_index
+   assign indexes = page.image_index.entries
+ endif
+endif
+%}
+{% if indexes %}
+    <DIV CLASS="text_indexes{% unless page.text_index %} size0{% endunless %}">
+    {% for item in indexes %}
         <DIV CLASS="index_text t0">&raquo;&nbsp;<
           {%- if item.off_page -%}
             A TARGET=“_blank” HREF=
           {%- else -%}
             A HREF=
           {%- endif -%}
-          "{{ item.path }}">{{ item.title | truncate: 45 | replace: " ", "&nbsp;" }}</A>
+          "{{ item.path }}">{{ item.title | truncate: 45 | replace: " ", "&nbsp;" | replace: "<BR>", "&nbsp;" }}</A>
         </DIV>
     {% endfor %}
     </DIV>

@@ -115,9 +115,10 @@ module Styles
       srand( Digest::SHA1.hexdigest( article.filename).to_i(16))
 
       entries = article.children.select {|a| a.style.index?}.collect do |child|
-        {'path'  => relative_path( article.filename, child.filename),
-         'title' => prettify( child.title),
-         'blurb' => (child.blurb ? child.blurb : prettify( child.title))}
+        {'path'     => relative_path( article.filename, child.filename),
+         'title'    => prettify( child.title),
+         'off_page' => child.off_page?,
+         'blurb'    => (child.blurb ? child.blurb : prettify( child.title))}
       end
 
       entries         = format_entries( entries)
@@ -133,8 +134,6 @@ module Styles
       if article.has_any_content?
         article.error( 'Menu has content')
       end
-      data['text_index']      = article.text_index( article.children, false)
-      data['text_index_size'] = 'size0'
       data['rect_index']      = rect_indexes( compiler, article)
     end
 
