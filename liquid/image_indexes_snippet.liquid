@@ -6,7 +6,7 @@
       {% else %}
         <A CLASS=
       {% endif %}
-      "index t0 size1 size2 size3" HREF="{{ item.path }}">
+      "index t0" HREF="{{ item.path }}">
         {% if item.blurb %}
           <SPAN CLASS="tooltiptext">{{ item.blurb }}</SPAN>
         {% endif %}
@@ -21,7 +21,7 @@
       </A>
     {% endfor %}
     {% for i in (1..8) %}
-      <DIV CLASS="index dummy size1 size2 size3"></DIV>
+      <DIV CLASS="index dummy"></DIV>
     {% endfor %}
   </DIV>
 {% endif %}

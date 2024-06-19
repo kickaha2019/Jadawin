@@ -1,19 +1,6 @@
 body {background: {{ colours.body }}; background-image: none}
 p {margin-top: 0px}
 
-{% if overlays %}
-.overlay {position: fixed; display: none; z-index: 100;
-          width: 100vw; height: 100vh; left: 0px; right: 0px;
-          align-items: center; justify-content: center}
-.overlay_back  {position: fixed; z-index: 101;
-                width: 100vw; height: 100vh;
-                background: rgba(0,0,0,0.75);}
-#overlay_image {z-index: 102}
-.overlay_front {position: fixed; z-index: 103;
-                width: 100vw; height: 100vh;
-                background: rgba(0,0,0,0.01);}
-{% endif %}
-
 .page {width: 360px; background: {{ colours.page }}; box-sizing: border-box;
        border-radius: 5px; margin-left: auto; margin-right: auto;
        min-height: 96vh}
@@ -58,9 +45,6 @@ div.legend     {text-align: center; color: white; font-size: 18px;}
 .story_index a {padding-left: 15px; padding-right: 15px;}
 {% endif %}
 
-.size3, .size2, .size1 {display: none}
-.size0 {display: block}
-
 .t0, .t1, h1 {font-family: Tahoma, sans-serif; font-size: 14px; color: {{ colours.text }}}
 a, a div {color: {{ colours.anchor }}}
 .t0 {text-decoration: none}
@@ -85,8 +69,6 @@ td p {margin: 0px}
 @media all and (min-width: {{ widths.browser[1] }}px) {
   div.page {width: {{ widths.browser[1] }}px; border-radius: 10px; padding-top: 10px}
   .content {width: {{ widths.content[1] }}px; padding-top: 10px}
-  .size0 {display: none}
-  .size1 {display: flex}
   .t0, .t1, h1, .news-date, .code {font-size: 20px}
   .news {flex-direction: row}
   .document {flex-direction: row-reverse; justify-content: space-between}
@@ -103,8 +85,6 @@ td p {margin: 0px}
 @media all and (min-width: {{ widths.browser[2] }}px) {
   div.page {width: {{ widths.browser[2] }}px; border-radius: 15px; padding-top: 15px}
   .content {width: {{ widths.content[2] }}px; padding-top: 15px}
-  .size1 {display: none}
-  .size2 {display: block}
   .text_indexes {margin-right: 40px}
   .story {max-width: {{ widths.content[2] }}px; padding-left: 0px}
 {% if config.legend %}
@@ -117,8 +97,6 @@ td p {margin: 0px}
 @media all and (min-width: {{ widths.browser[3] }}px) {
   div.page {width: {{ widths.browser[3] }}px; border-radius: 20px; padding-top: 20px}
   .content {width: {{ widths.content[3] }}px; padding-top: 20px}
-  .size2 {display: none}
-  .size3 {display: block}
   .t0, .t1, h1, .code {font-size: 30px}
   .story {max-width: {{ widths.content[3] }}px}
 {% if config.legend %}

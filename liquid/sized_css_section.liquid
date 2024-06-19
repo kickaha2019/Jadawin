@@ -1,8 +1,4 @@
-{% if overlays %}
-#overlay_image img {max-width: {{ config.dimensions.overlay[size][0] }}px;
-                    max-height: {{ config.dimensions.overlay[size][1] }}px}
-{% endif %}
-
+{% render 'overlays_css_snippet', config:config, size:size, overlays:overlays %}
 {% render 'logo_css_snippet', page:page, config:config, size:size %}
 {% render 'types_css_section', config:config, page:page, size:size %}
 {% if page.content %}
@@ -12,9 +8,14 @@
                              dimensions:config.dimensions,
                              size:size %}
 {% endif %}
-{% render 't_image_indexes_css', colours:config.colours,
-                                 image_index:page.image_index,
-                                 size:size %}
+{% if size == 1 %}
+  {% unless page.text_index %}
+    .text_indexes {display: none}
+  {% endunless %}
+{% endif %}
+{% render 'image_indexes_css_snippet', colours:config.colours,
+                                       image_index:page.image_index,
+                                       size:size %}
 {% render 'rect_indexes_css_snippet', config:config,
                                       rect_index:page.rect_index,
                                       size:size %}

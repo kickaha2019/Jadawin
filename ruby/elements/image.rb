@@ -208,19 +208,6 @@ module Elements
       return file, target_dims.reverse
     end
 
-    def prepare_images( dims, prepare, * args)
-      sizes, file, dims = '', nil, dims.reverse
-      (0...dims.size).each do |i|
-        sizes = sizes + " size#{dims.size - i - 1}"
-        if ((i+1) >= dims.size) || (dims[i][0] != dims[i+1][0]) || (dims[i][1] != dims[i+1][1])
-          f, w, h = self.send( prepare, file, * dims[i], * args)
-          file = f unless file
-          yield file, w, h, sizes if file
-          sizes = ''
-        end
-      end
-    end
-
     def prepare_source_image( imagefile, width, height)
       return nil, width, height unless @width && @height
       w,h = constrain_dims( width, height, @width, @height)

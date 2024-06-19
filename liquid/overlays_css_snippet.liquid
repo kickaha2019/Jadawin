@@ -1,0 +1,16 @@
+{% if overlays %}
+  {% if size == 0 %}
+    .overlay {position: fixed; display: none; z-index: 100;
+              width: 100vw; height: 100vh; left: 0px; right: 0px;
+              align-items: center; justify-content: center}
+    .overlay_back  {position: fixed; z-index: 101;
+                    width: 100vw; height: 100vh;
+                    background: rgba(0,0,0,0.75);}
+    #overlay_image {z-index: 102}
+    .overlay_front {position: fixed; z-index: 103;
+                    width: 100vw; height: 100vh;
+                    background: rgba(0,0,0,0.01);}
+  {% endif %}
+  #overlay_image img {max-width: {{ config.dimensions.overlay[size][0] }}px;
+                      max-height: {{ config.dimensions.overlay[size][1] }}px}
+{% endif %}
