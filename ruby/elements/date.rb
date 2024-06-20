@@ -55,7 +55,6 @@ module Elements
 
     def to_data( compiler, article)
       {'type'  => 'heading',
-       'index' => @index,
        'text'  => format_date( @date)}
     end
   end

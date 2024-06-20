@@ -1,28 +1,26 @@
 {% for element in content %}
     {% case element.type %}
       {% when "array" %}
-        {% render 't_content' with content:element.data %}
+        {% render 'content_section' with content:element.data %}
       {% when "code" %}
         <PRE CLASS="code">{{ element.text }}</PRE>
       {% when "css" %}
       {% when "gallery" %}
-        {% render 't_gallery' with gallery:element %}
+        {% render 't_gallery' with gallery:element, index:forloop.index %}
       {% when "heading" %}
         <DIV CLASS="heading">{{ element.text }}</DIV>
       {% when "image" %}
-        {% render 't_image', specs:element.specs,
-                              details:element.details,
-                              id:element.id,
-                              title:false,
-                              clazz:element.clazz,
-                              overlay:element.overlay %}
+        {% render 't_image', details:element.details,
+                             id:element.id,
+                             title:false,
+                             clazz:element.clazz,
+                             overlay:element.overlay %}
       {% when "inset" %}
-        {% render 't_image', specs:element.specs,
-                              details:element.details,
-                              id:element.id,
-                              title:false,
-                              clazz:element.clazz,
-                              overlay:element.overlay %}
+        {% render 't_image', details:element.details,
+                             id:element.id,
+                             title:false,
+                             clazz:element.clazz,
+                             overlay:element.overlay %}
       {% when "list" %}
         {% render 't_list' with list:element %}
       {% when "none" %}

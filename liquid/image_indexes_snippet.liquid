@@ -11,12 +11,11 @@
           <SPAN CLASS="tooltiptext">{{ item.blurb }}</SPAN>
         {% endif %}
         <DIV>{% render 't_image',
-                         id:false,
-                         specs:false,
-                         title:false,
-                         details:item.details,
-                         clazz:'image_index',
-                         overlay:false %}</DIV>
+                       id:false,
+                       title:false,
+                       details:item.details,
+                       clazz:'image_index',
+                       overlay:false %}</DIV>
         <DIV>{{ item.title | replace: " (", " <BR>(" }}</DIV>
       </A>
     {% endfor %}

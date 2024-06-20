@@ -2,16 +2,16 @@
   {% for item in gallery.images %}
     <DIV>
       <DIV>
+        {% assign clazz = "G" | append: index %}
         {% render 't_image',
-                  specs:false,
                   details:item.details,
                   id:false,
                   title:false,
-                  clazz:item.clazz,
+                  clazz:clazz,
                   overlay:item.overlay %}
       </DIV>
       <DIV>
-        <P>{% render 't_content' with content:item.tag %}</P>
+        <P>{% render 'content_section' with content:item.tag %}</P>
       </DIV>
     </DIV>
   {% endfor %}

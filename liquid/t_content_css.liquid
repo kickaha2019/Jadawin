@@ -3,7 +3,11 @@
       {% when "css" %}
         {{ element.text }}
       {% when "gallery" %}
-        {% render 't_gallery_css', gallery:element, dimensions:dimensions, size:size %}
+        {% render 'gallery_element_css_snippet',
+                  gallery:element,
+                  dimensions:dimensions,
+                  size:size,
+                  index:forloop.index %}
       {% when "heading" %}
         {% render 't_heading_css', colours:colours, heading:element %}
       {% when "image" %}

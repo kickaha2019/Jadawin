@@ -38,12 +38,11 @@ module Elements
       @images.each_index do |i|
         entries << {'tag'     => [@labels[i].to_data_single_paragraph( compiler, article)],
                     'overlay' => @images[i].overlay( compiler, article),
-                    'clazz'   => "G#{@index}",
+                    #'clazz'   => "G#{@index}",
                     'details' => @images[i].details( compiler, article, icon_dims, :prepare_thumbnail)}
       end
 
       {'type'   => 'gallery',
-       'index'  => @index,
        'dims'   => icon_dims,
        'images' => entries}
     end

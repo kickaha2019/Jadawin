@@ -3,7 +3,9 @@
   {% for type in types %}
     {% case type %}
     {% when 'code' %}
-      {% render 'code_css_snippet', code:element, size:size %}
+      {% render 'code_type_css_snippet', size:size %}
+    {% when 'gallery' %}
+      {% render 'gallery_type_css_snippet', config:config, size:size %}
     {% endcase %}
   {% endfor %}
 {% endif %}
