@@ -7,9 +7,11 @@
     {% when 'gallery' %}
       {% render 'gallery_type_css_snippet', config:config, size:size %}
     {% when 'heading' %}
-      {% render 'heading_type_css_snippet', size:size %}
+      {% render 'heading_type_css_snippet', config:config, size:size %}
     {% when 'svg' %}
       {% render 'svg_type_css_snippet', config:config, size:size %}
+    {% when "table" %}
+      {% render 'table_type_css_snippet', size:size %}
     {% endcase %}
   {% endfor %}
 {% endif %}

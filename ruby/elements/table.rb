@@ -71,7 +71,6 @@ module Elements
 
     def to_data( compiler, article)
       {'type'  => 'table',
-       'index' => next_index( 'table', article),
        'rows'  => [columns] + rows( compiler, article)}
     end
   end

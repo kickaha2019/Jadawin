@@ -40,14 +40,12 @@ module Elements
     def to_data( compiler, article)
       if @table.empty?
         {'type'  => 'list',
-         'index' => next_index( 'list', article),
          'rows'  => @list.collect do |value|
            {'data' => [value.to_data_single_paragraph( compiler, article)]}
          end
         }
       else
         {'type'  => 'table',
-         'index' => next_index( 'table', article),
          'rows'  => @table.keys.collect do |key|
            text = @table[key].to_data_single_paragraph( compiler, article)
            [{'data' => [{'type' => 'raw', 'text' => key}], 'bold' => true,  'align' => 'left'},

@@ -2,11 +2,7 @@ module Elements
   class Element
     SPECIAL_CHARS = /["<>`\*]/
 
-    attr_reader :index
-    @@next_index = Hash.new {|h,k| h[k] = Hash.new {|h1,k1| h1[k1] = 0}}
-
     def initialize( article)
-      @index   = next_index( self.class.name, article)
       @discard = false
     end
 
@@ -36,10 +32,6 @@ module Elements
 
     def multiline?
       true
-    end
-
-    def next_index( type, article)
-      @@next_index[type][article.filename] += 1
     end
 
     def page_content?
