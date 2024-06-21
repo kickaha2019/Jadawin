@@ -47,7 +47,6 @@ module Elements
       end
 
       {'type'            => 'svg',
-       'index'           => @index,
        'background'      => background,
        'text_index'      => @text_index, #article.text_index( article.children),
        'width'           => width,

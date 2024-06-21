@@ -10,17 +10,22 @@
       {% when "heading" %}
         <DIV CLASS="heading">{{ element.text }}</DIV>
       {% when "image" %}
-        {% render 't_image', details:element.details,
-                             id:element.id,
-                             title:false,
-                             clazz:element.clazz,
-                             overlay:element.overlay %}
+        {% render 'image_snippet',
+                  details:element.details,
+                  index:forloop.index,
+                  id:element.id,
+                  title:false,
+                  clazz:element.clazz,
+                  overlay:element.overlay %}
       {% when "inset" %}
-        {% render 't_image', details:element.details,
-                             id:element.id,
-                             title:false,
-                             clazz:element.clazz,
-                             overlay:element.overlay %}
+        {% capture inset_class %}{% cycle "right", "left" %}{% endcapture %}
+        {% render 'image_snippet',
+                  details:element.details,
+                  index:forloop.index,
+                  id:element.id,
+                  title:false,
+                  clazz:inset_class,
+                  overlay:element.overlay %}
       {% when "list" %}
         {% render 't_list' with list:element %}
       {% when "none" %}
@@ -29,8 +34,9 @@
       {% when "svg" %}
         {% render 'text_indexes_snippet', text_index:element.text_index, text_index_size:'size0' %}
         {% render 't_svg', source:element.source,
-                            background:element.background,
-                            width:element.width %}
+                           background:element.background,
+                           width:element.width,
+                           index:forloop.index %}
       {% when "table" %}
         {% render 't_table' with table:element %}
       {% else %}

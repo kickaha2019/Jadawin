@@ -6,6 +6,10 @@
       {% render 'code_type_css_snippet', size:size %}
     {% when 'gallery' %}
       {% render 'gallery_type_css_snippet', config:config, size:size %}
+    {% when 'heading' %}
+      {% render 'heading_type_css_snippet', size:size %}
+    {% when 'svg' %}
+      {% render 'svg_type_css_snippet', config:config, size:size %}
     {% endcase %}
   {% endfor %}
 {% endif %}

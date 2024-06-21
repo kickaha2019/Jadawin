@@ -1,5 +1,5 @@
 {% if details %}
-<IMG {% render 't_id' with id:id %} {% render 't_clazz' with clazz:clazz %} SRC="{{ details.path }}"
+<IMG {% if index %}ID="I{{ index }}"{% endif %} {% render 't_clazz' with clazz:clazz %} SRC="{{ details.path }}"
   {% if title %} TITLE="{{ title }}"{% endif %}
    ALT="{{ details.tag }}"
 {% if overlay %}

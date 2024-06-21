@@ -1,15 +1,13 @@
-{% if svg.index < 2 %}
 {% case size %}
 {% when 0 %}
 .svg {margin-left: auto; margin-right: auto; margin-bottom: 10px}
 .svg a:hover g {fill: white; stroke: white}
 {% when 1 %}
-  .svg {width: {{ widths.content[1] }}px}
+  .svg {width: {{ config.widths.content[1] }}px}
   .svg svg {width: 100%; height: auto; max-width: 100%}
 {% when 2 %}
-  .svg {width: {{ widths.content[2] }}px}
+  .svg {width: {{ config.widths.content[2] }}px}
 {% when 3 %}
-  .svg {width: {{ widths.content[3] }}px}
+  .svg {width: {{ config.widths.content[3] }}px}
 {% endcase %}
-{% endif %}
 

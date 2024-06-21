@@ -28,9 +28,7 @@ module Elements
     def to_data( compiler, article)
       dims = get_scaled_dims( compiler.dimensions( 'icon'), [self])
       {'type'    => 'inset',
-       'clazz'   => ((@index % 2) == 0) ? 'left' : 'right',
        'overlay' => overlay( compiler, article),
-       'id'      => anchor,
        'details' => details( compiler, article, dims,:prepare_thumbnail)
       }
     end

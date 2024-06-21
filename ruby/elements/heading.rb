@@ -15,7 +15,6 @@ module Elements
 
     def to_data( compiler, article)
       {'type'  => 'heading',
-       'index' => @index,
        'text'  => @text}
     end
   end

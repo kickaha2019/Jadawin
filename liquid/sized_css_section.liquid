@@ -2,11 +2,11 @@
 {% render 'logo_css_snippet', page:page, config:config, size:size %}
 {% render 'types_css_section', config:config, page:page, size:size %}
 {% if page.content %}
-  {% render 't_content_css', widths:config.widths,
-                             colours:config.colours,
-                             content:page.content,
-                             dimensions:config.dimensions,
-                             size:size %}
+  {% render 'content_css_section', widths:config.widths,
+                                   colours:config.colours,
+                                   content:page.content,
+                                   dimensions:config.dimensions,
+                                   size:size %}
 {% endif %}
 {% if size == 1 %}
   {% unless page.text_index %}

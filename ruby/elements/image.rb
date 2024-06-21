@@ -66,10 +66,6 @@ module Elements
       @timestamp = info['timestamp']
     end
 
-    def anchor
-      image ? "I#{image.index}" : nil
-    end
-
     def constrain_dims( tw, th, w, h)
       if w * th >= h * tw
         if w > tw
@@ -327,7 +323,6 @@ module Elements
       {'type'    => 'image',
        'clazz'   => 'centre',
        'overlay' => false,
-       'id'      => anchor,
        'details' => details( compiler, article, dims,:prepare_source_image)
        }
     end
