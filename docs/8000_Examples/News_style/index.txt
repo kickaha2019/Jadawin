@@ -2,4 +2,4 @@
 @title  Example of News style
 @expect
 News style should list dated articles beneath parent most recent first
-<DIV CLASS="image_indexes t0">\s*<A CLASS=\s*"index t0 size1 size2 size3" HREF="../1920/AAAA.html">
+<DIV CLASS="image_indexes t0">\s*<A CLASS=\s*"index t0" HREF="../1920/AAAA.html">

@@ -12,7 +12,7 @@ Example of Gallery page
 
 @expect
 Gallery div and img should have expected classes
-<DIV CLASS="gallery t1">\s*<DIV>\s*<DIV>\s*<IMG\s*CLASS="G1"
+<DIV CLASS="gallery t1">\s*<DIV>\s*<DIV>\s*<IMG\s*CLASS="G2"
 @expect
 Image descriptions should appear in galleries
 <P>\s*This is an apple\s*</P>

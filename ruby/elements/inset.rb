@@ -12,16 +12,13 @@ module Elements
 
       younger.each do |sibling|
         if sibling.page_content?
-          if sibling.respond_to?( :allow_for_inset)
-            sibling.allow_for_inset
-            okay = true
-          end
+          okay = true
           break
         end
       end
 
       unless okay
-        article.error( 'Inset not followed by Text')
+        article.error( 'Inset not followed by another element')
       end
     end
 

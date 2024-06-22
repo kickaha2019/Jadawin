@@ -3,7 +3,8 @@ Liquid::Template.file_system = Liquid::LocalFileSystem.new( 'liquid',
                                                             pattern = "%s.liquid")
 Liquid.cache_classes = false
 code = <<CODE
-{{ 123 | remove: 2 }}
+{% liquid echo "Hello" echo "World"
+%}
 CODE
 liquid         =  Liquid::Template.parse(code)
 params = {'d' => []}

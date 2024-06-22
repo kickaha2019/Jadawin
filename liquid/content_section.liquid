@@ -1,45 +1,61 @@
+{% assign pad_before = false %}
+{% assign pad_after  = false %}
+
 {% for element in content %}
-    {% case element.type %}
-      {% when "array" %}
-        {% render 'content_section' with content:element.data %}
-      {% when "code" %}
-        <PRE CLASS="code">{{ element.text }}</PRE>
-      {% when "css" %}
-      {% when "gallery" %}
-        {% render 't_gallery' with gallery:element, index:forloop.index %}
-      {% when "heading" %}
-        <DIV CLASS="heading">{{ element.text }}</DIV>
-      {% when "image" %}
-        {% render 'image_snippet',
-                  details:element.details,
-                  index:forloop.index,
-                  id:element.id,
-                  title:false,
-                  clazz:element.clazz,
-                  overlay:element.overlay %}
-      {% when "inset" %}
-        {% capture inset_class %}{% cycle "right", "left" %}{% endcapture %}
-        {% render 'image_snippet',
-                  details:element.details,
-                  index:forloop.index,
-                  id:element.id,
-                  title:false,
-                  clazz:inset_class,
-                  overlay:element.overlay %}
-      {% when "list" %}
-        {% render 't_list' with list:element %}
-      {% when "none" %}
-      {% when "raw" %}
-        {{ element.text }}
-      {% when "svg" %}
-        {% render 'text_indexes_snippet', text_index:element.text_index, text_index_size:'size0' %}
-        {% render 't_svg', source:element.source,
-                           background:element.background,
-                           width:element.width,
-                           index:forloop.index %}
-      {% when "table" %}
-        {% render 't_table' with table:element %}
-      {% else %}
-        <B>Liquid error: Element type {{ element.type }}</B>
-    {% endcase %}
+  {% if pad_after and element.type != 'raw' %}
+    </DIV>
+    {% assign pad_after = false %}
+  {% endif %}
+  {% if pad_before %}
+    <DIV CLASS="padding">
+    {% assign pad_before = false %}
+    {% assign pad_after  = true %}
+  {% endif %}
+  {% case element.type %}
+    {% when "array" %}
+      {% render 'content_section' with content:element.data %}
+    {% when "code" %}
+      <PRE CLASS="code">{{ element.text }}</PRE>
+    {% when "css" %}
+    {% when "gallery" %}
+      {% render 't_gallery' with gallery:element, index:forloop.index %}
+    {% when "heading" %}
+      <DIV CLASS="heading">{{ element.text }}</DIV>
+    {% when "image" %}
+      {% render 'image_snippet',
+                details:element.details,
+                index:forloop.index,
+                id:element.id,
+                title:false,
+                clazz:element.clazz,
+                overlay:element.overlay %}
+    {% when "inset" %}
+      {% capture inset_class %}{% cycle "right", "left" %}{% endcapture %}
+      {% render 'image_snippet',
+                details:element.details,
+                index:forloop.index,
+                id:element.id,
+                title:false,
+                clazz:inset_class,
+                overlay:element.overlay %}
+      {% assign pad_before = true %}
+    {% when "list" %}
+      {% render 't_list' with list:element %}
+    {% when "none" %}
+    {% when "raw" %}
+      {{ element.text }}
+    {% when "svg" %}
+      {% render 'text_indexes_snippet', text_index:element.text_index, text_index_size:'size0' %}
+      {% render 't_svg', source:element.source,
+                         background:element.background,
+                         width:element.width,
+                         index:forloop.index %}
+    {% when "table" %}
+      {% render 't_table' with table:element %}
+    {% else %}
+      <B>Liquid error: Element type {{ element.type }}</B>
+  {% endcase %}
 {% endfor %}
+{% if pad_after %}
+  </DIV>
+{% endif %}

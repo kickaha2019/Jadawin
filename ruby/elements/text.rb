@@ -109,10 +109,6 @@ module Elements
       end
     end
 
-    def allow_for_inset
-      @min_lines = 6
-    end
-
     def link_atts( url)
       if /alofmethbin\.com\// =~ url
         ''
@@ -199,6 +195,19 @@ module Elements
          paragraph_to_html( compiler, article, paragraph)
       end
 
+      {'type' => 'raw',
+       'text' => '<P>' + out.join( '</P><P>') + '</P>'}
+    end
+
+    def to_data_single_paragraph( compiler, article)
+      {'type' => 'raw', 'text' => paragraph_to_html( compiler, article, @paragraphs[0])}
+    end
+
+    def to_html( compiler, article)
+      out = @paragraphs.collect do |paragraph|
+        paragraph_to_html( compiler, article, paragraph)
+      end
+
       missing_lines = @min_lines - @line_count
       while missing_lines > 0
         missing_lines -= 1
@@ -209,7 +218,7 @@ module Elements
        'text' => '<P>' + out.join( '</P><P>') + '</P>'}
     end
 
-    def to_data_single_paragraph( compiler, article)
+    def to_html_single_paragraph( compiler, article)
       {'type' => 'raw', 'text' => paragraph_to_html( compiler, article, @paragraphs[0])}
     end
   end

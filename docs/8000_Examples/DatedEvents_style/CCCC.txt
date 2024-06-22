@@ -4,6 +4,3 @@ Example page
 @error
 Missing date for DatedEvents page
 Missing date for DatedEvents page
-@error
-Missing date for DatedEvents page
-Missing date for DatedEvents page
