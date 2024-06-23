@@ -6,7 +6,7 @@ module Elements
 
     class Emphasized
       def initialize( text)
-        @text = text.gsub( '<', '&lt;').gsub( '>', '&gt;')
+        @text = text
       end
 
       def prepare( compiler, article)
@@ -16,17 +16,13 @@ module Elements
       def to_data( compiler, article)
         {'type' => 'emphasized', 'text' => @text}
       end
-
-      def to_html( compiler, article)
-        '<EM>' + @text +'</EM>'
-      end
     end
 
     class Linkage
       @@targets  = Hash.new {|h,k| h[k] = []}
 
       def initialize( text, url=nil)
-        @text = text.gsub( '<', '&lt;').gsub( '>', '&gt;')
+        @text = text
         @url  = url
         @@targets[text] << url if url
       end
@@ -59,26 +55,21 @@ module Elements
       end
 
       def to_data( compiler, article)
-        {'type'    => 'link',
-         'offsite' => compiler.offsite?( @url),
-         'url'     => @url,
-         'text'    => @text}
-      end
-
-      def to_html( compiler, article)
-        return '' unless @url
-
-        "<A HREF=\"#{@url}\"" +
-        (compiler.offsite?( @url) ? ' target="_blank" rel="nofollow"' : '') +
-        '>' +
-        @text +
-        '</A>'
+        if @url
+          {'type'    => 'link',
+           'offsite' => compiler.offsite?( @url),
+           'url'     => @url,
+           'text'    => @text}
+        else
+          {'type' => 'normal',
+           'text' => @text}
+        end
       end
     end
 
     class Normal
       def initialize( text)
-        @text = text.gsub( '<', '&lt;').gsub( '>', '&gt;')
+        @text = text
       end
 
       def prepare( compiler, article)
@@ -88,15 +79,11 @@ module Elements
       def to_data( compiler, article)
         {'type' => 'normal', 'text' => @text}
       end
-
-      def to_html( compiler, article)
-        @text
-      end
     end
 
     class Raw
       def initialize( text)
-        @text = text.gsub( '&', '&amp;').gsub( '<', '&lt;').gsub( '>', '&gt;')
+        @text = text
       end
 
       def prepare( compiler, article)
@@ -104,10 +91,6 @@ module Elements
 
       def to_data( compiler, article)
         {'type' => 'code', 'text' => @text}
-      end
-
-      def to_html( compiler, article)
-        '<SPAN CLASS="code">' + @text +'</SPAN>'
       end
     end
 
@@ -224,25 +207,6 @@ module Elements
 
     def to_data_single_paragraph( compiler, article)
       paragraph_to_data( compiler, article, @paragraphs[0])
-    end
-
-    def to_html( compiler, article)
-      out = @paragraphs.collect do |paragraph|
-        paragraph_to_html( compiler, article, paragraph)
-      end
-
-      missing_lines = @min_lines - @line_count
-      while missing_lines > 0
-        missing_lines -= 1
-        out[-1] += '<BR>'
-      end
-
-      {'type' => 'raw',
-       'text' => '<P>' + out.join( '</P><P>') + '</P>'}
-    end
-
-    def to_html_single_paragraph( compiler, article)
-      {'type' => 'raw', 'text' => paragraph_to_html( compiler, article, @paragraphs[0])}
     end
   end
 end

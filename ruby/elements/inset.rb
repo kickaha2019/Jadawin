@@ -12,13 +12,13 @@ module Elements
 
       younger.each do |sibling|
         if sibling.page_content?
-          okay = true
+          okay = sibling.is_a?( Elements::Text)
           break
         end
       end
 
       unless okay
-        article.error( 'Inset not followed by another element')
+        article.error( 'Inset not followed by Text')
       end
     end
 

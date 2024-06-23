@@ -11,16 +11,6 @@ So the code:
 causes a picture of an apple to be inset into this
 paragraph.
 
-@list
-Blank lines are added if necessary to avoid the inset image intruding on later page elements.
-
-@expect
-Images specified by @inset should be inset into following text
-<IMG.*SRC="../apple-\d+-\d+-\d+-centre\.webp".*<P>causes a picture
-@expect
-Blank lines should be inserted to allow for inset images
-<P>causes a picture of an apple to be inset into this\s*paragraph\.\s*<BR><BR><BR><BR><BR></P>
-
 @error
 No filename given for inset
 Inset missing image name

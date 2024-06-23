@@ -2,17 +2,17 @@
   {%- case fragment.type -%}
   {%- when 'code' -%}
     <SPAN CLASS="code">
-      {{- fragment.text -}}
+      {{- fragment.text | replace: '&', '&amp;' | replace: '<', '&lt;' | replace: '>', '&gt;' -}}
     </SPAN>
   {%- when 'emphasized' -%}
     <EM>
-      {{- fragment.text -}}
+      {{- fragment.text | replace: '<', '&lt;' | replace: '>', '&gt;' -}}
     </EM>
   {%- when 'link' -%}
     <A HREF="{{ fragment.url }}"{% if fragment.offsite %} target="_blank" rel="nofollow"{% endif %}>
-      {{- fragment.text -}}
+      {{- fragment.text | replace: '<', '&lt;' | replace: '>', '&gt;' -}}
     </A>
   {%- else -%}
-    {{- fragment.text -}}
+    {{- fragment.text | replace: '<', '&lt;' | replace: '>', '&gt;' -}}
   {%- endcase -%}
 {%- endfor -%}

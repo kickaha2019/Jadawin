@@ -41,7 +41,7 @@ module Elements
       if @table.empty?
         {'type'  => 'list',
          'rows'  => @list.collect do |value|
-           {'data' => [value.to_data_single_paragraph( compiler, article)]}
+           {'data' => value.to_data_single_paragraph( compiler, article)}
          end
         }
       else
