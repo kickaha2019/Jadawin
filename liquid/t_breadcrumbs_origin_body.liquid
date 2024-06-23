@@ -1,8 +1,0 @@
-{% if page.origins %}
-{% render 't_breadcrumbs_body', breadcrumbs:page.breadcrumbs, origin:"default", page:page %}
-{% for origin in page.origins %}
-  {% render 't_breadcrumbs_body', breadcrumbs:origin[1], origin:origin[0], page:page %}
-{% endfor %}
-{% else %}
-{% render 't_breadcrumbs_body', breadcrumbs:page.breadcrumbs, origin:false, page:page %}
-{% endif %}

@@ -1,0 +1,8 @@
+{% if page.origins %}
+{% render 'breadcrumbs_body_snippet', breadcrumbs:page.breadcrumbs, origin:"default", page:page %}
+{% for origin in page.origins %}
+  {% render 'breadcrumbs_body_snippet', breadcrumbs:origin[1], origin:origin[0], page:page %}
+{% endfor %}
+{% else %}
+{% render 'breadcrumbs_body_snippet', breadcrumbs:page.breadcrumbs, origin:false, page:page %}
+{% endif %}

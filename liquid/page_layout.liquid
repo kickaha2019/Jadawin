@@ -40,7 +40,7 @@ function hideOverlay() {
                         dimensions:config.dimensions,
                         overlays:overlays %}
 </style>
-{% render 't_breadcrumbs_origin_head' with page:page %}
+{% render 'breadcrumbs_origin_head_snippet' with page:page %}
 </HEAD><BODY>
 {% if overlays %}
 <DIV ID="overlay" CLASS="overlay" onclick="hideOverlay()">
@@ -56,15 +56,15 @@ function hideOverlay() {
 {% if config.legend %}
 <DIV CLASS="legend">{{ config.legend }}</DIV>
 {% endif %}
-{% render 't_breadcrumbs_origin_body' with config:config, page:page %}
+{% render 'breadcrumbs_origin_body_snippet' with config:config, page:page %}
 <DIV CLASS="payload content {{ page.index_style }}">
   {% if page.content %}
     <DIV CLASS="story t1">
-      {% render 't_title' with page:page %}
+      {% render 'title_snippet' with page:page %}
       {% render 'story_indexes_snippet' with story_index:page.story_index %}
       {% render 'content_section', content:page.content %}
       {% if page.line_count > 20 %}
-        {% render 't_navigation' with config:config, page:page %}
+        {% render 'navigation_snippet' with config:config, page:page %}
       {% endif %}
     </DIV>
   {% endif %}

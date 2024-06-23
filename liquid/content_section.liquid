@@ -7,7 +7,7 @@
     {% assign pad_after = false %}
   {% endif %}
   {% if pad_before %}
-    <DIV CLASS="padding">
+    <DIV CLASS="inset_padding">
     {% assign pad_before = false %}
     {% assign pad_after  = true %}
   {% endif %}
@@ -18,7 +18,7 @@
       <PRE CLASS="code">{{ element.text }}</PRE>
     {% when "css" %}
     {% when "gallery" %}
-      {% render 't_gallery' with gallery:element, index:forloop.index %}
+      {% render 'gallery_section' with gallery:element, index:forloop.index %}
     {% when "heading" %}
       <DIV CLASS="heading">{{ element.text }}</DIV>
     {% when "image" %}
@@ -40,18 +40,19 @@
                 overlay:element.overlay %}
       {% assign pad_before = true %}
     {% when "list" %}
-      {% render 't_list' with list:element %}
+      {% render 'list_section' with list:element %}
     {% when "none" %}
     {% when "raw" %}
       {{ element.text }}
     {% when "svg" %}
       {% render 'text_indexes_snippet', text_index:element.text_index, text_index_size:'size0' %}
-      {% render 't_svg', source:element.source,
-                         background:element.background,
-                         width:element.width,
-                         index:forloop.index %}
+      {% render 'svg_section',
+                source:element.source,
+                background:element.background,
+                width:element.width,
+                index:forloop.index %}
     {% when "table" %}
-      {% render 't_table' with table:element %}
+      {% render 'table_section' with table:element %}
     {% else %}
       <B>Liquid error: Element type {{ element.type }}</B>
   {% endcase %}
