@@ -7,7 +7,7 @@
         {% else %}
           <TD STYLE="text-align: {{ cell.align }}">
         {% endif %}
-        {% render 'content_section' with content:cell.data %}
+        {% render 'markup_section' with markup:cell.data %}
         </TD>
       {% endfor %}
     </TR>

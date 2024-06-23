@@ -34,9 +34,9 @@ module Elements
       end
     end
 
-    def is_number?( text)
-      return false unless 'raw' == text['type']
-      /^\d+$/ =~ text['text']
+    def is_number?( markup)
+      return false unless markup.size == 1
+      /^\d+$/ =~ markup[0]['text']
     end
 
     def line_count
@@ -53,9 +53,9 @@ module Elements
 
     def row( compiler, article, r)
       fields = r.collect do |field|
-        text = field.to_data_single_paragraph( compiler, article)
-        align = is_number?( text) ? 'right' : 'left'
-        {'data' => [text], 'bold' => false, 'align' => align}
+        markup = field.to_data_single_paragraph( compiler, article)
+        align = is_number?( markup) ? 'right' : 'left'
+        {'data' => markup, 'bold' => false, 'align' => align}
       end
 
       while fields.size < @columns.size

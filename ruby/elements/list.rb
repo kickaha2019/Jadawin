@@ -49,7 +49,7 @@ module Elements
          'rows'  => @table.keys.collect do |key|
            text = @table[key].to_data_single_paragraph( compiler, article)
            [{'data' => [{'type' => 'raw', 'text' => key}], 'bold' => true,  'align' => 'left'},
-            {'data' => [text], 'bold' => false, 'align' => 'left'}]
+            {'data' => text, 'bold' => false, 'align' => 'left'}]
          end
         }
       end

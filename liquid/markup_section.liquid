@@ -1,0 +1,18 @@
+{%- for fragment in markup -%}
+  {%- case fragment.type -%}
+  {%- when 'code' -%}
+    <SPAN CLASS="code">
+      {{- fragment.text -}}
+    </SPAN>
+  {%- when 'emphasized' -%}
+    <EM>
+      {{- fragment.text -}}
+    </EM>
+  {%- when 'link' -%}
+    <A HREF="{{ fragment.url }}"{% if fragment.offsite %} target="_blank" rel="nofollow"{% endif %}>
+      {{- fragment.text -}}
+    </A>
+  {%- else -%}
+    {{- fragment.text -}}
+  {%- endcase -%}
+{%- endfor -%}

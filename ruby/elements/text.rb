@@ -13,6 +13,10 @@ module Elements
         compiler.spell_check( article, @text)
       end
 
+      def to_data( compiler, article)
+        {'type' => 'emphasized', 'text' => @text}
+      end
+
       def to_html( compiler, article)
         '<EM>' + @text +'</EM>'
       end
@@ -54,6 +58,13 @@ module Elements
         end
       end
 
+      def to_data( compiler, article)
+        {'type'    => 'link',
+         'offsite' => compiler.offsite?( @url),
+         'url'     => @url,
+         'text'    => @text}
+      end
+
       def to_html( compiler, article)
         return '' unless @url
 
@@ -74,6 +85,10 @@ module Elements
         compiler.spell_check( article, @text)
       end
 
+      def to_data( compiler, article)
+        {'type' => 'normal', 'text' => @text}
+      end
+
       def to_html( compiler, article)
         @text
       end
@@ -85,6 +100,10 @@ module Elements
       end
 
       def prepare( compiler, article)
+      end
+
+      def to_data( compiler, article)
+        {'type' => 'code', 'text' => @text}
       end
 
       def to_html( compiler, article)
@@ -117,6 +136,10 @@ module Elements
       else
         ''
       end
+    end
+
+    def paragraph_to_data( compiler, article, paragraph)
+      paragraph.collect {|fragment| fragment.to_data( compiler, article)}
     end
 
     def paragraph_to_html( compiler, article, paragraph)
@@ -192,15 +215,15 @@ module Elements
 
     def to_data( compiler, article)
       out = @paragraphs.collect do |paragraph|
-         paragraph_to_html( compiler, article, paragraph)
+         paragraph_to_data( compiler, article, paragraph)
       end
 
-      {'type' => 'raw',
-       'text' => '<P>' + out.join( '</P><P>') + '</P>'}
+      {'type'       => 'paragraphs',
+       'paragraphs' => out}
     end
 
     def to_data_single_paragraph( compiler, article)
-      {'type' => 'raw', 'text' => paragraph_to_html( compiler, article, @paragraphs[0])}
+      paragraph_to_data( compiler, article, @paragraphs[0])
     end
 
     def to_html( compiler, article)

@@ -2,7 +2,7 @@
 {% assign pad_after  = false %}
 
 {% for element in content %}
-  {% if pad_after and element.type != 'raw' %}
+  {% if pad_after and element.type != 'paragraphs' %}
     </DIV>
     {% assign pad_after = false %}
   {% endif %}
@@ -42,6 +42,10 @@
     {% when "list" %}
       {% render 'list_section' with list:element %}
     {% when "none" %}
+    {% when "paragraphs" %}
+      {%- for paragraph in element.paragraphs -%}
+        <P>{% render 'markup_section' with markup:paragraph %}</P>
+      {%- endfor -%}
     {% when "raw" %}
       {{ element.text }}
     {% when "svg" %}
