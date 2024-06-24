@@ -5,8 +5,6 @@
 =end
 
 require 'bundler/setup'
-# require 'rexml/document'
-# require 'rexml/xpath'
 require 'yaml'
 require 'cgi'
 require 'fileutils'
