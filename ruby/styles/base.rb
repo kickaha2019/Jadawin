@@ -68,8 +68,7 @@ module Styles
         elsif inside_pre
           lines << line
         else
-          line = line.strip.gsub( /\s\s/, ' ')
-          lines << line unless line == ''
+          lines << line.strip.gsub( /\s\s/, ' ')
         end
       end
       lines.join( "\n")

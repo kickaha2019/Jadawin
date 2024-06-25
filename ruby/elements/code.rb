@@ -12,16 +12,8 @@ module Elements
       end
 
       @lines = lines.collect do |line|
-        if line.strip == ''
-          '&nbsp;'
-        else
-          encode_html_chars( line[shortest_leading_spaces..-1])
-        end
+        line[shortest_leading_spaces..-1]
       end
-    end
-
-    def encode_html_chars( text)
-      text.gsub( '&', '&amp;').gsub( '<', '&lt;').gsub( '>', '&gt;')
     end
 
     def line_count

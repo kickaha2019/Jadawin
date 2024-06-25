@@ -2,7 +2,7 @@
   {%- case fragment.type -%}
   {%- when 'code' -%}
     <SPAN CLASS="code">
-      {{- fragment.text | replace: '&', '&amp;' | replace: '<', '&lt;' | replace: '>', '&gt;' -}}
+      {{- fragment.text | escape -}}
     </SPAN>
   {%- when 'emphasized' -%}
     <EM>

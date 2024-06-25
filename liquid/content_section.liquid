@@ -15,7 +15,7 @@
     {% when "array" %}
       {% render 'content_section' with content:element.data %}
     {% when "code" %}
-      <PRE CLASS="code">{{ element.text }}</PRE>
+      <PRE CLASS="code">{{ element.text | escape }}</PRE>
     {% when "css" %}
     {% when "gallery" %}
       {% render 'gallery_section' with gallery:element, index:forloop.index %}
